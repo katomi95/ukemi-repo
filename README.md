@@ -30,16 +30,12 @@
 
 ローカルで遊ぶ場合は `index.html` をブラウザで開くだけです。
 
-## GitHub へ push する
+## リポジトリ
 
-このディレクトリは git 初期化済み・初回コミット済みです。空のリポジトリを GitHub 上に作ってから、以下を実行してください。
+https://github.com/katomi95/ukemi-repo
 
 ```bash
-git remote add origin git@github.com:<ユーザー名>/<リポジトリ名>.git
-# HTTPS の場合は
-# git remote add origin https://github.com/<ユーザー名>/<リポジトリ名>.git
-
-git push -u origin main
+git clone https://github.com/katomi95/ukemi-repo.git
 ```
 
 ## GitHub Pages で公開する
@@ -48,7 +44,7 @@ git push -u origin main
 
 Actions を使わない場合は、Source を「Deploy from a branch」にして `main` / `/ (root)` を選んでも同じように公開できます（その場合 `.github/` は削除して構いません）。
 
-公開先は `https://<ユーザー名>.github.io/<リポジトリ名>/` です。
+公開先は `https://katomi95.github.io/ukemi-repo/` です（Pages を有効にするには、リポジトリを public にする必要があります）。
 
 ## ファイル構成
 
