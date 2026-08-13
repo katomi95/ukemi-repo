@@ -1,0 +1,13 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# エディタ
+.vscode/
+.idea/
+*.swp
+
+# 作業用
+node_modules/
+*.log
+*.png.tmp
