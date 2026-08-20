@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a0507">
+<title>地獄を作るぞ。DIYで。― HELL CONSTRUCTION DIY</title>
+<style>
+/* ============================================================
+   地獄を作るぞ。DIYで。 / HELL CONSTRUCTION DIY
+   単一ファイル・外部依存なし
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --blk:#07050a; --blk2:#120c10;
+  --red:#b3121b; --red2:#7d0a10; --red3:#ff2d2d;
+  --pap:#e8e2d4; --wht:#fff;
+  --gold:#c9a227; --hudh:2.7em;
+  --ser:"Times New Roman","Hiragino Mincho ProN","Yu Mincho","YuMincho","MS PMincho",serif;
+  --san:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","YuGothic",Meiryo,system-ui,sans-serif;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;color:var(--pap);
+  font-family:var(--san);-webkit-user-select:none;user-select:none;overscroll-behavior:none;}
+#app{position:fixed;inset:0;background:var(--blk);
+  font-size:clamp(12px,1.15vw + 0.9vh,19px);line-height:1.55;}
+
+/* ---------- scenes ---------- */
+.scene{position:absolute;inset:0;display:none;flex-direction:column;}
+.scene.on{display:flex;animation:sfade .45s ease both;}
+@keyframes sfade{from{opacity:0}to{opacity:1}}
+.hide{display:none !important;}
+
+/* ---------- global overlays ---------- */
+#vig{position:absolute;inset:0;pointer-events:none;z-index:60;
+  background:radial-gradient(120% 100% at 50% 45%,transparent 38%,rgba(0,0,0,.55) 78%,rgba(0,0,0,.92) 100%);}
+#grain{position:absolute;inset:-20%;pointer-events:none;z-index:61;opacity:.11;mix-blend-mode:overlay;
+  background-image:radial-gradient(rgba(255,255,255,.9) .5px,transparent .6px);background-size:3px 3px;
+  animation:gr .5s steps(3) infinite;}
+@keyframes gr{0%{transform:translate(0,0)}33%{transform:translate(-2%,1%)}66%{transform:translate(1%,-2%)}100%{transform:translate(0,0)}}
+#flash{position:absolute;inset:0;pointer-events:none;z-index:70;background:#fff;opacity:0;}
+#flash.go{animation:fl .34s ease-out both;}
+#flash.red{background:var(--red3);}
+@keyframes fl{0%{opacity:.9}100%{opacity:0}}
+#black{position:absolute;inset:0;background:#000;z-index:69;opacity:0;pointer-events:none;transition:opacity .35s;}
+#black.on{opacity:1;}
+.shaking{animation:shk .42s cubic-bezier(.36,.07,.19,.97) both;}
+@keyframes shk{10%,90%{transform:translate(-1px,1px)}20%,80%{transform:translate(3px,-2px)}
+  30%,50%,70%{transform:translate(-5px,2px)}40%,60%{transform:translate(5px,-1px)}}
+#mute{position:absolute;right:.6em;top:.5em;z-index:80;cursor:pointer;font-family:var(--san);
+  font-size:.82em;letter-spacing:.1em;padding:.35em .7em;border:1px solid rgba(232,226,212,.35);
+  border-radius:2em;background:rgba(0,0,0,.45);color:var(--pap);}
+
+/* ---------- title ---------- */
+#sc-title{align-items:center;justify-content:center;justify-content:safe center;text-align:center;padding:2em 1.2em;overflow:auto;
+  background:radial-gradient(80% 70% at 50% 30%,#2a0a0d 0%,#0a0508 62%,#000 100%);}
+#sc-title .crest{width:clamp(70px,16vmin,140px);margin-bottom:.4em;opacity:.92;}
+#sc-title h1{font-family:var(--ser);font-weight:700;color:var(--pap);
+  font-size:clamp(1.6rem,7.4vw,4.1rem);letter-spacing:.06em;line-height:1.25;
+  text-shadow:0 0 .5em rgba(179,18,27,.55),0 .05em .1em #000;}
+#sc-title h1 em{font-style:normal;color:#ff3b3b;text-shadow:0 0 .6em rgba(255,45,45,.7);}
+#sc-title .sub{margin-top:.9em;font-family:var(--ser);letter-spacing:.42em;text-indent:.42em;
+  font-size:clamp(.72rem,2.9vw,1.25rem);color:#d8cfc0;opacity:.85;}
+#sc-title .rule{width:min(78vw,34em);height:1px;margin:1.5em 0;background:linear-gradient(90deg,transparent,#8a2f2f,transparent);}
+#sc-title .note{max-width:30em;font-size:.88em;line-height:2;opacity:.62;margin-top:1.6em;}
+.btn{cursor:pointer;font-family:var(--ser);font-weight:700;border:1px solid #7d1a1a;
+  font-size:clamp(1rem,4.2vw,1.5rem);letter-spacing:.28em;text-indent:.28em;padding:.62em 1.9em;
+  background:linear-gradient(180deg,#1b1013,#0b0709);color:var(--pap);
+  box-shadow:0 0 1.4em rgba(179,18,27,.35),inset 0 0 2em rgba(179,18,27,.18);transition:.15s;}
+.btn:hover{background:linear-gradient(180deg,#3a1216,#12090b);box-shadow:0 0 2.2em rgba(255,45,45,.5);}
+.btn:active{transform:translateY(1px);}
+.btn.plain{font-family:var(--san);font-size:.95em;letter-spacing:.12em;text-indent:.12em;padding:.55em 1.2em;}
+
+/* ---------- cutscene ---------- */
+#sc-cut{background:#000;cursor:pointer;}
+#cut-stage{position:absolute;inset:0;overflow:hidden;}
+#cut-art{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  transition:transform 1.4s cubic-bezier(.3,0,.2,1),filter .6s;}
+#cut-art svg{width:100%;height:100%;}
+#cut-art.zoom{transform:scale(2.35) translateY(6%);}
+#cut-art.zoom2{transform:scale(1.18);}
+#cut-big{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;pointer-events:none;padding:1em;}
+#cut-big .b1{font-family:var(--ser);font-weight:700;color:#fff;letter-spacing:.16em;text-indent:.16em;
+  font-size:clamp(1.5rem,8.6vw,5rem);line-height:1.15;text-shadow:0 0 .6em rgba(0,0,0,.9);
+  animation:bigin .7s cubic-bezier(.2,.9,.2,1) both;}
+#cut-big .b2{margin-top:.5em;font-family:var(--ser);letter-spacing:.34em;text-indent:.34em;
+  font-size:clamp(.75rem,3.2vw,1.3rem);color:#e2d9c9;opacity:.86;animation:bigin .9s .12s cubic-bezier(.2,.9,.2,1) both;}
+@keyframes bigin{from{opacity:0;letter-spacing:.7em;transform:scale(1.16)}to{opacity:1;transform:scale(1)}}
+#cut-line{position:absolute;left:0;right:0;bottom:0;z-index:56;padding:1.1em 1.2em 2.2em;
+  background:linear-gradient(0deg,rgba(0,0,0,.96) 58%,rgba(0,0,0,.6) 84%,transparent);text-align:center;}
+#cut-who{display:block;font-family:var(--ser);font-size:.82em;letter-spacing:.3em;text-indent:.3em;color:#c66;margin-bottom:.35em;}
+#cut-txt{display:block;font-family:var(--ser);font-size:clamp(1rem,4.4vw,1.8rem);line-height:1.5;color:#fff;
+  text-shadow:0 .08em .3em #000;max-width:24em;margin:0 auto;}
+#cut-txt.shout{color:#ff4040;font-weight:700;letter-spacing:.1em;}
+#cut-tip{position:absolute;right:1em;bottom:.55em;z-index:57;font-size:.68em;letter-spacing:.22em;opacity:.4;}
+.lbox:before,.lbox:after{content:"";position:absolute;left:0;right:0;height:7%;background:#000;z-index:55;pointer-events:none;}
+.lbox:before{top:0}.lbox:after{bottom:0}
+
+/* ---------- HUD ---------- */
+#hud{position:absolute;left:0;right:0;top:0;z-index:50;pointer-events:none;
+  display:flex;gap:.35em;padding:.4em 4.6em .4em .5em;background:linear-gradient(180deg,rgba(0,0,0,.85),transparent);
+  flex-wrap:wrap;align-items:center;font-size:.78em;}
+#hud .st{flex:1 1 5.4em;min-width:4.6em;border:1px solid rgba(232,226,212,.16);padding:.16em .35em .28em;background:rgba(0,0,0,.42);}
+#hud .st .k{display:flex;justify-content:space-between;letter-spacing:.08em;font-size:.82em;opacity:.85;}
+#hud .st .k b{font-weight:700;color:#fff;font-variant-numeric:tabular-nums;}
+#hud .bar{height:.32em;margin-top:.2em;background:rgba(255,255,255,.12);}
+#hud .bar i{display:block;height:100%;background:var(--red);transition:width .5s;}
+#hud .st.hell .bar i{background:linear-gradient(90deg,#7d0a10,#ff3b2d);}
+#hud .st.saf .bar i{background:linear-gradient(90deg,#1c6b3a,#5fd08a);}
+#hud .st.pow .bar i{background:linear-gradient(90deg,#8a6b12,#ffd34d);}
+#hud .st.over .k b{color:#ff5252;animation:blink .6s steps(2) infinite;}
+@keyframes blink{50%{opacity:.25}}
+#hud .st.money{flex:0 0 auto;}
+.pulse{animation:pls .5s ease;}
+@keyframes pls{0%{transform:scale(1)}40%{transform:scale(1.16)}100%{transform:scale(1)}}
+
+/* ---------- shop ---------- */
+#sc-shop{background:linear-gradient(180deg,#f6f7f2 0%,#e9ebe2 100%);color:#1b1b1b;font-family:var(--san);padding-top:calc(var(--hudh) + .2em);}
+#sc-shop .lights{position:absolute;left:0;right:0;top:0;height:38%;pointer-events:none;z-index:0;opacity:.6;
+  background:radial-gradient(60% 100% at 20% 0,rgba(255,255,255,.95),transparent 70%),
+             radial-gradient(60% 100% at 80% 0,rgba(255,255,255,.95),transparent 70%);}
+.shop-top{position:relative;z-index:1;display:flex;align-items:center;gap:.6em;padding:.5em .7em;background:#123c66;color:#fff;flex-wrap:wrap;}
+.shop-top .clk{font-family:var(--ser);letter-spacing:.16em;font-size:1.02em;}
+.shop-top .nm{font-weight:800;letter-spacing:.16em;font-size:.92em;background:#ffcc00;color:#123c66;padding:.1em .5em;}
+.shop-top .bud{margin-left:auto;font-weight:700;font-size:.92em;font-variant-numeric:tabular-nums;}
+.shop-body{position:relative;z-index:1;flex:1;display:flex;min-height:0;gap:.5em;padding:.5em;}
+.order{flex:0 0 12.5em;background:#12100e;color:var(--pap);border:1px solid #4a3b2c;padding:.6em .7em;overflow:auto;}
+.order h3{font-family:var(--ser);font-size:.86em;letter-spacing:.2em;color:#e0b34a;border-bottom:1px solid #4a3b2c;padding-bottom:.3em;margin-bottom:.5em;}
+.order li{list-style:none;font-size:.86em;padding:.22em 0;display:flex;gap:.4em;align-items:baseline;opacity:.72;}
+.order li b{font-weight:400;flex:1;}
+.order li .ck{width:1em;color:#666;}
+.order li.got{opacity:1;color:#8fdc9d;}
+.order li.got .ck{color:#8fdc9d;}
+.order .memo{margin-top:.7em;font-size:.72em;line-height:1.7;opacity:.55;font-family:var(--ser);}
+.shelf{flex:1;display:grid;gap:.45em;overflow:auto;min-height:0;padding-bottom:.3em;
+  grid-template-columns:repeat(auto-fill,minmax(8.6em,1fr));align-content:start;}
+.item{background:#fff;border:1px solid #c9c9c2;border-radius:2px;padding:.45em .5em .5em;cursor:pointer;
+  display:flex;flex-direction:column;gap:.25em;position:relative;transition:.12s;box-shadow:0 1px 0 #cfcfc7;}
+.item:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.18);}
+.item .pic{height:3.6em;display:flex;align-items:center;justify-content:center;background:#f2f2ec;}
+.item .pic svg{width:80%;height:100%;}
+.item .nm{font-size:.8em;font-weight:700;line-height:1.35;}
+.item .sp{font-size:.66em;opacity:.6;line-height:1.3;}
+.item .pr{margin-top:auto;font-weight:800;color:#c0392b;font-size:.92em;font-variant-numeric:tabular-nums;}
+.item .pr small{font-size:.66em;font-weight:400;}
+.item .pop{position:absolute;right:-.2em;top:-.4em;background:#ffd400;color:#a11;font-weight:800;
+  font-size:.6em;padding:.1em .35em;transform:rotate(6deg);border:1px solid #d9a900;}
+.item.bought{background:#eef7ee;border-color:#7bbd85;}
+.item.bought:after{content:"CART";position:absolute;left:.4em;top:.4em;background:#2e8b4f;color:#fff;
+  font-size:.58em;letter-spacing:.1em;padding:.1em .35em;}
+.item.req{border-color:#c0392b;}
+.shop-bot{position:relative;z-index:1;display:flex;align-items:center;gap:.5em;padding:.45em .7em;background:#123c66;color:#fff;flex-wrap:wrap;}
+.shop-bot .cart{font-size:.8em;opacity:.9;flex:1;min-width:8em;}
+.shop-bot .btn{font-size:.9em;letter-spacing:.18em;text-indent:.18em;padding:.5em 1.1em;background:#ffcc00;color:#123c66;border-color:#e0b400;font-family:var(--san);font-weight:800;box-shadow:none;}
+.shop-bot .btn[disabled]{opacity:.4;cursor:not-allowed;}
+/* 店員イベント */
+#clerk{position:absolute;inset:0;z-index:40;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;cursor:pointer;}
+#clerk .box{width:100%;background:linear-gradient(0deg,#0a0508 70%,rgba(10,5,8,.9));padding:1.4em 1.2em 1.6em;text-align:center;}
+#clerk .who{font-family:var(--ser);font-size:.8em;letter-spacing:.3em;color:#c66;margin-bottom:.4em;}
+#clerk .txt{font-family:var(--ser);font-size:clamp(1rem,4.2vw,1.7rem);color:#fff;}
+
+/* ---------- build ---------- */
+#sc-build{background:radial-gradient(90% 80% at 50% 20%,#181017 0%,#0a0507 70%,#000 100%);padding-top:calc(var(--hudh) + .2em);}
+.bhead{flex:0 0 auto;text-align:center;pointer-events:none;padding:.15em .5em .25em;}
+.bhead .code{font-family:var(--ser);color:#ff4040;letter-spacing:.34em;text-indent:.34em;font-size:.76em;}
+.bhead .ttl{font-family:var(--ser);font-size:clamp(1rem,4vw,1.6rem);letter-spacing:.14em;color:#fff;}
+.bbody{flex:1;display:flex;min-height:0;gap:.5em;padding:.2em .6em .5em;}
+.plan{flex:1;position:relative;overflow:hidden;border:1px solid #4a2b2b;background:
+   linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px) 0 0/100% 1.6em,
+   linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px) 0 0/1.6em 100%,
+   radial-gradient(70% 70% at 50% 40%,rgba(179,18,27,.14),transparent 70%);
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:.5em;padding:.7em;}
+.planart{position:absolute;left:3%;right:3%;top:3%;bottom:38%;display:flex;align-items:center;justify-content:center;
+  opacity:.08;filter:grayscale(1) contrast(.7);transition:opacity .7s,filter .7s;pointer-events:none;}
+.planart svg{width:100%;height:100%;}
+.plan .pttl{position:absolute;left:.6em;top:.5em;z-index:2;font-family:var(--ser);font-size:.7em;letter-spacing:.24em;color:#a97;opacity:.8;}
+.slots{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:.5em;justify-content:center;align-items:stretch;width:100%;}
+.slot{flex:1 1 7.4em;max-width:11em;min-height:6.4em;border:1px dashed #7a4a4a;background:rgba(255,255,255,.03);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25em;padding:.4em;text-align:center;transition:.15s;}
+.slot .role{font-family:var(--ser);font-size:.7em;letter-spacing:.16em;color:#d7a06a;}
+.slot .need{font-size:.66em;opacity:.55;line-height:1.3;}
+.slot.hot{border-color:#ff4040;background:rgba(255,64,64,.14);box-shadow:0 0 1.2em rgba(255,45,45,.4) inset;}
+.slot.done{border-style:solid;border-color:#8fdc9d;background:rgba(60,180,110,.1);}
+.slot.done .role{color:#8fdc9d;}
+.slot .fit{font-size:.76em;font-weight:700;color:#fff;line-height:1.3;}
+.slot .fit svg{width:2.6em;height:2.2em;display:block;margin:0 auto .1em;}
+.slot.bad{animation:shk .4s;border-color:#ff2d2d;}
+.tray{flex:0 0 11.5em;display:flex;flex-direction:column;border:1px solid #3a2a2a;background:rgba(0,0,0,.4);min-height:0;}
+.tray h3{font-family:var(--ser);font-size:.72em;letter-spacing:.22em;color:#d7a06a;padding:.45em .6em;border-bottom:1px solid #3a2a2a;}
+.tray .list{flex:1;overflow:auto;padding:.4em;display:flex;flex-direction:column;gap:.35em;}
+.mat{display:flex;gap:.45em;align-items:center;padding:.35em .45em;border:1px solid #55403a;background:#161013;cursor:grab;touch-action:none;transition:.12s;}
+.mat:hover{border-color:#b3121b;background:#221317;}
+.mat.sel{border-color:#ff4040;background:#2a1116;box-shadow:0 0 .8em rgba(255,45,45,.5);}
+.mat.used{opacity:.28;pointer-events:none;filter:grayscale(1);}
+.mat svg{width:2.2em;height:1.9em;flex:0 0 auto;}
+.mat .t{font-size:.76em;line-height:1.3;}
+.mat .t small{display:block;opacity:.55;font-size:.82em;}
+#drag{position:fixed;z-index:99;pointer-events:none;opacity:.95;transform:translate(-50%,-50%) scale(1.1);
+  background:#2a1116;border:1px solid #ff4040;padding:.35em .5em;display:flex;gap:.4em;align-items:center;box-shadow:0 0 1.4em rgba(255,45,45,.6);}
+#drag svg{width:2.2em;height:1.9em;}
+#drag .t{font-size:.76em;}
+.bfoot{padding:.35em .6em .6em;text-align:center;min-height:2.6em;}
+.bfoot .say{font-family:var(--ser);font-size:.92em;color:#fff;text-shadow:0 0 .5em #000;min-height:1.4em;}
+.bfoot .say b{color:#ff5a5a;}
+/* コンプライアンス */
+#comply{position:absolute;inset:0;z-index:45;background:rgba(4,2,4,.94);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;justify-content:safe center;padding:1em;gap:.6em;overflow:auto;}
+#comply h2{font-family:var(--ser);font-size:clamp(1.1rem,4.6vw,2rem);letter-spacing:.2em;color:#fff;text-align:center;}
+#comply .lead{font-size:.82em;opacity:.7;text-align:center;max-width:26em;font-family:var(--ser);}
+#comply .opts{display:flex;flex-wrap:wrap;gap:.5em;justify-content:center;width:100%;max-width:44em;}
+.opt{flex:1 1 12em;max-width:15em;border:1px solid #4a3b2c;background:#100b0e;padding:.55em .65em;cursor:pointer;transition:.14s;}
+.opt:hover{border-color:#c9a227;}
+.opt.on{border-color:#8fdc9d;background:#0d1a11;}
+.opt .n{font-size:.86em;font-weight:700;}
+.opt .p{font-size:.7em;opacity:.6;font-variant-numeric:tabular-nums;}
+.opt .e{margin-top:.3em;display:flex;flex-wrap:wrap;gap:.3em;font-size:.68em;font-variant-numeric:tabular-nums;}
+.opt .e span{padding:.05em .35em;border:1px solid;}
+.up{color:#8fdc9d;border-color:#2f6b45 !important;}
+.dn{color:#ff7a7a;border-color:#6b2f2f !important;}
+#comply .fin{margin-top:.4em;}
+
+/* ---------- 増設・音量パネル ---------- */
+.panel{width:min(94vw,34em);border:1px solid #4a2b2b;background:rgba(6,3,6,.9);padding:.8em;text-align:center;}
+.panel h4{font-family:var(--ser);letter-spacing:.2em;font-size:.86em;color:#d7a06a;margin-bottom:.5em;}
+.panel .big{font-family:var(--ser);font-size:clamp(1.6rem,7vw,2.8rem);color:#fff;font-variant-numeric:tabular-nums;}
+.panel .big small{font-size:.4em;opacity:.6;}
+.panel .row{display:flex;gap:.5em;justify-content:center;margin-top:.6em;flex-wrap:wrap;}
+.panel input[type=range]{width:100%;margin:.6em 0;accent-color:#b3121b;}
+.meter{height:.6em;background:rgba(255,255,255,.12);margin-top:.5em;position:relative;overflow:hidden;}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,#7d0a10,#ff3b2d);transition:width .3s;}
+.meter u{position:absolute;top:0;bottom:0;width:2px;background:#fff;opacity:.5;}
+.note-s{font-size:.72em;opacity:.6;margin-top:.4em;line-height:1.6;}
+
+/* ---------- final ---------- */
+#sc-final{background:radial-gradient(100% 90% at 50% 30%,#1b0a0d,#050204 70%,#000);padding-top:calc(var(--hudh) + .2em);}
+.fwrap{flex:1;display:flex;flex-direction:column;min-height:0;padding:.2em .5em .4em;}
+.fstat{display:flex;gap:.5em;align-items:center;justify-content:center;font-size:.8em;padding:.2em 0 .4em;flex-wrap:wrap;}
+.fstat .cell{border:1px solid #4a2b2b;padding:.12em .5em;letter-spacing:.08em;font-variant-numeric:tabular-nums;}
+.fstat .cell b{color:#fff;}
+.fstat .dmg b{color:#ff5252;}
+.grid{flex:1;display:grid;gap:.45em;grid-template-columns:repeat(3,1fr);width:100%;max-width:46em;margin:0 auto;
+  grid-auto-rows:minmax(4.4em,1fr);min-height:0;overflow:auto;align-content:stretch;}
+.cellf{position:relative;border:1px solid #40282c;background:rgba(255,255,255,.03);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:.15em;padding:.3em;overflow:hidden;text-align:center;}
+.cellf svg{width:2.8em;height:2.4em;opacity:.85;}
+.cellf .cn{font-size:.66em;letter-spacing:.08em;opacity:.6;font-family:var(--ser);}
+.cellf.trouble{border-color:#ff2d2d;background:rgba(179,18,27,.2);cursor:pointer;animation:tb .8s infinite;}
+@keyframes tb{50%{background:rgba(179,18,27,.42)}}
+.cellf .tw{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2em;
+  background:rgba(20,0,4,.72);padding:.25em;}
+.cellf .tw .tt{font-size:.78em;font-weight:700;color:#ff8080;line-height:1.25;}
+.cellf .tw .tp{font-size:.66em;letter-spacing:.14em;color:#fff;opacity:.8;}
+.cellf .tw .tb{width:80%;height:.28em;background:rgba(255,255,255,.18);}
+.cellf .tw .tb i{display:block;height:100%;background:#ff2d2d;}
+.cellf.fixed{border-color:#8fdc9d;}
+.fixpop{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);font-family:var(--ser);
+  font-size:1.1em;color:#8fdc9d;pointer-events:none;animation:fp .7s ease-out both;}
+@keyframes fp{0%{opacity:1;transform:translate(-50%,-50%) scale(.8)}100%{opacity:0;transform:translate(-50%,-160%) scale(1.1)}}
+.fsay{min-height:2.4em;text-align:center;font-family:var(--ser);font-size:.92em;color:#fff;padding:.3em;}
+.fsay b{color:#ff5a5a;}
+
+/* ---------- 監査・エンド ---------- */
+#sc-end{align-items:center;justify-content:center;justify-content:safe center;text-align:center;padding:1.4em;overflow:auto;
+  background:radial-gradient(80% 70% at 50% 30%,#170a0d,#050204 70%,#000);}
+#sc-end .mc{font-family:var(--ser);font-size:clamp(1.5rem,7.6vw,4rem);letter-spacing:.2em;text-indent:.2em;color:#fff;}
+#sc-end .grade{font-family:var(--ser);font-size:clamp(3rem,17vw,7rem);line-height:1;color:#ff3b3b;
+  text-shadow:0 0 .4em rgba(255,45,45,.6);margin:.1em 0;}
+#sc-end .gnote{font-size:.86em;opacity:.75;font-family:var(--ser);letter-spacing:.1em;}
+#sc-end .rows{margin:1em 0;width:min(92vw,30em);font-size:.86em;}
+#sc-end .rows div{display:flex;justify-content:space-between;border-bottom:1px dotted #533;padding:.25em 0;font-variant-numeric:tabular-nums;}
+#sc-end .rows div b{color:#fff;font-weight:700;}
+#sc-end .cost{font-family:var(--ser);font-size:clamp(1.6rem,8vw,3rem);color:#fff;font-variant-numeric:tabular-nums;}
+/* 雑誌 */
+#mag{width:min(92vw,26em);background:#f3efe4;color:#161212;text-align:left;position:relative;
+  box-shadow:0 .6em 2em rgba(0,0,0,.7);font-family:var(--san);margin:1em auto 0;overflow:hidden;}
+#mag .mtop{background:#b3121b;color:#fff;padding:.5em .7em;}
+#mag .mtop .t{font-family:var(--ser);font-weight:700;font-size:1.5em;letter-spacing:.06em;line-height:1;}
+#mag .mtop .s{font-size:.66em;letter-spacing:.24em;opacity:.9;}
+#mag .cov{height:9em;background:linear-gradient(180deg,#2a1013,#5c1a12);position:relative;overflow:hidden;}
+#mag .cov svg{position:absolute;inset:0;width:100%;height:100%;}
+#mag .band{position:absolute;left:0;bottom:.6em;background:#ffd400;color:#8a0f14;font-weight:800;
+  font-size:.9em;padding:.18em .6em;transform:rotate(-2deg);}
+#mag .lines{padding:.6em .7em .8em;font-size:.78em;line-height:1.9;}
+#mag .lines b{color:#b3121b;}
+#end-hint{position:fixed;left:0;right:0;bottom:.5em;text-align:center;font-size:.72em;letter-spacing:.24em;
+  opacity:.6;pointer-events:none;animation:blink 1.4s steps(2) infinite;color:#e8e2d4;text-shadow:0 0 .6em #000;}
+#mag .price{position:absolute;right:.5em;top:.5em;background:#fff;color:#b3121b;font-weight:800;font-size:.7em;padding:.15em .4em;border:2px solid #b3121b;}
+
+/* ---------- over ---------- */
+#sc-over{align-items:center;justify-content:center;justify-content:safe center;text-align:center;padding:1.5em;background:#000;overflow:auto;}
+#sc-over .cr{font-family:var(--ser);font-size:clamp(1.6rem,8vw,3.4rem);color:#ff2d2d;letter-spacing:.14em;
+  text-shadow:0 0 .8em rgba(255,45,45,.55);}
+#sc-over .q{font-family:var(--ser);font-size:clamp(.9rem,4vw,1.4rem);color:#fff;margin:1.2em 0;line-height:2;}
+#sc-over .q i{font-style:normal;opacity:.55;font-size:.8em;display:block;}
+
+/* ---------- 汎用 ---------- */
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6em;}
+.tiny{font-size:.72em;opacity:.6;}
+.kv{font-variant-numeric:tabular-nums;}
+.fadeup{animation:fu .5s ease both;}
+@keyframes fu{from{opacity:0;transform:translateY(.6em)}to{opacity:1;transform:none}}
+
+/* ---------- レスポンシブ ---------- */
+@media (max-aspect-ratio:3/4){
+  .shop-body{flex-direction:column;}
+  .order{flex:0 0 auto;max-height:9.5em;}
+  .bbody{flex-direction:column;}
+  .tray{flex:0 0 7.6em;}
+  .tray .list{flex-direction:row;overflow-x:auto;overflow-y:hidden;}
+  .mat{flex:0 0 auto;flex-direction:column;width:5.6em;text-align:center;}
+  .mat .t{font-size:.66em;}
+  .slot{min-height:5.2em;flex:1 1 6.2em;}
+}
+@media (max-height:430px){
+  #sc-title .note{display:none;}
+  #sc-title .rule{margin:.8em 0;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ===== TITLE ===== -->
+  <section class="scene on" id="sc-title">
+    <div class="crest" id="crest"></div>
+    <h1>地獄を作るぞ。<em>DIY</em>で。</h1>
+    <div class="sub">HELL CONSTRUCTION DIY</div>
+    <div class="rule"></div>
+    <button class="btn" id="btn-start">BEGIN</button>
+    <div class="note">
+      本作は、ホームセンターの資材で「地獄」を施工する<br>
+      地獄DIY施工シミュレーションである。<br>
+      所要時間 約5〜10分／セーブ不要／音あり推奨
+    </div>
+  </section>
+
+  <!-- ===== CUTSCENE ===== -->
+  <section class="scene lbox" id="sc-cut">
+    <div id="cut-stage"><div id="cut-art"></div></div>
+    <div id="cut-big"></div>
+    <div id="cut-line"><span id="cut-who"></span><span id="cut-txt"></span></div>
+    <div id="cut-tip">TAP / CLICK ▶</div>
+  </section>
+
+  <!-- ===== SHOP ===== -->
+  <section class="scene" id="sc-shop">
+    <div class="lights"></div>
+    <div class="shop-top">
+      <span class="clk" id="shop-clock">AM 09:03</span>
+      <span class="nm">HOMECENTER</span>
+      <span class="bud">所持金 <span class="kv" id="shop-money">￥0</span></span>
+    </div>
+    <div class="shop-body">
+      <div class="order">
+        <h3>作 戦 調 達 書</h3>
+        <ul id="order-list"></ul>
+        <div class="memo" id="order-memo"></div>
+      </div>
+      <div class="shelf" id="shelf"></div>
+    </div>
+    <div class="shop-bot">
+      <span class="cart" id="cart-txt">カート：空</span>
+      <button class="btn" id="btn-checkout" disabled>会計へ</button>
+    </div>
+    <div id="clerk" class="hide"><div class="box">
+      <div class="who" id="clerk-who"></div><div class="txt" id="clerk-txt"></div>
+    </div></div>
+  </section>
+
+  <!-- ===== BUILD ===== -->
+  <section class="scene" id="sc-build">
+    <div class="bhead"><div class="code" id="b-code"></div><div class="ttl" id="b-ttl"></div></div>
+    <div class="bbody">
+      <div class="plan" id="plan">
+        <div class="pttl">施 工 図</div>
+        <div class="planart" id="planart"></div>
+        <div class="slots" id="slots"></div>
+        <div id="plan-extra"></div>
+      </div>
+      <div class="tray">
+        <h3>資 材</h3>
+        <div class="list" id="tray"></div>
+      </div>
+    </div>
+    <div class="bfoot"><div class="say" id="b-say"></div></div>
+    <div id="comply" class="hide">
+      <h2>安 全 対 策 審 議</h2>
+      <div class="lead" id="comply-lead"></div>
+      <div class="opts" id="comply-opts"></div>
+      <button class="btn plain fin" id="btn-comply">施工を完了する</button>
+      <div class="tiny">※ 対策を採用するほど安全になり、地獄らしさは低下する</div>
+    </div>
+  </section>
+
+  <!-- ===== FINAL ===== -->
+  <section class="scene" id="sc-final">
+    <div class="bhead"><div class="code">FINAL STAGE</div><div class="ttl">総 合 地 獄 ― TOTAL INFERNO</div></div>
+    <div class="fwrap">
+      <div class="fstat">
+        <span class="cell">亡者 <b class="kv" id="f-souls">0</b> / <span class="kv" id="f-goal">0</span></span>
+        <span class="cell">残り <b class="kv" id="f-time">0</b>s</span>
+        <span class="cell dmg">損壊 <b class="kv" id="f-dmg">0</b> / <span id="f-dmgmax">5</span></span>
+      </div>
+      <div class="grid" id="fgrid"></div>
+      <div class="fsay" id="f-say">故障個所をタップして修理せよ。</div>
+    </div>
+  </section>
+
+  <!-- ===== END ===== -->
+  <section class="scene" id="sc-end"><div id="end-inner"></div><div id="end-hint" class="hide">▼ S C R O L L ▼</div></section>
+
+  <!-- ===== GAME OVER ===== -->
+  <section class="scene" id="sc-over">
+    <div class="cr">地 獄 崩 壊</div>
+    <div class="q" id="over-q"></div>
+    <button class="btn" id="btn-retry">RETRY</button>
+    <div class="tiny" style="margin-top:1.2em">ホームセンターは午後8時まで営業している。</div>
+  </section>
+
+  <div id="hud" class="hide"></div>
+  <div id="vig"></div><div id="grain"></div><div id="flash"></div><div id="black"></div>
+  <div id="mute">♪ ON</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ============================================================
+   0. utility
+   ============================================================ */
+const $=(s)=>document.querySelector(s), $$=(s)=>Array.prototype.slice.call(document.querySelectorAll(s));
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const yen=(n)=>'￥'+Math.round(n).toLocaleString('en-US');
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const pick=(a)=>a[Math.floor(Math.random()*a.length)];
+let timers=[];
+function later(fn,ms){const t=setTimeout(fn,ms);timers.push(t);return t;}
+function clearLater(){timers.forEach(clearTimeout);timers=[];}
+
+/* ============================================================
+   1. AUDIO ― Web Audio API による合成音のみ
+   ============================================================ */
+const A={ctx:null,on:true,master:null,loop:null,loopName:null,drone:null,scream:null,screamGain:null};
+function ac(){
+  if(!A.ctx){
+    try{ A.ctx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return null; }
+    A.master=A.ctx.createGain(); A.master.gain.value=0.85; A.master.connect(A.ctx.destination);
+  }
+  if(A.ctx.state==='suspended') A.ctx.resume();
+  return A.ctx;
+}
+function noiseBuf(sec){
+  const c=ac(); const n=Math.max(1,Math.floor(c.sampleRate*sec));
+  const b=c.createBuffer(1,n,c.sampleRate); const d=b.getChannelData(0);
+  for(let i=0;i<n;i++) d[i]=Math.random()*2-1;
+  return b;
+}
+/* 汎用トーン */
+function tone(o){
+  const c=ac(); if(!c||!A.on) return;
+  const t=c.currentTime+(o.at||0), d=o.d||.3, g0=o.g==null?.12:o.g;
+  const os=c.createOscillator(), gn=c.createGain();
+  os.type=o.type||'triangle';
+  os.frequency.setValueAtTime(o.f,t);
+  if(o.f2) os.frequency.exponentialRampToValueAtTime(Math.max(20,o.f2),t+d);
+  if(o.det) os.detune.value=o.det;
+  let node=os;
+  if(o.filt){ const bf=c.createBiquadFilter(); bf.type=o.filt; bf.frequency.value=o.fc||900; bf.Q.value=o.q||1; os.connect(bf); node=bf; }
+  gn.gain.setValueAtTime(.0001,t);
+  gn.gain.exponentialRampToValueAtTime(Math.max(.0002,g0),t+(o.atk||.012));
+  gn.gain.exponentialRampToValueAtTime(.0001,t+d);
+  node.connect(gn); gn.connect(A.master);
+  os.start(t); os.stop(t+d+.06);
+}
+function noise(o){
+  const c=ac(); if(!c||!A.on) return;
+  const t=c.currentTime+(o.at||0), d=o.d||.2;
+  const s=c.createBufferSource(); s.buffer=noiseBuf(d+.05);
+  const bf=c.createBiquadFilter(); bf.type=o.filt||'bandpass'; bf.frequency.setValueAtTime(o.fc||1200,t);
+  if(o.fc2) bf.frequency.exponentialRampToValueAtTime(Math.max(60,o.fc2),t+d);
+  bf.Q.value=o.q||1;
+  const gn=c.createGain();
+  gn.gain.setValueAtTime(.0001,t);
+  gn.gain.exponentialRampToValueAtTime(Math.max(.0002,o.g==null?.15:o.g),t+(o.atk||.006));
+  gn.gain.exponentialRampToValueAtTime(.0001,t+d);
+  s.connect(bf); bf.connect(gn); gn.connect(A.master); s.start(t); s.stop(t+d+.05);
+}
+/* --- SE --- */
+const SE={
+  dunn(){ // 重厚な一撃（新兵器登場）
+    tone({f:70,f2:34,d:1.9,type:'sine',g:.5,atk:.006});
+    tone({f:104,f2:52,d:1.4,type:'triangle',g:.22});
+    noise({fc:2600,fc2:200,d:1.6,g:.16,filt:'lowpass',q:.7});
+    tone({f:196,d:1.6,type:'sawtooth',g:.06,filt:'lowpass',fc:600});
+  },
+  gong(){ [1,1.48,2.03,2.61,3.4].forEach((m,i)=>tone({f:58*m,d:3.4-i*.3,type:'sine',g:.12/(i*.6+1),at:i*.008}));
+    noise({fc:900,fc2:120,d:2.6,g:.1,filt:'bandpass',q:.6}); },
+  drum(g){ tone({f:120,f2:44,d:.55,type:'sine',g:g||.34}); noise({fc:220,d:.2,g:(g||.34)*.35,filt:'lowpass'}); },
+  snare(g){ noise({fc:1900,d:.13,g:g||.13,q:.8}); },
+  cym(){ noise({fc:7000,d:1.1,g:.07,filt:'highpass',q:.4}); },
+  ooh(){ // 部下の雄叫び
+    const c=ac(); if(!c||!A.on) return;
+    [82,110,164,220].forEach((f,i)=>{ tone({f:f*.99,f2:f*1.06,d:1.7,type:'sawtooth',g:.075,filt:'lowpass',fc:1100,at:i*.03});
+      tone({f:f*1.01,f2:f*1.04,d:1.7,type:'square',g:.03,filt:'lowpass',fc:800,at:i*.05}); });
+    noise({fc:700,d:1.5,g:.09,q:.5});
+  },
+  click(){ tone({f:880,d:.07,type:'square',g:.05}); },
+  ok(){ tone({f:523,d:.14,type:'triangle',g:.1}); tone({f:784,d:.26,type:'triangle',g:.09,at:.09}); },
+  ng(){ tone({f:180,f2:90,d:.3,type:'sawtooth',g:.12,filt:'lowpass',fc:700}); },
+  drill(){ // インパクトドライバー
+    const c=ac(); if(!c||!A.on) return;
+    for(let i=0;i<16;i++){ noise({fc:1400+Math.random()*900,d:.045,g:.09,q:2,at:i*.045}); tone({f:150,d:.04,type:'square',g:.05,at:i*.045}); }
+  },
+  saw(){ noise({fc:2200,fc2:900,d:.9,g:.11,q:1.4}); },
+  water(){ noise({fc:900,fc2:2400,d:1.6,g:.07,filt:'bandpass',q:.7}); },
+  spark(){ noise({fc:5200,d:.28,g:.16,filt:'highpass',q:.5}); tone({f:2400,f2:300,d:.2,type:'square',g:.05}); },
+  breaker(){ tone({f:300,f2:40,d:.6,type:'square',g:.16}); noise({fc:400,d:.5,g:.1,filt:'lowpass'}); },
+  regi(){ tone({f:1318,d:.1,type:'sine',g:.1}); tone({f:1760,d:.22,type:'sine',g:.09,at:.1}); },
+  crack(){ noise({fc:2400,fc2:400,d:.5,g:.2,q:1.2}); tone({f:220,f2:60,d:.4,type:'square',g:.1}); },
+  scream(vol,dur){ // 悲鳴（合成）
+    const c=ac(); if(!c||!A.on) return;
+    const t=c.currentTime, d=dur||1.5, v=(vol==null?.2:vol);
+    const o1=c.createOscillator(), o2=c.createOscillator(), gn=c.createGain(), bf=c.createBiquadFilter();
+    o1.type='sawtooth'; o2.type='square';
+    o1.frequency.setValueAtTime(420,t); o1.frequency.linearRampToValueAtTime(880,t+d*.25);
+    o1.frequency.linearRampToValueAtTime(300,t+d);
+    o2.frequency.setValueAtTime(424,t); o2.frequency.linearRampToValueAtTime(892,t+d*.25);
+    o2.frequency.linearRampToValueAtTime(302,t+d);
+    const lfo=c.createOscillator(), lg=c.createGain(); lfo.frequency.value=11; lg.gain.value=26;
+    lfo.connect(lg); lg.connect(o1.frequency); lg.connect(o2.frequency);
+    bf.type='bandpass'; bf.frequency.value=1200; bf.Q.value=.8;
+    gn.gain.setValueAtTime(.0001,t); gn.gain.exponentialRampToValueAtTime(Math.max(.0002,v),t+.08);
+    gn.gain.setValueAtTime(Math.max(.0002,v),t+d*.6); gn.gain.exponentialRampToValueAtTime(.0001,t+d);
+    o1.connect(bf); o2.connect(bf); bf.connect(gn); gn.connect(A.master);
+    o1.start(t); o2.start(t); lfo.start(t); o1.stop(t+d+.05); o2.stop(t+d+.05); lfo.stop(t+d+.05);
+    noise({fc:2000,d:d*.7,g:v*.25,q:.7});
+  },
+  pop(){ tone({f:1046,d:.09,type:'sine',g:.08}); }
+};
+/* --- BGM --- */
+function stopLoop(){ if(A.loop){clearTimeout(A.loop);A.loop=null;} A.loopName=null; stopDrone(); }
+function droneStart(freqs,g){
+  const c=ac(); if(!c||!A.on||A.drone) return;
+  const out=c.createGain(); out.gain.value=0; out.connect(A.master);
+  const oss=freqs.map((f,i)=>{ const o=c.createOscillator(); o.type=i%2?'sine':'sawtooth'; o.frequency.value=f;
+    const gg=c.createGain(); gg.gain.value=(i%2?.5:.2)/freqs.length; o.connect(gg); gg.connect(out); o.start(); return o; });
+  const lp=c.createBiquadFilter();
+  out.gain.setTargetAtTime(g||.16,c.currentTime,1.2);
+  A.drone={out:out,oss:oss};
+}
+function stopDrone(){ if(!A.drone) return; const c=A.ctx, d=A.drone; A.drone=null;
+  try{ d.out.gain.setTargetAtTime(.0001,c.currentTime,.4);
+    setTimeout(()=>{d.oss.forEach(o=>{try{o.stop();}catch(e){}});},1400);}catch(e){} }
+const BGM={
+  /* 重厚な軍楽＋パイプオルガン */
+  hell(){
+    if(A.loopName==='hell') return; stopLoop(); A.loopName='hell';
+    droneStart([55,82.4,110,164.8],.13);
+    const B=520; let bar=0;
+    const step=()=>{
+      if(A.loopName!=='hell') return;
+      const root=[110,110,98,116.5][bar%4];
+      for(let i=0;i<4;i++){
+        const t=i*B/1000;
+        if(i===0||i===2) SE.drum(i===0?.3:.18);
+        if(i===3) SE.snare(.07);
+        tone({f:root,d:.5,type:'sawtooth',g:.055,filt:'lowpass',fc:700,at:t});
+        tone({f:root*1.5,d:.5,type:'sawtooth',g:.035,filt:'lowpass',fc:900,at:t});
+        tone({f:root*(i%2?2.4:2),d:.42,type:'triangle',g:.03,at:t+.12});
+      }
+      bar++;
+      A.loop=setTimeout(step,B*4);
+    }; step();
+  },
+  /* 妙に平和な店内BGM */
+  store(){
+    if(A.loopName==='store') return; stopLoop(); A.loopName='store';
+    const B=260, MEL=[659,784,880,784,659,587,523,587,659,784,659,587,523,494,523,0];
+    let i=0;
+    const step=()=>{
+      if(A.loopName!=='store') return;
+      const f=MEL[i%MEL.length];
+      if(f){ tone({f:f,d:.34,type:'sine',g:.075}); tone({f:f*2,d:.18,type:'sine',g:.028}); }
+      if(i%4===0){ const b=[131,147,110,123.5][(Math.floor(i/4))%4]; tone({f:b,d:.7,type:'triangle',g:.06}); }
+      if(i%2===0) noise({fc:6000,d:.05,g:.012,filt:'highpass'});
+      i++; A.loop=setTimeout(step,B);
+    }; step();
+  },
+  /* 施工中の行進曲 */
+  march(){
+    if(A.loopName==='march') return; stopLoop(); A.loopName='march';
+    const B=300; let i=0;
+    const step=()=>{
+      if(A.loopName!=='march') return;
+      const bar=Math.floor(i/4)%4, beat=i%4;
+      if(beat===0) SE.drum(.24); if(beat===2) SE.drum(.14);
+      if(beat===1||beat===3) SE.snare(.055);
+      const root=[110,110,123.5,98][bar];
+      if(beat===0||beat===2){ tone({f:root,d:.3,type:'sawtooth',g:.05,filt:'lowpass',fc:600});
+        tone({f:root*1.5,d:.28,type:'sawtooth',g:.03,filt:'lowpass',fc:800}); }
+      i++; A.loop=setTimeout(step,B);
+    }; step();
+  },
+  /* 終盤 */
+  fever(){
+    if(A.loopName==='fever') return; stopLoop(); A.loopName='fever';
+    droneStart([55,58.3,110],.1);
+    const B=200; let i=0;
+    const step=()=>{
+      if(A.loopName!=='fever') return;
+      const beat=i%8;
+      if(beat%2===0) SE.drum(.2); if(beat===3||beat===7) SE.snare(.07);
+      const seq=[110,110,131,110,147,110,165,155];
+      tone({f:seq[beat],d:.19,type:'sawtooth',g:.05,filt:'lowpass',fc:900});
+      if(beat===0) tone({f:440,d:.5,type:'triangle',g:.03});
+      i++; A.loop=setTimeout(step,B);
+    }; step();
+  },
+  audit(){
+    if(A.loopName==='audit') return; stopLoop(); A.loopName='audit';
+    droneStart([41.2,55,61.7,82.4],.17);
+    let i=0;
+    const step=()=>{ if(A.loopName!=='audit') return;
+      if(i%2===0) tone({f:i%4===0?49:55,d:2.6,type:'sine',g:.09});
+      i++; A.loop=setTimeout(step,1600); }; step();
+  },
+  end(){
+    if(A.loopName==='end') return; stopLoop(); A.loopName='end';
+    droneStart([110,164.8,220],.09);
+    const MEL=[220,261,329,392,329,261,220,196];
+    let i=0;
+    const step=()=>{ if(A.loopName!=='end') return;
+      tone({f:MEL[i%MEL.length],d:.9,type:'triangle',g:.055});
+      tone({f:MEL[i%MEL.length]/2,d:.9,type:'sine',g:.04});
+      i++; A.loop=setTimeout(step,700); }; step();
+  },
+  silence(){ stopLoop(); }
+};
+$('#mute').addEventListener('click',function(e){
+  e.stopPropagation(); A.on=!A.on; this.textContent=A.on?'♪ ON':'♪ OFF';
+  if(!A.on){ const n=A.loopName; stopLoop(); A._resume=n; }
+  else if(A._resume&&BGM[A._resume]){ BGM[A._resume](); A._resume=null; }
+});
+
+/* ============================================================
+   2. ART ― すべて SVG で描画（外部素材なし）
+   ============================================================ */
+const SITEBASE='<rect width="400" height="220" fill="#0a0709"/>'+
+  '<rect y="170" width="400" height="50" fill="#14100f"/>'+
+  '<ellipse cx="200" cy="176" rx="170" ry="30" fill="rgba(179,18,27,.18)"/>';
+const SVG=(inner,vb)=>'<svg viewBox="'+(vb||'0 0 40 34')+'" xmlns="http://www.w3.org/2000/svg">'+inner+'</svg>';
+
+/* --- 資材アイコン --- */
+const ICON={
+  plywood:'<g><path d="M3 9h34v18H3z" fill="#c99a5b" stroke="#8a6434"/><path d="M3 13h34M3 19h34M3 24h34" stroke="#b0813f" stroke-width=".7"/><path d="M3 9l34 0-3 3H6z" fill="#dfb478"/></g>',
+  turf:'<g><rect x="4" y="12" width="32" height="14" fill="#2e7d32" stroke="#1b5e20"/><g stroke="#4caf50" stroke-width="1.2">'+
+    [0,1,2,3,4,5,6,7,8,9].map(i=>'<path d="M'+(6+i*3)+' 26v-9"/>').join('')+'</g></g>',
+  stake:'<g><rect x="18" y="3" width="4" height="28" rx="1" fill="#3c6e3c" stroke="#204520"/><path d="M20 3l2 3h-4z" fill="#8a8a8a"/><rect x="9" y="14" width="22" height="2.4" fill="#3c6e3c" stroke="#204520"/></g>',
+  screw:'<g><path d="M20 4l3 4h-6z" fill="#9e9e9e"/><rect x="18.4" y="7" width="3.2" height="22" fill="#bdbdbd" stroke="#7c7c7c" stroke-width=".5"/><g stroke="#7c7c7c" stroke-width=".8">'+
+    [0,1,2,3,4,5,6].map(i=>'<path d="M18.4 '+(10+i*2.6)+'l3.2 1.4"/>').join('')+'</g><path d="M20 29l1.6-2h-3.2z" fill="#9e9e9e"/></g>',
+  pool:'<g><ellipse cx="20" cy="20" rx="16" ry="9" fill="#2196f3" stroke="#0d5aa7"/><ellipse cx="20" cy="17" rx="16" ry="9" fill="#64b5f6" stroke="#0d5aa7"/><ellipse cx="20" cy="17" rx="11" ry="5.6" fill="#bbdefb"/></g>',
+  dye:'<g><rect x="13" y="10" width="14" height="18" rx="2" fill="#c62828" stroke="#7f1414"/><rect x="17" y="5" width="6" height="5" fill="#8d1a1a"/><rect x="14.5" y="15" width="11" height="7" fill="#fff" opacity=".85"/><text x="20" y="21" font-size="5" text-anchor="middle" fill="#c62828" font-family="sans-serif">RED</text></g>',
+  pump:'<g><rect x="8" y="13" width="16" height="12" rx="2" fill="#455a64" stroke="#243238"/><circle cx="16" cy="19" r="3.6" fill="#90a4ae"/><path d="M24 16h8v3h-8z" fill="#78909c"/><path d="M8 25h16v3H8z" fill="#37474f"/></g>',
+  hose:'<g><path d="M6 27c0-10 9-14 14-9s10 3 12-3" stroke="#2e7d32" stroke-width="4" fill="none" stroke-linecap="round"/><rect x="30" y="10" width="6" height="4" rx="1" fill="#ffb300"/></g>',
+  heater:'<g><rect x="9" y="7" width="22" height="21" rx="2" fill="#eceff1" stroke="#90a4ae"/><rect x="12" y="10" width="16" height="10" fill="#37474f"/><g stroke="#ff5722" stroke-width="1.6">'+
+    [0,1,2,3].map(i=>'<path d="M13 '+(12+i*2.4)+'h14"/>').join('')+'</g><rect x="12" y="23" width="7" height="2.4" fill="#b0bec5"/></g>',
+  fan:'<g><circle cx="20" cy="17" r="11" fill="#eceff1" stroke="#90a4ae"/><g fill="#90a4ae"><path d="M20 17c0-6 3-8 6-6s0 8-6 6z"/><path d="M20 17c5 3 5 7 2 8s-6-4-2-8z"/><path d="M20 17c-5 3-9 1-8-2s6-2 8 2z"/></g><circle cx="20" cy="17" r="2.2" fill="#546e7a"/></g>',
+  led:'<g><rect x="4" y="14" width="32" height="6" rx="3" fill="#37474f" stroke="#1b262b"/><g fill="#ff1744">'+
+    [0,1,2,3,4,5].map(i=>'<circle cx="'+(7+i*5.4)+'" cy="17" r="1.9"/>').join('')+'</g><path d="M4 17h32" stroke="#ff5252" stroke-width=".6" opacity=".5"/></g>',
+  speaker:'<g><rect x="11" y="6" width="18" height="23" rx="3" fill="#263238" stroke="#0f171a"/><circle cx="20" cy="18" r="6" fill="#455a64" stroke="#0f171a"/><circle cx="20" cy="18" r="2.4" fill="#90a4ae"/><circle cx="20" cy="10" r="1.4" fill="#2196f3"/></g>',
+  tablet:'<g><rect x="9" y="5" width="22" height="25" rx="2.5" fill="#212121" stroke="#000"/><rect x="11" y="8" width="18" height="18" fill="#3949ab"/><circle cx="20" cy="28" r="1.1" fill="#757575"/></g>',
+  battery:'<g><rect x="8" y="12" width="24" height="12" rx="2" fill="#212121" stroke="#000"/><rect x="10.5" y="15" width="14" height="6" fill="#4caf50"/><path d="M32 16h2v4h-2z" fill="#757575"/></g>',
+  band:'<g><rect x="8" y="8" width="24" height="20" rx="2" fill="#e0e0e0" stroke="#9e9e9e"/><g stroke="#fff" stroke-width="2">'+
+    [0,1,2,3].map(i=>'<path d="M'+(11+i*5.5)+' 10v16"/>').join('')+'</g><rect x="8" y="15" width="24" height="5" fill="#ffd400" opacity=".9"/><text x="20" y="19.2" font-size="4" text-anchor="middle" fill="#7a5c00" font-family="sans-serif">200</text></g>',
+  cord:'<g><rect x="6" y="14" width="15" height="7" rx="1.5" fill="#fafafa" stroke="#9e9e9e"/><g fill="#616161">'+
+    [0,1,2].map(i=>'<rect x="'+(8.4+i*4.4)+'" y="16" width="2.6" height="3" rx=".4"/>').join('')+'</g><path d="M21 17.5c6 0 6-6 12-6" stroke="#eee" stroke-width="2" fill="none"/></g>',
+  paint:'<g><rect x="11" y="10" width="18" height="18" rx="1.5" fill="#d32f2f" stroke="#7f1414"/><path d="M11 10h18l-2-3H13z" fill="#b71c1c"/><path d="M13 14h14v4H13z" fill="#fff" opacity=".8"/><path d="M9 28c4 2 18 2 22 0" stroke="#b71c1c" stroke-width="2" fill="none"/></g>',
+  lumber:'<g><path d="M5 12h30v9H5z" fill="#d8b072" stroke="#8a6434"/><path d="M35 12l-4-3H1l4 3z" fill="#e8c896" stroke="#8a6434"/><path d="M5 21l-4 3h30l4-3z" fill="#b58c50" stroke="#8a6434"/></g>',
+  extinguisher:'<g><rect x="15" y="9" width="10" height="19" rx="3" fill="#d32f2f" stroke="#7f1414"/><rect x="18" y="5" width="4" height="4" fill="#616161"/><path d="M22 7h6v2h-6z" fill="#424242"/><rect x="16" y="15" width="8" height="6" fill="#fff" opacity=".85"/></g>',
+  net:'<g><rect x="6" y="8" width="28" height="20" fill="none" stroke="#8d6e63"/><g stroke="#a1887f" stroke-width=".8">'+
+    [1,2,3,4,5].map(i=>'<path d="M'+(6+i*4.6)+' 8v20"/>').join('')+[1,2,3].map(i=>'<path d="M6 '+(8+i*5)+'h28"/>').join('')+'</g></g>',
+  mat:'<g><path d="M4 22l16-8 16 8-16 8z" fill="#37474f" stroke="#1b262b"/><g stroke="#90a4ae" stroke-width=".8">'+
+    [0,1,2,3].map(i=>'<path d="M'+(9+i*5)+' '+(24.5-i*0)+'l8-4"/>').join('')+'</g></g>',
+  light:'<g><rect x="7" y="12" width="26" height="10" rx="1.5" fill="#1b5e20" stroke="#0b2d0f"/><path d="M12 17h6l-2-3v6l2-3" fill="#fff"/><rect x="21" y="14" width="9" height="6" fill="#66bb6a"/></g>',
+  meter:'<g><rect x="10" y="6" width="20" height="24" rx="2" fill="#263238" stroke="#000"/><rect x="12.5" y="9" width="15" height="8" fill="#8bc34a"/><text x="20" y="15.5" font-size="6" text-anchor="middle" fill="#1b3a05" font-family="sans-serif">dB</text><g fill="#546e7a">'+
+    [0,1,2].map(i=>'<rect x="'+(13+i*5)+'" y="20" width="3.6" height="3.6" rx=".6"/>').join('')+'</g></g>',
+  foam:'<g><rect x="5" y="11" width="30" height="13" rx="1" fill="#cfd8dc" stroke="#90a4ae"/><g fill="#b0bec5">'+
+    [0,1,2,3,4].map(i=>'<circle cx="'+(9+i*5.6)+'" cy="17.5" r="2.2"/>').join('')+'</g><rect x="5" y="11" width="30" height="3" fill="#ff8a65" opacity=".7"/></g>',
+  breakerbox:'<g><rect x="9" y="6" width="22" height="23" rx="1.5" fill="#eceff1" stroke="#90a4ae"/><g fill="#424242">'+
+    [0,1,2].map(i=>'<rect x="'+(12+i*6)+'" y="10" width="4" height="7" rx="1"/>').join('')+'</g><rect x="12" y="21" width="16" height="5" fill="#b0bec5"/></g>',
+  bucket:'<g><path d="M10 12h20l-3 16H13z" fill="#607d8b" stroke="#37474f"/><path d="M10 12c0-3 20-3 20 0" fill="none" stroke="#37474f"/><path d="M12 10c4-6 12-6 16 0" fill="none" stroke="#90a4ae" stroke-width="1.4"/></g>',
+  wave:'<g><rect x="4" y="8" width="32" height="20" rx="2" fill="#1a1f24" stroke="#0b0f12"/>'+
+    '<g stroke="#ff5252" stroke-width="1.6">'+[0,1,2,3,4,5,6,7,8].map(function(i){
+      var h=[4,9,5,12,7,13,6,10,4][i];return '<path d="M'+(8+i*3)+' '+(18-h/2)+'v'+h+'"/>';}).join('')+'</g></g>',
+  ghosticon:'<g><path d="M20 6c6 0 9 5 9 11v13l-3-3-3 3-3-3-3 3-3-3-3 3V17c0-6 3-11 9-11z" fill="#cfd8dc" opacity=".9"/><circle cx="17" cy="16" r="1.6" fill="#333"/><circle cx="23" cy="16" r="1.6" fill="#333"/></g>'
+};
+function icon(k){ return SVG(ICON[k]||ICON.plywood); }
+
+/* --- 人物・情景 --- */
+function svgCommander(scale){
+  return '<g transform="translate(0,'+(scale||0)+')">'+
+  /* 影 */'<ellipse cx="100" cy="176" rx="46" ry="7" fill="#000" opacity=".5"/>'+
+  /* 体（軍服・小太り） */
+  '<path d="M56 176c0-30 8-52 24-58l40 0c16 6 24 28 24 58z" fill="#1c2126" stroke="#0a0d10"/>'+
+  '<path d="M84 118c6 8 26 8 32 0l6 4-14 54h-16L78 122z" fill="#12161a"/>'+
+  '<path d="M100 124l0 52" stroke="#3b444c" stroke-width="1.5"/>'+
+  '<g fill="#c9a227">'+[0,1,2,3].map(i=>'<circle cx="100" cy="'+(134+i*11)+'" r="2.4"/>').join('')+'</g>'+
+  /* 肩章 */
+  '<path d="M62 126h20l2 7H62z" fill="#8a1216"/><path d="M138 126h-20l-2 7h22z" fill="#8a1216"/>'+
+  /* 腕 */
+  '<path d="M60 128c-8 12-10 30-8 44l12 2c0-16 2-30 8-40z" fill="#171b20"/>'+
+  '<path d="M140 128c8 12 10 30 8 44l-12 2c0-16-2-30-8-40z" fill="#171b20"/>'+
+  /* 首 */'<rect x="92" y="104" width="16" height="14" fill="#d8a184"/>'+
+  /* 頭（丸顔） */
+  '<ellipse cx="100" cy="84" rx="30" ry="28" fill="#e8b696"/>'+
+  '<path d="M74 92c4 10 14 16 26 16s22-6 26-16c0 0-4 20-26 20s-26-20-26-20z" fill="#dda588" opacity=".7"/>'+
+  /* 眼鏡 */
+  '<g stroke="#151a1f" stroke-width="2.6" fill="rgba(190,220,255,.22)">'+
+  '<rect x="76" y="74" width="20" height="15" rx="3"/><rect x="104" y="74" width="20" height="15" rx="3"/>'+
+  '<path d="M96 81h8" fill="none"/><path d="M76 79l-9-3M124 79l9-3" fill="none"/></g>'+
+  '<path d="M78 76l16 10" stroke="#fff" stroke-width="2.4" opacity=".55"/>'+
+  '<path d="M106 76l16 10" stroke="#fff" stroke-width="2.4" opacity=".55"/>'+
+  /* 常に笑っているような口 */
+  '<path d="M88 98c5 5 19 5 24 0" stroke="#8d5a44" stroke-width="2.4" fill="none" stroke-linecap="round"/>'+
+  /* 軍帽 */
+  '<path d="M68 66c2-16 12-24 32-24s30 8 32 24z" fill="#12161a"/>'+
+  '<rect x="64" y="64" width="72" height="9" rx="2" fill="#0a0d10"/>'+
+  '<path d="M62 73h76l6 6H56z" fill="#05080a"/>'+
+  '<path d="M92 50h16v10H92z" fill="#8a1216"/><circle cx="100" cy="55" r="3" fill="#c9a227"/>'+
+  '</g>';
+}
+function svgSoldier(x,h,f){
+  return '<g transform="translate('+x+',0)" fill="'+(f||'#0c0f13')+'">'+
+    '<ellipse cx="0" cy="'+h+'" rx="16" ry="4" fill="#000" opacity=".45"/>'+
+    '<path d="M-14 '+h+'c0-'+(h*.32)+' 4-'+(h*.42)+' 14-'+(h*.44)+'s14 '+(h*.12)+' 14 '+(h*.44)+'z"/>'+
+    '<circle cx="0" cy="'+(h-h*.5)+'" r="'+(h*.115)+'"/>'+
+    '<path d="M'+(-h*.14)+' '+(h-h*.56)+'a'+(h*.14)+' '+(h*.1)+' 0 0 1 '+(h*.28)+' 0z"/>'+
+    '<path d="M'+(-h*.17)+' '+(h-h*.55)+'h'+(h*.34)+'v'+(h*.03)+'h-'+(h*.34)+'z"/>'+
+    '</g>';
+}
+const ART={
+  crest(){ return SVG(
+    '<g fill="none" stroke="#b3121b" stroke-width="3">'+
+    '<path d="M60 8l44 18v34c0 30-20 46-44 54C36 106 16 90 16 60V26z"/></g>'+
+    '<path d="M60 14l38 15v31c0 26-17 40-38 47-21-7-38-21-38-47V29z" fill="rgba(179,18,27,.12)"/>'+
+    '<g stroke="#e8e2d4" stroke-width="3" stroke-linecap="round">'+
+    '<path d="M40 44h40M40 58h40M40 72h28"/></g>'+
+    '<path d="M84 66l10 10-10 10-4-6 4-4-4-4z" fill="#c9a227"/>','0 0 120 120'); },
+  formation(){
+    let s='<rect width="400" height="220" fill="#05070a"/>'+
+      '<ellipse cx="200" cy="60" rx="150" ry="60" fill="rgba(179,18,27,.13)"/>'+
+      /* 柱 */'<g fill="#0a0d12">'+
+      '<path d="M10 0h34v220H10z"/><path d="M356 0h34v220H356z"/></g>'+
+      '<g fill="#111721" opacity=".8"><path d="M46 0h20v220H46z"/><path d="M334 0h20v220H334z"/></g>';
+    const rows=[[150,.55],[175,.75],[200,1]];
+    rows.forEach(function(r,ri){
+      const y=r[0], sc=r[1];
+      for(let i=0;i<9;i++){
+        const x=44+i*39+(ri%2)*10;
+        s+='<g transform="translate('+x+','+(y-118*sc)+') scale('+sc+')">'+svgSoldier(0,118,ri===2?'#05070a':'#0b0f15')+'</g>';
+      }
+    });
+    return SVG(s,'0 0 400 220');
+  },
+  podium(){
+    return SVG('<rect width="400" height="220" fill="#05070a"/>'+
+      '<ellipse cx="200" cy="120" rx="120" ry="100" fill="rgba(179,18,27,.16)"/>'+
+      '<g opacity=".6" transform="translate(0,96)">'+svgSoldier(56,90,'#080b0f')+svgSoldier(344,90,'#080b0f')+'</g>'+
+      '<g transform="translate(100,7) scale(1)">'+svgCommander(0)+'</g>'+
+      '<path d="M40 190h320v30H40z" fill="#0a0d12"/>'+
+      '<path d="M120 190h160v10h-160z" fill="#8a1216" opacity=".6"/>','0 0 400 220');
+  },
+  glasses(){
+    return SVG('<rect width="400" height="220" fill="#05070a"/>'+
+      '<ellipse cx="200" cy="110" rx="220" ry="160" fill="rgba(179,18,27,.24)"/>'+
+      /* 顔（クローズアップ） */
+      '<ellipse cx="200" cy="168" rx="150" ry="132" fill="#e8b696"/>'+
+      /* 軍帽 */
+      '<path d="M46 30c14-34 56-50 154-50s140 16 154 50z" fill="#12161a"/>'+
+      '<rect x="34" y="26" width="332" height="24" rx="4" fill="#0a0d10"/>'+
+      '<path d="M28 50h344l28 20H0z" fill="#05080a"/>'+
+      /* 眼鏡 */
+      '<g stroke="#151a1f" stroke-width="8" fill="rgba(190,220,255,.18)">'+
+      '<rect x="48" y="88" width="126" height="72" rx="13"/>'+
+      '<rect x="226" y="88" width="126" height="72" rx="13"/>'+
+      '<path d="M174 116h52" fill="none"/>'+
+      '<path d="M48 102L8 88M352 102l40-14" fill="none"/></g>'+
+      /* レンズの反射 */
+      '<path d="M58 152l92-58" stroke="#fff" stroke-width="15" opacity=".5"/>'+
+      '<path d="M236 152l92-58" stroke="#fff" stroke-width="15" opacity=".5"/>'+
+      '<path d="M92 156l38-24" stroke="#fff" stroke-width="6" opacity=".35"/>'+
+      '<path d="M270 156l38-24" stroke="#fff" stroke-width="6" opacity=".35"/>'+
+      /* 常に笑っているような口 */
+      '<path d="M158 196c14 12 70 12 84 0" stroke="#8d5a44" stroke-width="7" fill="none" stroke-linecap="round"/>','0 0 400 220');
+  },
+  store(){
+    let sh='';
+    for(let i=0;i<4;i++){
+      sh+='<g transform="translate('+(20+i*95)+',60)">'+
+        '<rect width="80" height="120" fill="#d9d5c8" stroke="#b3ae9d"/>'+
+        '<g fill="#bfb9a6">'+[0,1,2].map(k=>'<rect y="'+(30+k*30)+'" width="80" height="6"/>').join('')+'</g>'+
+        '<g fill="'+['#c98c3c','#4b7fb5','#8a8f95','#b45'][i]+'">'+
+        [0,1,2].map(k=>'<rect x="6" y="'+(10+k*30)+'" width="30" height="18" rx="2"/>').join('')+'</g>'+
+        '<g fill="#e0523a">'+[0,1,2].map(k=>'<rect x="42" y="'+(12+k*30)+'" width="30" height="14" rx="2"/>').join('')+'</g>'+
+        '<rect x="0" y="0" width="80" height="14" fill="#ffd400"/>'+
+        '<text x="40" y="11" font-size="9" text-anchor="middle" fill="#8a6a00" font-family="sans-serif">SALE</text></g>';
+    }
+    return SVG('<rect width="400" height="220" fill="#f2f3ee"/>'+
+      '<rect width="400" height="52" fill="#e9eae2"/>'+
+      '<g fill="#fff">'+[0,1,2,3].map(i=>'<rect x="'+(30+i*100)+'" y="8" width="60" height="10" rx="5"/>').join('')+'</g>'+
+      sh+'<rect y="180" width="400" height="40" fill="#cfd2c8"/>'+
+      /* カートを押す一団 */
+      '<g transform="translate(0,108)">'+svgSoldier(96,74,'#1c2126')+svgSoldier(186,74,'#1c2126')+'</g>'+
+      '<g transform="translate(78,70) scale(.62)">'+svgCommander(0)+'</g>'+
+      '<g stroke="#8d99a6" stroke-width="3" fill="none">'+
+        '<path d="M232 150h64l-8 28h-48z"/><path d="M296 150l9-13h11"/>'+
+        '<path d="M240 160h48"/></g>'+
+      '<circle cx="240" cy="182" r="4.5" fill="#555"/><circle cx="284" cy="182" r="4.5" fill="#555"/>','0 0 400 220');
+  },
+  site(kind){ return SVG(SITEBASE+(FACART[kind]?FACART[kind]():''),'0 0 400 220'); },
+  enma(){
+    return SVG('<rect width="400" height="220" fill="#0a0407"/>'+
+      '<ellipse cx="200" cy="130" rx="180" ry="120" fill="rgba(179,18,27,.22)"/>'+
+      '<g transform="translate(200,120)">'+
+      '<ellipse cx="0" cy="10" rx="96" ry="86" fill="#8e1b16"/>'+
+      '<path d="M-96 0c-6-40 20-76 96-76s102 36 96 76z" fill="#a52320"/>'+
+      /* 冠 */
+      '<path d="M-70-56h140v-22H-70z" fill="#151a20"/><path d="M-78-78h156l-8-14H-70z" fill="#0c1015"/>'+
+      '<text x="0" y="-60" font-size="20" text-anchor="middle" fill="#c9a227" font-family="serif">王</text>'+
+      /* 角 */
+      '<path d="M-86-58c-16-14-18-32-8-40 8 14 16 20 24 24z" fill="#e8dfc9"/>'+
+      '<path d="M86-58c16-14 18-32 8-40-8 14-16 20-24 24z" fill="#e8dfc9"/>'+
+      /* 眉 */
+      '<path d="M-70-16c14-14 34-14 46-2l-6 8c-10-8-24-8-34 2z" fill="#2b1410"/>'+
+      '<path d="M70-16c-14-14-34-14-46-2l6 8c10-8 24-8 34 2z" fill="#2b1410"/>'+
+      /* 目 */
+      '<ellipse cx="-40" cy="4" rx="17" ry="12" fill="#f7f2e2"/><circle cx="-38" cy="4" r="7" fill="#1a0d0a"/>'+
+      '<ellipse cx="40" cy="4" rx="17" ry="12" fill="#f7f2e2"/><circle cx="38" cy="4" r="7" fill="#1a0d0a"/>'+
+      /* 鼻・口・髭 */
+      '<path d="M0 10l10 22H-10z" fill="#7a1512"/>'+
+      '<path d="M-46 52c18 16 74 16 92 0-18 26-74 26-92 0z" fill="#2b0f0c"/>'+
+      '<g fill="#f7f2e2"><path d="M-30 52h12v10h-12zM18 52h12v10H18z"/></g>'+
+      '<path d="M-58 40c-10 30-6 54 4 62 6-24 18-40 30-48z" fill="#1a1a1a"/>'+
+      '<path d="M58 40c10 30 6 54-4 62-6-24-18-40-30-48z" fill="#1a1a1a"/>'+
+      '</g>','0 0 400 220');
+  },
+  ghost(x,s){ return '<g transform="translate('+x+',110) scale('+(s||1)+')">'+
+      '<path d="M0-40c14 0 21 12 21 26v34l-7-6-7 6-7-6-7 6-7-6-7 6V-14c0-14 7-26 21-26z" fill="#d7d2c6" opacity=".92"/>'+
+      '<circle cx="-7" cy="-16" r="3.6" fill="#20232a"/><circle cx="7" cy="-16" r="3.6" fill="#20232a"/>'+
+      '<path d="M-6 0c4 3 8 3 12 0" stroke="#20232a" stroke-width="2" fill="none" transform="scale(1,-1) translate(0,4)"/></g>'; },
+  magcover(){
+    return SVG('<rect width="200" height="120" fill="#2a1013"/>'+
+      '<ellipse cx="100" cy="110" rx="120" ry="40" fill="rgba(179,18,27,.5)"/>'+
+      '<g transform="translate(10,26) scale(.45)">'+FACART.needle(1)+'</g>'+
+      '<g transform="translate(110,40) scale(.34)">'+FACART.pond(1)+'</g>'+
+      '<g transform="translate(60,10) scale(.3)">'+FACART.heat(1)+'</g>'+
+      '<g transform="translate(150,4) scale(.3)">'+FACART.scream(1)+'</g>'+
+      '<g transform="translate(96,58) scale(.5)">'+svgCommander(0)+'</g>','0 0 200 120');
+  }
+};
+/* --- 設備アート --- */
+const FACART={
+  needle(broken){
+    let s='<g transform="translate(60,60)">'+
+      '<path d="M0 96l120-34 120 34-120 34z" fill="#7a5a33" opacity=".6"/>'+
+      '<path d="M20 92l100-28 100 28-100 26z" fill="#c99a5b" stroke="#8a6434"/>'+
+      '<path d="M28 88l92-24 92 24" fill="#2e7d32" opacity=".9"/>';
+    for(let i=0;i<14;i++){
+      const x=34+i*13.5, y=86-Math.abs(i-6.5)*2.6, h=34+((i*7)%13);
+      s+='<rect x="'+x+'" y="'+(y-h)+'" width="3.4" height="'+h+'" fill="#3c6e3c" stroke="#1e3d1e" stroke-width=".6"/>'+
+         '<path d="M'+(x+1.7)+' '+(y-h-4)+'l2.4 4h-4.8z" fill="#b0b7bd"/>';
+    }
+    if(broken===true){
+      s+='<g transform="translate(120,86) rotate(74)"><rect width="3.4" height="40" fill="#3c6e3c" stroke="#1e3d1e" stroke-width=".6"/></g>'+
+         '<path d="M118 84l10 3-2 3z" fill="#b0b7bd"/>';
+    }
+    return s+'</g>';
+  },
+  pond(){
+    return '<g transform="translate(90,80)">'+
+      '<ellipse cx="110" cy="60" rx="112" ry="46" fill="#1d4e8f"/>'+
+      '<ellipse cx="110" cy="52" rx="112" ry="46" fill="#3f8ed0"/>'+
+      '<ellipse cx="110" cy="52" rx="92" ry="35" fill="#7d0a10"/>'+
+      '<ellipse cx="110" cy="50" rx="86" ry="31" fill="#b3121b"/>'+
+      '<ellipse cx="86" cy="44" rx="26" ry="8" fill="#e0303a" opacity=".5"/>'+
+      '<path d="M198 40c26-6 30-22 16-30" stroke="#2e7d32" stroke-width="7" fill="none" stroke-linecap="round"/>'+
+      '<rect x="196" y="4" width="26" height="16" rx="3" fill="#455a64"/></g>';
+  },
+  heat(){
+    return '<g transform="translate(110,66)">'+
+      '<rect x="0" y="30" width="180" height="10" rx="2" fill="#37474f"/>'+
+      '<g fill="#ff1744">'+[0,1,2,3,4,5,6,7].map(i=>'<circle cx="'+(12+i*22)+'" cy="35" r="4"/>').join('')+'</g>'+
+      [0,1,2].map(i=>'<g transform="translate('+(6+i*62)+',46)">'+
+        '<rect width="48" height="46" rx="3" fill="#eceff1" stroke="#90a4ae"/>'+
+        '<rect x="6" y="7" width="36" height="22" fill="#37474f"/>'+
+        '<g stroke="#ff5722" stroke-width="3">'+[0,1,2,3].map(k=>'<path d="M9 '+(11+k*5.6)+'h30"/>').join('')+'</g></g>').join('')+
+      '<g opacity=".55" fill="#ff5722">'+[0,1,2,3,4].map(i=>'<ellipse cx="'+(20+i*38)+'" cy="20" rx="9" ry="16"/>').join('')+'</g></g>';
+  },
+  scream(){
+    return '<g transform="translate(130,58)">'+
+      [0,1].map(i=>'<g transform="translate('+(i*96)+',20)">'+
+        '<rect width="52" height="76" rx="6" fill="#263238" stroke="#0f171a"/>'+
+        '<circle cx="26" cy="40" r="17" fill="#455a64"/><circle cx="26" cy="40" r="6" fill="#90a4ae"/>'+
+        '<circle cx="26" cy="14" r="3" fill="#2196f3"/></g>').join('')+
+      '<g stroke="#ff2d2d" stroke-width="2.6" fill="none" opacity=".8">'+
+      [0,1,2].map(i=>'<path d="M'+(60+i*8)+' '+(40+i*2)+'a'+(14+i*10)+' '+(14+i*10)+' 0 0 1 0 '+(28+i*20)+'"/>').join('')+'</g>'+
+      '<g transform="translate(60,-2)"><rect width="34" height="46" rx="3" fill="#212121"/><rect x="3" y="4" width="28" height="36" fill="#3949ab"/></g></g>';
+  }
+};
+
+/* ============================================================
+   3. DATA ― 資材カタログ
+   ============================================================ */
+const MAT={
+  plywood:{n:'ベニヤ板',en:'PLYWOOD BOARD',sp:'910×1820×5.5mm',pr:1280,ic:'plywood'},
+  lumber:{n:'2×4材',en:'2 BY 4 LUMBER',sp:'38×89×1820mm',pr:698,ic:'lumber'},
+  turf:{n:'人工芝',en:'ARTIFICIAL TURF',sp:'1m×2m ロール',pr:2480,ic:'turf'},
+  stake:{n:'園芸用支柱',en:'GARDEN STAKE',sp:'φ11×1500mm 20本束',pr:1980,ic:'stake'},
+  screw:{n:'木ネジ',en:'WOOD SCREW',sp:'3.8×38mm 200本入',pr:880,ic:'screw'},
+  band:{n:'結束バンド',en:'CABLE TIE',sp:'200本入 耐候性',pr:498,ic:'band'},
+  pool:{n:'ビニールプール',en:'VINYL POOL',sp:'2.6m 3気室',pr:3980,ic:'pool'},
+  hose:{n:'散水ホース',en:'GARDEN HOSE',sp:'15m リール付',pr:2680,ic:'hose'},
+  dye:{n:'赤色着色剤',en:'CRIMSON DYE',sp:'食品用 500ml',pr:1180,ic:'dye'},
+  pump:{n:'循環ポンプ',en:'CIRCULATION PUMP',sp:'水中型 12W',pr:4280,ic:'pump',w:12},
+  heater:{n:'セラミックヒーター',en:'CERAMIC HEATER',sp:'1200W 3台セット',pr:8940,ic:'heater',w:1200},
+  fan:{n:'サーキュレーター',en:'AIR CIRCULATOR',sp:'DC静音 30W',pr:3480,ic:'fan',w:30},
+  led:{n:'赤色LEDテープ',en:'RED LED TAPE',sp:'5m 12V 高輝度',pr:1980,ic:'led',w:24},
+  cord:{n:'延長コード',en:'EXTENSION CORD',sp:'3口 5m 1500Wまで',pr:1280,ic:'cord'},
+  speaker:{n:'Bluetoothスピーカー',en:'BLUETOOTH SPEAKER',sp:'防水 20W ×2台',pr:5960,ic:'speaker',w:20},
+  tablet:{n:'中古タブレット',en:'USED TABLET',sp:'8インチ ジャンク品',pr:4980,ic:'tablet',w:10},
+  wav:{n:'悲鳴音源',en:'SCREAM SOURCE',sp:'著作権フリー 12種',pr:550,ic:'wave'},
+  battery:{n:'モバイルバッテリー',en:'POWER BANK',sp:'20000mAh',pr:2980,ic:'battery'},
+  paint:{n:'赤い塗料',en:'BLOOD RED PAINT',sp:'水性つや消し 2L',pr:2680,ic:'paint'},
+  bucket:{n:'バケツ',en:'BUCKET',sp:'12L 目盛付',pr:398,ic:'bucket'},
+  net:{n:'園芸ネット',en:'GARDEN NET',sp:'1.8m×5m',pr:780,ic:'net'},
+  matx:{n:'滑り止めマット',en:'ANTI-SLIP MAT',sp:'60×90cm',pr:1180,ic:'mat'},
+  foam:{n:'防炎シート',en:'FLAME RETARDANT SHEET',sp:'1.8m×3.4m 防炎ラベル付',pr:3480,ic:'foam'},
+  ext:{n:'消火器',en:'FIRE EXTINGUISHER',sp:'ABC粉末 3型',pr:3980,ic:'extinguisher'},
+  light:{n:'避難誘導灯',en:'EXIT LIGHT',sp:'LED 壁掛式',pr:4500,ic:'light'},
+  meter:{n:'騒音計',en:'SOUND LEVEL METER',sp:'30〜130dB',pr:3280,ic:'meter'},
+  breaker:{n:'分電盤',en:'BREAKER PANEL',sp:'増設用 20A',pr:6800,ic:'breakerbox'}
+};
+function matHTML(id,cls){
+  const m=MAT[id];
+  return '<div class="mat '+(cls||'')+'" data-mat="'+id+'">'+icon(m.ic)+
+    '<div class="t">'+m.n+'<small>'+m.sp+'</small></div></div>';
+}
+
+/* ============================================================
+   4. STAGES
+   ============================================================ */
+const STAGES=[
+{
+  code:'STAGE 1 ― PROJECT NEEDLE', ttl:'針 山 地 獄', en:'NEEDLE MOUNTAIN SYSTEM',
+  clock:'AM 09:03', kind:'needle',
+  memo:'目標：亡者が裸足で歩けぬ地形を構築せよ。<br>寸法は狂わせるな。',
+  need:['plywood','turf','stake','screw'],
+  extra:['lumber','band','bucket','net'],
+  slots:[
+    {role:'基 礎',hint:'平面をつくる板材',acc:'plywood',say:'<b>ベニヤを出せ。</b>寸法は狂わせるな。'},
+    {role:'表 層',hint:'地面を偽装する',acc:'turf',say:'表面は緑だ。緑の下に絶望を敷く。'},
+    {role:'針',hint:'鋭利な垂直材',acc:'stake',say:'園芸用品売り場は、我々の兵器廠である。'},
+    {role:'接 合',hint:'釘ではない',acc:'screw',say:'<b>釘ではない。ここは木ネジだ。</b>下穴を忘れるな。'}
+  ],
+  gain:{hell:16,pain:22,fear:8,dur:12,safety:-6},
+  comply:[
+    {n:'支柱の先端キャップ',pr:680,e:{safety:7,pain:-12}},
+    {n:'転落防止ネット',pr:780,e:{safety:6,hell:-8}},
+    {n:'手すり',pr:2800,e:{safety:5,hell:-8}},
+    {n:'床の滑り止めマット',pr:1180,e:{safety:5,pain:-10}}
+  ]
+},
+{
+  code:'STAGE 2 ― OPERATION CRIMSON POND', ttl:'血 の 池 地 獄', en:'CRIMSON POND',
+  clock:'AM 10:41', kind:'pond',
+  memo:'目標：赤い水面を確保せよ。<br>水は循環させろ。淀んだ地獄は不衛生だ。',
+  need:['pool','hose','dye','pump'],
+  extra:['paint','bucket','band','matx'],
+  slots:[
+    {role:'容 器',hint:'水を溜める構造物',acc:'pool',say:'空気を入れろ。三気室だ。<b>一気室ずつ、確実に。</b>'},
+    {role:'注 水',hint:'水源からの経路',acc:'hose',say:'水道は屋外栓から引く。許可は取ってある。'},
+    {role:'呈 色',hint:'血の色をつくる',acc:'dye',say:'<b>食品用だ。</b>万一飲んでも問題はない。'},
+    {role:'循 環',hint:'淀ませない機構',acc:'pump',say:'流れのない血は、ただの水たまりである。'}
+  ],
+  gain:{hell:18,pain:12,fear:16,dur:10,safety:-8},
+  comply:[
+    {n:'漏電遮断器',pr:2980,e:{safety:10,hell:-4}},
+    {n:'プールサイド滑り止め',pr:1180,e:{safety:6,pain:-10}},
+    {n:'水質管理（塩素剤）',pr:880,e:{safety:7,hell:-10}},
+    {n:'監視員（部下1名を常駐）',pr:0,e:{safety:6,hell:-6,fear:-6}}
+  ]
+},
+{
+  code:'STAGE 3 ― OPERATION INFERNO', ttl:'灼 熱 地 獄', en:'INFERNO CHAMBER',
+  clock:'PM 01:12', kind:'heat',
+  memo:'目標：室温を上げよ。<br>ただし契約アンペアは有限である。',
+  need:['heater','fan','led','cord'],
+  extra:['foam','ext','paint','band'],
+  slots:[
+    {role:'熱 源',hint:'熱を生む機器',acc:'heater',say:'温風ではない。<b>灼熱だ。</b>'},
+    {role:'送 風',hint:'熱を巡らせる',acc:'fan',say:'熱は動かねば意味がない。対流を設計せよ。'},
+    {role:'照 明',hint:'赤い光',acc:'led',say:'<b>赤色LEDは2700ケルビンではない。もっと赤くだ。</b>'},
+    {role:'電 源',hint:'電力の供給経路',acc:'cord',say:'……この判断が、後に響く。'}
+  ],
+  gain:{hell:15,pain:16,fear:12,dur:8,safety:-14},
+  comply:[
+    {n:'消火器',pr:3980,e:{safety:10,hell:-5}},
+    {n:'火災報知器',pr:2480,e:{safety:8,hell:-6}},
+    {n:'防炎シート',pr:3480,e:{safety:9,hell:-4}},
+    {n:'避難誘導灯',pr:4500,e:{safety:8,hell:-10}}
+  ]
+},
+{
+  code:'STAGE 4 ― ETERNAL SCREAM', ttl:'叫 喚 地 獄', en:'ETERNAL SCREAM SYSTEM',
+  clock:'PM 03:38', kind:'scream',
+  memo:'目標：絶叫を常時再生せよ。<br>近隣への配慮は各自の判断に委ねる。',
+  need:['speaker','tablet','wav','battery'],
+  extra:['band','meter','foam','cord'],
+  slots:[
+    {role:'放 音',hint:'音を出す機器',acc:'speaker',say:'防水を選べ。ここは血の池の隣だ。'},
+    {role:'再 生',hint:'音源を鳴らす端末',acc:'tablet',say:'中古で構わん。<b>地獄に新品は要らん。</b>'},
+    {role:'音 源',hint:'叫喚そのもの',acc:'wav',say:'<b>著作権は侵さん。</b>我々は法を守る組織である。'},
+    {role:'給 電',hint:'コンセントのない場所へ',acc:'battery',say:'電源のない場所にも、絶望は届く。'}
+  ],
+  gain:{hell:16,pain:6,fear:24,dur:8,safety:-6},
+  comply:[
+    {n:'防音材の内張り',pr:3480,e:{safety:5,hell:-12}},
+    {n:'騒音計による常時監視',pr:3280,e:{safety:7,hell:-6}},
+    {n:'再生時間帯の制限（22時まで）',pr:0,e:{safety:8,hell:-14}},
+    {n:'近隣への事前挨拶（菓子折）',pr:1580,e:{safety:9,hell:-8,fear:-4}}
+  ]
+}
+];
+
+/* ============================================================
+   5. STATE
+   ============================================================ */
+const S={};
+function resetState(){
+  S.stage=0; S.money=120000; S.cost=0;
+  S.st={hell:0,pain:0,fear:0,dur:60,safety:20,power:0};
+  S.cart={}; S.owned={}; S.facilities=[]; S.complaints=0;
+  S.fixes=0; S.missed=0; S.breaker=false; S.reported=false;
+  S.heaters=0; S.volume=0; S.log=[];
+}
+const CAP=1500; /* 一回路の上限 W */
+
+/* ============================================================
+   6. HUD
+   ============================================================ */
+const HUDDEF=[
+  ['hell','HELL','hell'],['pain','PAIN',''],['fear','FEAR',''],
+  ['dur','DUR.',''],['safety','SAFETY','saf']
+];
+function syncHud(){
+  const h=$('#hud'), v=(h&&!h.classList.contains('hide'))?h.offsetHeight:0;
+  document.documentElement.style.setProperty('--hudh',(v?v+2:6)+'px');
+}
+window.addEventListener('resize',function(){ setTimeout(syncHud,60); });
+function hudShow(on){ $('#hud').classList.toggle('hide',!on); if(on) hudDraw(); syncHud(); }
+function hudDraw(){
+  const h=$('#hud'); let s='';
+  HUDDEF.forEach(function(d){
+    const v=Math.round(clamp(S.st[d[0]],0,100));
+    s+='<div class="st '+d[2]+'" data-k="'+d[0]+'"><div class="k"><span>'+d[1]+'</span><b>'+v+'</b></div>'+
+       '<div class="bar"><i style="width:'+v+'%"></i></div></div>';
+  });
+  const pw=Math.round(S.st.power), po=pw>CAP;
+  s+='<div class="st pow '+(po?'over':'')+'" data-k="power"><div class="k"><span>POWER</span><b>'+pw+'W</b></div>'+
+     '<div class="bar"><i style="width:'+clamp(pw/CAP*100,0,100)+'%"></i></div></div>';
+  s+='<div class="st money" data-k="cost"><div class="k"><span>COST</span><b>&nbsp;'+yen(S.cost)+'</b></div></div>';
+  h.innerHTML=s;
+  syncHud();
+}
+function addStat(o,silent){
+  for(const k in o){
+    if(k==='cost'){ S.cost+=o[k]; S.money-=o[k]; }
+    else if(k==='power'){ S.st.power+=o[k]; }
+    else S.st[k]=clamp(S.st[k]+o[k],0,100);
+  }
+  hudDraw();
+  if(!silent){ const e=$('#hud'); if(e) e.classList.add('pulse'), setTimeout(()=>e.classList.remove('pulse'),500); }
+}
+
+/* ============================================================
+   7. 画面遷移・演出
+   ============================================================ */
+function show(id){ $$('.scene').forEach(s=>s.classList.remove('on')); $(id).classList.add('on'); }
+function flash(red){ const f=$('#flash'); f.className=''; void f.offsetWidth; f.className='go'+(red?' red':''); }
+function shake(){ const a=$('#app'); a.classList.remove('shaking'); void a.offsetWidth; a.classList.add('shaking'); }
+function blackout(on){ $('#black').classList.toggle('on',!!on); }
+
+/* --- カットシーン --- */
+const CUT={steps:[],i:0,done:null,t:null,at:0};
+const ARTMAP={
+  formation:()=>ART.formation(), podium:()=>ART.podium(), glasses:()=>ART.glasses(),
+  store:()=>ART.store(), enma:()=>ART.enma(), blank:()=>'',
+  needle:()=>ART.site('needle'), pond:()=>ART.site('pond'),
+  needleGhost:()=>SVG(SITEBASE+FACART.needle()+ART.ghost(300,.95),'0 0 400 220'),
+  needleBroken:()=>SVG(SITEBASE+FACART.needle(true)+ART.ghost(232,.95),'0 0 400 220'),
+  pondLeak:()=>SVG(SITEBASE+FACART.pond()+
+    '<g opacity=".85"><ellipse cx="120" cy="196" rx="64" ry="12" fill="#7d0a10"/>'+
+    '<ellipse cx="96" cy="200" rx="30" ry="7" fill="#b3121b"/></g>'+ART.ghost(330,.8),'0 0 400 220'),
+  heat:()=>ART.site('heat'), scream:()=>ART.site('scream'),
+  total:()=>SVG('<rect width="400" height="220" fill="#0a0709"/><rect y="170" width="400" height="50" fill="#14100f"/>'+
+    '<ellipse cx="200" cy="176" rx="180" ry="34" fill="rgba(179,18,27,.24)"/>'+
+    '<g transform="translate(-40,26) scale(.5)">'+FACART.needle(1)+'</g>'+
+    '<g transform="translate(150,54) scale(.45)">'+FACART.pond(1)+'</g>'+
+    '<g transform="translate(60,-6) scale(.4)">'+FACART.heat(1)+'</g>'+
+    '<g transform="translate(240,-10) scale(.42)">'+FACART.scream(1)+'</g>','0 0 400 220')
+};
+function setArt(k,cls){
+  const a=$('#cut-art');
+  a.className=cls||'';
+  a.innerHTML=ARTMAP[k]?ARTMAP[k]():k;
+}
+function playCut(steps,done){
+  CUT.steps=steps; CUT.i=-1; CUT.done=done||null;
+  show('#sc-cut'); $('#cut-tip').classList.remove('hide');
+  stepCut();
+}
+function stepCut(){
+  clearTimeout(CUT.t);
+  CUT.i++;
+  if(CUT.i>=CUT.steps.length){ const d=CUT.done; CUT.done=null; if(d) d(); return; }
+  const s=CUT.steps[CUT.i];
+  CUT.at=Date.now();
+  if(s.art!==undefined) setArt(s.art,s.artcls);
+  else if(s.artcls!==undefined) $('#cut-art').className=s.artcls;
+  if(s.black!==undefined) blackout(s.black);
+  if(s.big){ $('#cut-big').innerHTML='<div class="b1">'+s.big+'</div>'+(s.big2?'<div class="b2">'+s.big2+'</div>':''); }
+  else $('#cut-big').innerHTML='';
+  $('#cut-who').textContent=s.who||'';
+  $('#cut-txt').className=s.shout?'shout':'';
+  $('#cut-txt').innerHTML=s.line||'';
+  $('#cut-line').style.opacity=s.line?1:0;
+  if(s.fx==='flash') flash(); if(s.fx==='red') flash(true); if(s.fx==='shake') shake();
+  if(s.sfx&&SE[s.sfx]) SE[s.sfx]();
+  if(s.bgm&&BGM[s.bgm]) BGM[s.bgm]();
+  if(s.fn) s.fn();
+  const hold=s.hold!=null?s.hold:(s.line?2500:(s.big?2000:1100));
+  CUT.t=setTimeout(stepCut,hold);
+}
+$('#sc-cut').addEventListener('click',function(){ if(Date.now()-CUT.at>260) stepCut(); });
+
+/* --- 巨大字幕オーバーレイ（新兵器登場） --- */
+(function(){
+  const st=document.createElement('style');
+  st.textContent=
+  '#bigov{position:absolute;inset:0;z-index:75;display:flex;flex-direction:column;align-items:center;'+
+  'justify-content:center;pointer-events:none;text-align:center;padding:1em;background:rgba(0,0,0,.5);}'+
+  '#bigov .b1{font-family:var(--ser);font-weight:700;color:#fff;letter-spacing:.14em;text-indent:.14em;'+
+  'font-size:clamp(1.3rem,7.4vw,4rem);line-height:1.15;text-shadow:0 0 .7em rgba(255,45,45,.7),0 .05em .2em #000;'+
+  'animation:bigin .6s cubic-bezier(.2,.9,.2,1) both;}'+
+  '#bigov .b2{margin-top:.45em;font-family:var(--ser);letter-spacing:.3em;text-indent:.3em;'+
+  'font-size:clamp(.72rem,3.1vw,1.25rem);color:#e2d9c9;animation:bigin .8s .1s cubic-bezier(.2,.9,.2,1) both;}'+
+  '#bigov.out{opacity:0;transition:opacity .4s;}';
+  document.head.appendChild(st);
+})();
+let bigT=null;
+function showBig(a,b,ms,sfx){
+  let o=$('#bigov');
+  if(!o){ o=document.createElement('div'); o.id='bigov'; $('#app').appendChild(o); }
+  o.className=''; o.innerHTML='<div class="b1">'+a+'</div>'+(b?'<div class="b2">'+b+'</div>':'');
+  if(sfx&&SE[sfx]) SE[sfx]();
+  clearTimeout(bigT);
+  bigT=setTimeout(function(){ o.className='out'; setTimeout(function(){ if(o.className==='out') o.remove(); },420); },ms||1500);
+}
+
+/* ============================================================
+   8. OPENING
+   ============================================================ */
+const OPENING=[
+ {art:'blank',black:true,hold:700,bgm:'hell'},
+ {art:'formation',black:false,hold:2400},
+ {art:'podium',hold:1700,sfx:'drum'},
+ {art:'podium',hold:1900,line:'<span style="opacity:.5">― 沈 黙 ―</span>'},
+ {who:'指 揮 官',line:'さあ諸君。',hold:2100,sfx:'drum'},
+ {art:'glasses',artcls:'zoom2',hold:1900,sfx:'gong'},
+ {who:'指 揮 官',line:'地獄を作るぞ',hold:2600},
+ {art:'formation',artcls:'',who:'部 下 一 同',line:'ＯＯＯＯＯＯＯＨ！！',shout:true,sfx:'ooh',fx:'red',hold:2300},
+ {art:'blank',black:true,hold:800},
+ {black:false,big:'OPERATION INFERNO',big2:'地 獄 建 設 作 戦',sfx:'dunn',hold:2700},
+ {big:'',black:true,hold:900},
+ {black:false,big:'AM 09:03',big2:'H O M E C E N T E R',sfx:'regi',hold:2100,bgm:'store'},
+ {art:'store',big:'',hold:2500,line:'開店三分。大型カートを押す一団が、園芸用品売り場へ向かう。'},
+ {line:'客は、まだ、少ない。',hold:2000}
+];
+
+/* ============================================================
+   9. SHOP
+   ============================================================ */
+const CLERK=[
+ [ {who:'店 員',t:'ポイントカードはお持ちですか？'},
+   {who:'指 揮 官',t:'ない'},
+   {who:'店 員',t:'ただいま会員登録で、本日のお買い物が5%引きになります'},
+   {who:'指 揮 官',t:'登録する'},
+   {big:'MEMBERSHIP ACQUIRED',big2:'会 員 資 格 取 得',sfx:'dunn'},
+   {fn:function(){ S.discount=0.05; }} ],
+ [ {who:'部 下',t:'閣下。木材カットサービス、30分待ちとのことです'},
+   {who:'指 揮 官',t:'待つ'},
+   {who:'指 揮 官',t:'……我々には、時間だけはある'},
+   {big:'WAITING TIME 30 MIN',big2:'待 機',sfx:'gong'} ],
+ [ {who:'店 員',t:'何をお作りになるんですか？'},
+   {who:'指 揮 官',t:'地獄だ'},
+   {who:'店 員',t:'屋外ですか？'},
+   {who:'指 揮 官',t:'屋内だ'},
+   {who:'店 員',t:'でしたら防炎素材がおすすめです'},
+   {who:'指 揮 官',t:'……採用する'},
+   {big:'FLAME RETARDANT',big2:'防 炎 素 材 を 採 用',sfx:'dunn'},
+   {fn:function(){ if(!S.cart.foam){ S.cart.foam=1; addStat({safety:8}); renderShelf(); } }} ],
+ [ {who:'部 下',t:'閣下！ 赤色ＬＥＤ、在庫残り1です！'},
+   {who:'指 揮 官',t:'押さえろ'},
+   {who:'部 下',t:'はっ！'},
+   {big:'LAST ONE',big2:'在 庫 残 り 1',sfx:'dunn'} ]
+];
+let clerkQ=null,clerkI=0,clerkDone=null;
+function playClerk(list,done){
+  clerkQ=list; clerkI=-1; clerkDone=done||null;
+  $('#clerk').classList.remove('hide'); nextClerk();
+}
+function nextClerk(){
+  clerkI++;
+  if(!clerkQ||clerkI>=clerkQ.length){ $('#clerk').classList.add('hide'); const d=clerkDone; clerkDone=null; if(d)d(); return; }
+  const s=clerkQ[clerkI];
+  if(s.fn) s.fn();
+  if(s.big){ $('#clerk').classList.add('hide'); showBig(s.big,s.big2,1600,s.sfx||'dunn');
+    setTimeout(function(){ if(clerkQ){ $('#clerk').classList.remove('hide'); nextClerk(); } },1750); return; }
+  $('#clerk-who').textContent=s.who||''; $('#clerk-txt').textContent=s.t||'';
+  SE.click();
+}
+$('#clerk').addEventListener('click',function(){ if(clerkQ&&!$('#clerk').classList.contains('hide')) nextClerk(); });
+
+let shelfIds=[];
+function startShop(){
+  const st=STAGES[S.stage];
+  S.cart={}; S.discount=0; S.clerkFired=false; S.paying=false;
+  $('#shop-clock').textContent=st.clock;
+  $('#order-memo').innerHTML=st.memo;
+  shelfIds=st.need.concat(st.extra);
+  /* 見た目のため軽くシャッフル（必要品が並ばないように） */
+  shelfIds=shelfIds.map(function(v,i){return {v:v,k:(i*7+3)%shelfIds.length};}).sort(function(a,b){return a.k-b.k;}).map(function(o){return o.v;});
+  BGM.store(); hudShow(true); show('#sc-shop');
+  renderShelf();
+}
+function renderShelf(){
+  const st=STAGES[S.stage];
+  $('#shop-money').textContent=yen(S.money);
+  $('#order-list').innerHTML=st.need.map(function(id){
+    const got=!!S.cart[id];
+    return '<li class="'+(got?'got':'')+'"><span class="ck">'+(got?'✔':'□')+'</span><b>'+MAT[id].n+'</b></li>';
+  }).join('');
+  $('#shelf').innerHTML=shelfIds.map(function(id){
+    const m=MAT[id], need=st.need.indexOf(id)>=0;
+    return '<div class="item '+(S.cart[id]?'bought':'')+' '+(need?'req':'')+'" data-id="'+id+'">'+
+      (id==='band'?'<div class="pop">お買得</div>':'')+
+      '<div class="pic">'+icon(m.ic)+'</div>'+
+      '<div class="nm">'+m.n+'</div><div class="sp">'+m.sp+'</div>'+
+      '<div class="pr">'+yen(m.pr)+'<small> 税込</small></div></div>';
+  }).join('');
+  const ids=Object.keys(S.cart);
+  const total=ids.reduce(function(a,b){return a+MAT[b].pr;},0);
+  $('#cart-txt').textContent=ids.length?('カート：'+ids.length+'点／'+yen(total)):'カート：空';
+  const ok=st.need.every(function(id){return !!S.cart[id];});
+  $('#btn-checkout').disabled=!ok;
+  $('#btn-checkout').textContent=ok?'会計へ ▶':'調達書の資材が不足';
+}
+$('#shelf').addEventListener('click',function(e){
+  const it=e.target.closest('.item'); if(!it) return;
+  const id=it.dataset.id, st=STAGES[S.stage], need=st.need.indexOf(id)>=0;
+  if(S.cart[id]){ delete S.cart[id]; SE.ng(); renderShelf(); return; }
+  S.cart[id]=1; renderShelf();
+  if(need){ showBig(MAT[id].en,MAT[id].sp,1500,'dunn'); }
+  else { SE.pop(); }
+  /* 店員イベント */
+  if(!S.clerkFired&&Object.keys(S.cart).length>=2){
+    S.clerkFired=true;
+    setTimeout(function(){ playClerk(CLERK[S.stage%CLERK.length]); },need?1600:400);
+  }
+});
+$('#btn-checkout').addEventListener('click',function(){
+  if(this.disabled||S.paying) return;
+  S.paying=true; this.disabled=true;
+  const ids=Object.keys(S.cart);
+  let total=ids.reduce(function(a,b){return a+MAT[b].pr;},0);
+  if(S.discount) total=Math.round(total*(1-S.discount));
+  addStat({cost:total},true);
+  ids.forEach(function(id){ S.owned[id]=1; if(MAT[id].w) addStat({power:MAT[id].w},true); });
+  SE.regi();
+  showBig('￥'+total.toLocaleString('en-US'),S.discount?'会 員 割 引 適 用 済':'会 計 完 了',1700,'regi');
+  setTimeout(startBuild,1900);
+});
+
+/* ============================================================
+   10. BUILD
+   ============================================================ */
+let placed={},selMat=null;
+function startBuild(){
+  const st=STAGES[S.stage];
+  placed={}; selMat=null;
+  $('#b-code').textContent=st.code;
+  $('#b-ttl').textContent=st.ttl;
+  $('#plan-extra').innerHTML='';
+  $('#comply').classList.add('hide');
+  $('#b-say').innerHTML='資材を図面の枠へドラッグせよ。<span class="tiny">（タップで選択→枠をタップでも可）</span>';
+  $('#slots').innerHTML=st.slots.map(function(s,i){
+    return '<div class="slot" data-i="'+i+'"><div class="role">'+s.role+'</div><div class="need">'+s.hint+'</div></div>';
+  }).join('');
+  $('#tray').innerHTML=Object.keys(S.cart).map(function(id){return matHTML(id);}).join('');
+  $('#planart').innerHTML=SVG(FACART[st.kind]?FACART[st.kind](1):'','0 0 400 220');
+  planArt(0);
+  BGM.march(); hudShow(true); show('#sc-build');
+  showBig(st.code.split('―')[1]?st.code.split('―')[1].trim():st.code,st.ttl.replace(/\s/g,''),1500,'gong');
+}
+function planArt(r){
+  const a=$('#planart'); if(!a) return;
+  a.style.opacity=(0.08+r*0.92).toFixed(2);
+  a.style.filter=r>=1?'none':'grayscale('+(1-r*0.9).toFixed(2)+') contrast('+(0.7+r*0.3).toFixed(2)+')';
+}
+function tryPlace(id,slotEl){
+  const i=+slotEl.dataset.i, st=STAGES[S.stage], def=st.slots[i];
+  if(placed[i]) return;
+  if(def.acc!==id){
+    slotEl.classList.remove('bad'); void slotEl.offsetWidth; slotEl.classList.add('bad');
+    SE.ng();
+    $('#b-say').innerHTML=pick(['<b>規格が違う。</b>','……それは、そこではない。','図面を見ろ。図面を。','寸法は狂わせるな。']);
+    return;
+  }
+  placed[i]=id;
+  const m=MAT[id];
+  slotEl.classList.remove('bad','hot');
+  slotEl.classList.add('done');
+  slotEl.innerHTML='<div class="role">'+def.role+'</div><div class="fit">'+icon(m.ic)+m.n+'</div>';
+  const mat=$('#tray').querySelector('.mat[data-mat="'+id+'"]');
+  if(mat){ mat.classList.add('used'); }
+  selMat=null;
+  SE.drill(); flash();
+  planArt(Object.keys(placed).length/st.slots.length);
+  $('#b-say').innerHTML=def.say;
+  if(Object.keys(placed).length===st.slots.length) setTimeout(completeBuild,900);
+}
+/* --- ドラッグ＆ドロップ／タップ配置 --- */
+let dg=null;
+function ghostKill(){ const g=$('#drag'); if(g) g.remove(); }
+$('#tray').addEventListener('pointerdown',function(e){
+  const m=e.target.closest('.mat'); if(!m||m.classList.contains('used')) return;
+  dg={id:m.dataset.mat,x:e.clientX,y:e.clientY,moved:false,el:m};
+});
+document.addEventListener('pointermove',function(e){
+  if(!dg) return;
+  const dx=e.clientX-dg.x, dy=e.clientY-dg.y;
+  if(!dg.moved&&dx*dx+dy*dy<64) return;
+  if(!dg.moved){
+    dg.moved=true;
+    const m=MAT[dg.id];
+    const g=document.createElement('div'); g.id='drag';
+    g.innerHTML=icon(m.ic)+'<div class="t">'+m.n+'</div>';
+    document.body.appendChild(g);
+  }
+  const g=$('#drag'); if(g){ g.style.left=e.clientX+'px'; g.style.top=e.clientY+'px'; }
+  $$('.slot').forEach(function(s){s.classList.remove('hot');});
+  const el=document.elementFromPoint(e.clientX,e.clientY);
+  const sl=el&&el.closest?el.closest('.slot'):null;
+  if(sl&&!sl.classList.contains('done')) sl.classList.add('hot');
+},{passive:true});
+document.addEventListener('pointerup',function(e){
+  if(!dg) return;
+  const d=dg; dg=null;
+  $$('.slot').forEach(function(s){s.classList.remove('hot');});
+  if(d.moved){
+    ghostKill();
+    const el=document.elementFromPoint(e.clientX,e.clientY);
+    const sl=el&&el.closest?el.closest('.slot'):null;
+    if(sl) tryPlace(d.id,sl);
+  }else{
+    $$('.mat').forEach(function(m){m.classList.remove('sel');});
+    if(selMat===d.id){ selMat=null; }
+    else { selMat=d.id; d.el.classList.add('sel'); SE.click();
+      $('#b-say').innerHTML='<b>'+MAT[d.id].n+'</b> を選択。配置先の枠をタップせよ。'; }
+  }
+});
+$('#slots').addEventListener('click',function(e){
+  const sl=e.target.closest('.slot'); if(!sl||!selMat) return;
+  const id=selMat;
+  $$('.mat').forEach(function(m){m.classList.remove('sel');});
+  tryPlace(id,sl);
+});
+
+/* --- 完成 --- */
+function completeBuild(){
+  const st=STAGES[S.stage];
+  addStat(st.gain,true);
+  S.facilities.push({kind:st.kind,en:st.en,ttl:st.ttl});
+  BGM.hell();
+  showBig(st.en,'完 成',2500,'dunn'); flash(true);
+  $('#b-say').innerHTML='<b>'+st.en+'</b> 稼働開始。';
+  setTimeout(function(){
+    if(S.stage===2) extraHeat();
+    else if(S.stage===3) extraVolume();
+    else showComply();
+  },2700);
+}
+/* --- STAGE3：ヒーター増設 --- */
+function extraHeat(){
+  S.heaters=0;
+  const draw=function(){
+    const p=S.st.power;
+    $('#plan-extra').innerHTML=
+      '<div class="panel"><h4>熱 源 増 設 判 断</h4>'+
+      '<div class="big">'+Math.round(p)+'<small>W</small></div>'+
+      '<div class="meter"><i style="width:'+clamp(p/2600*100,0,100)+'%"></i><u style="left:'+(1500/2600*100)+'%"></u></div>'+
+      '<div class="note-s">この回路の定格は <b>1500W</b>。<br>白線を越えた先のことは、誰も知らない。</div>'+
+      '<div class="row"><button class="btn plain" id="hx-add">ヒーターを増設する（＋900W ／ '+yen(2980)+'）</button>'+
+      '<button class="btn plain" id="hx-end">増設を終える</button></div>'+
+      '<div class="note-s" id="hx-say">'+(S.heaters===0?'部下：「閣下。まだ、生ぬるいかと」':'増設 '+S.heaters+' 基。HELL +'+(S.heaters*6))+'</div></div>';
+    $('#hx-add').onclick=function(){
+      S.heaters++;
+      addStat({power:900,hell:6,pain:4,cost:2980,safety:-4});
+      SE.spark(); flash(true);
+      if(S.st.power>2400){ setTimeout(breakerDown,600); return; }
+      draw();
+    };
+    $('#hx-end').onclick=function(){
+      if(S.heaters===0){ addStat({hell:-4}); $('#b-say').innerHTML='部下：「……閣下。地獄が、常温です」'; }
+      $('#plan-extra').innerHTML=''; showComply();
+    };
+  };
+  $('#b-say').innerHTML='<b>灼熱には電力が要る。</b>諸君、判断せよ。';
+  draw();
+}
+function breakerDown(){
+  BGM.silence();
+  playCut([
+   {art:'blank',black:true,sfx:'breaker',fx:'shake',hold:1400},
+   {black:false,art:'blank',big:'BREAKER DOWN',big2:'第 一 回 路 遮 断',sfx:'gong',hold:2100},
+   {big:'',art:'heat',line:'数秒後、非常灯だけが点灯した。',hold:2300},
+   {who:'部 下',line:'閣下！ 第一回路、落ちました！',shout:true,hold:2200},
+   {who:'指 揮 官',line:'',hold:1400},
+   {who:'指 揮 官',line:'……タコ足配線は敗北である',hold:2800},
+   {who:'指 揮 官',line:'回路を分けろ。分電盤を増設する。',hold:2400},
+   {who:'部 下',line:'はっ！',hold:1500,sfx:'drum'}
+  ],function(){
+    S.st.power=Math.min(S.st.power,1400+S.heaters*120);
+    addStat({hell:-6,safety:8,dur:-4,cost:MAT.breaker.pr},true);
+    BGM.march(); show('#sc-build');
+    $('#plan-extra').innerHTML=''; $('#b-say').innerHTML='分電盤を増設。<b>回路は分けた。</b>';
+    setTimeout(showComply,700);
+  });
+}
+/* --- STAGE4：音量調整 --- */
+function extraVolume(){
+  S.volume=30;
+  $('#b-say').innerHTML='<b>音量を決定せよ。</b>これは音響戦である。';
+  $('#plan-extra').innerHTML=
+    '<div class="panel"><h4>叫 喚 出 力 設 定</h4>'+
+    '<div class="big" id="vx-v">30<small>dB相当</small></div>'+
+    '<input type="range" id="vx-r" min="0" max="100" value="30">'+
+    '<div class="meter"><i id="vx-b" style="width:30%"></i><u style="left:60%"></u><u style="left:85%"></u></div>'+
+    '<div class="note-s">白線の先は、我々の敷地ではない。</div>'+
+    '<div class="row"><button class="btn plain" id="vx-t">試 聴</button>'+
+    '<button class="btn plain" id="vx-ok">この音量で決定する</button></div></div>';
+  const r=$('#vx-r');
+  const upd=function(){ S.volume=+r.value; $('#vx-v').innerHTML=S.volume+'<small>dB相当</small>'; $('#vx-b').style.width=S.volume+'%'; };
+  r.addEventListener('input',upd);
+  $('#vx-t').onclick=function(){ SE.scream(clamp(S.volume/100*.42,.02,.42),1.4); };
+  $('#vx-ok').onclick=function(){
+    const v=S.volume;
+    addStat({hell:Math.round(v*0.22),fear:Math.round(v*0.12)},true);
+    SE.scream(clamp(v/100*.42,.02,.42),1.6);
+    $('#plan-extra').innerHTML='';
+    if(v>85){
+      S.reported=true; S.complaints+=2;
+      setTimeout(function(){ playCut([
+        {art:'scream',line:'再生開始から、四分。',hold:2000},
+        {who:'部 下',line:'閣下。隣接エリアから苦情が入りました',hold:2300},
+        {who:'指 揮 官',line:'続けろ',hold:1800},
+        {art:'blank',big:'騒音苦情 ＋2',big2:'N O I S E   C O M P L A I N T',sfx:'ng',hold:1800},
+        {art:'scream',big:'',fx:'red',line:'……三分後。',hold:1900},
+        {who:'部 下',line:'近隣住民から通報されました！',shout:true,sfx:'crack',hold:2400},
+        {who:'指 揮 官',line:'',hold:1300},
+        {who:'指 揮 官',line:'音響戦は終わりだ',hold:2700},
+        {who:'指 揮 官',line:'……音量を、下げろ',hold:2400}
+      ],function(){ addStat({hell:-10,safety:10},true); BGM.march(); show('#sc-build'); setTimeout(showComply,500); }); },900);
+    } else if(v>60){
+      S.complaints+=1;
+      showBig('騒音苦情 ＋1','N O I S E   C O M P L A I N T',1700,'ng');
+      $('#b-say').innerHTML='部下：「閣下。隣のエリアから、苦情が」／指揮官：「<b>記録しておけ</b>」';
+      setTimeout(showComply,1900);
+    } else {
+      $('#b-say').innerHTML='部下：「閣下。……ＢＧＭのようです」';
+      addStat({hell:-4},true);
+      setTimeout(showComply,1500);
+    }
+  };
+}
+/* --- コンプライアンス審議 --- */
+let complySel={};
+function showComply(){
+  const st=STAGES[S.stage];
+  complySel={};
+  $('#comply-lead').innerHTML='本施設は、地獄である前に施設である。<br>採用する対策を選べ。';
+  $('#comply-opts').innerHTML=st.comply.map(function(o,i){
+    const eff=Object.keys(o.e).map(function(k){
+      const v=o.e[k], nm={hell:'HELL',pain:'PAIN',fear:'FEAR',safety:'SAFETY',dur:'DUR'}[k];
+      return '<span class="'+(v>0?'up':'dn')+'">'+nm+' '+(v>0?'+':'')+v+'</span>';
+    }).join('');
+    return '<div class="opt" data-i="'+i+'"><div class="n">'+o.n+'</div>'+
+      '<div class="p">'+(o.pr?yen(o.pr):'費用なし')+'</div><div class="e">'+eff+'</div></div>';
+  }).join('');
+  $('#comply').classList.remove('hide');
+}
+$('#comply-opts').addEventListener('click',function(e){
+  const o=e.target.closest('.opt'); if(!o) return;
+  const i=o.dataset.i;
+  if(complySel[i]){ delete complySel[i]; o.classList.remove('on'); SE.ng(); }
+  else { complySel[i]=1; o.classList.add('on'); SE.ok(); }
+});
+$('#btn-comply').addEventListener('click',function(){
+  const st=STAGES[S.stage];
+  let n=0;
+  Object.keys(complySel).forEach(function(i){
+    const o=st.comply[i]; n++;
+    addStat(o.e,true); if(o.pr) addStat({cost:o.pr},true);
+  });
+  $('#comply').classList.add('hide');
+  SE.drill();
+  const line=n===0?'指揮官：「<b>対策は取らん。</b>ここは地獄だ」':
+             n>=3?'指揮官：「……<b>安全な地獄</b>が、完成しつつある」':
+                  '指揮官：「よろしい。<b>安全は演出の一部である</b>」';
+  $('#b-say').innerHTML=line;
+  setTimeout(afterStage,1600);
+});
+/* --- 各ステージ後のカット --- */
+const AFTER=[
+ [ {art:'needleGhost',line:'完成した針山を、亡者が一人、歩いていく。',hold:2600},
+   {art:'needleBroken',sfx:'crack',fx:'shake',line:'支柱が一本、折れた。',hold:2200},
+   {who:'指 揮 官',line:'',hold:1300},
+   {who:'指 揮 官',line:'……強度不足だ',hold:2500},
+   {who:'部 下',line:'はっ！ 直ちに補強します！',shout:true,hold:2000,sfx:'drum'} ],
+ [ {art:'pond',line:'注水完了。循環、開始。',sfx:'water',hold:2400},
+   {line:'……水位が、わずかに下がっている。',hold:2200},
+   {art:'pondLeak',who:'部 下',line:'閣下！ 床が赤く染まっています！',shout:true,sfx:'crack',hold:2400},
+   {who:'指 揮 官',line:'',hold:1200},
+   {who:'指 揮 官',line:'よろしい。演出として利用する',hold:2800} ],
+ [ {art:'heat',line:'室温、上昇。赤色光、安定。',hold:2300},
+   {who:'部 下',line:'閣下。室温、38度を超えました',hold:2200},
+   {who:'指 揮 官',line:'諸君。ここはもう、屋内ではない',hold:2700} ],
+ [ {art:'scream',line:'叫喚、再生開始。ループ、無限。',hold:2400},
+   {who:'指 揮 官',line:'これでいい。地獄に静寂は要らん',hold:2600} ]
+];
+const AFTERFX=[{dur:-10},{hell:6,safety:-8,dur:-6},{fear:6,dur:-4},{fear:4,dur:-4}];
+function afterStage(){
+  const i=S.stage;
+  addStat(AFTERFX[i],true);
+  BGM.hell();
+  playCut(AFTER[i],function(){
+    S.stage++;
+    if(S.stage<STAGES.length){
+      playCut([
+        {art:'blank',black:true,hold:700},
+        {black:false,big:'NEXT OPERATION',big2:STAGES[S.stage].code.replace(/^STAGE \d+ ― /,''),sfx:'dunn',hold:2300},
+        {big:'',black:true,hold:600}
+      ],function(){ blackout(false); startShop(); });
+    } else startFinal();
+  });
+}
+
+/* ============================================================
+   11. FINAL STAGE ― TOTAL INFERNO
+   ============================================================ */
+const FCELLS=[
+ {n:'針 山 区 画',ic:'stake'},{n:'血 の 池',ic:'pool'},{n:'灼 熱 室',ic:'heater'},{n:'叫 喚 塔',ic:'speaker'},
+ {n:'電 源 系',ic:'cord'},{n:'照 明 系',ic:'led'},{n:'配 管 系',ic:'hose'},{n:'接 合 部',ic:'band'},{n:'鬼 役 詰 所',ic:'ghosticon'}
+];
+const TROUBLE=[
+ {c:0,t:'針山破損',taps:2},{c:0,t:'支柱が折れた',taps:1},
+ {c:1,t:'血の池 水漏れ',taps:2},{c:1,t:'着色剤の色が薄い',taps:1},
+ {c:2,t:'ヒーター過熱',taps:2},{c:2,t:'温風が来ない',taps:1},
+ {c:3,t:'Bluetooth切断',taps:1},{c:3,t:'音源のループが途切れた',taps:1},
+ {c:4,t:'ブレーカー容量不足',taps:3},{c:4,t:'延長コードが熱い',taps:2},
+ {c:5,t:'赤色LED点滅',taps:1},{c:5,t:'LEDが白く光っている',taps:2},
+ {c:6,t:'循環ポンプ停止',taps:2},{c:6,t:'ホースが外れた',taps:1},
+ {c:7,t:'木ネジ脱落',taps:1},{c:7,t:'結束バンド破断',taps:1},
+ {c:8,t:'鬼役スタッフ欠勤',taps:2},{c:8,t:'鬼の角が取れた',taps:1}
+];
+const BARK=['よし。次だ。','<b>インパクトドライバーを！</b>','下穴を忘れるな。','<b>結束バンドを持て。</b>',
+ '寸法は狂わせるな。','釘ではない。木ネジだ。','慌てるな。手順通りにやれ。','<b>ベニヤを出せ。</b>',
+ '養生を怠るな。','ここは、現場である。'];
+const F={};
+function startFinal(){
+  BGM.hell();
+  playCut([
+   {art:'blank',black:true,hold:700},
+   {black:false,art:'total',big:'FINAL STAGE',big2:'TOTAL INFERNO',sfx:'dunn',hold:2500},
+   {big:'',line:'これまでに製作した全設備を、一箇所に集結させる。',hold:2600},
+   {who:'部 下',line:'閣下。亡者、入場を開始します',hold:2300},
+   {who:'指 揮 官',line:'',hold:1200},
+   {who:'指 揮 官',line:'開門せよ',hold:2200,sfx:'gong'},
+   {art:'blank',big:'OPEN THE GATE',big2:'開 門',sfx:'dunn',fx:'red',hold:1800}
+  ],runFinal);
+}
+function runFinal(){
+  F.t=72; F.souls=0; F.goal=60; F.dmg=0; F.max=5; F.act={}; F.spawn=1.4; F.over=false;
+  $('#f-goal').textContent=F.goal; $('#f-dmgmax').textContent=F.max;
+  $('#fgrid').innerHTML=FCELLS.map(function(c,i){
+    return '<div class="cellf" data-i="'+i+'">'+icon(c.ic)+'<div class="cn">'+c.n+'</div></div>';
+  }).join('');
+  $('#f-say').innerHTML='<b>故障個所を叩け。</b>直せば直るのが、DIYである。';
+  BGM.fever(); hudShow(true); show('#sc-final');
+  fdraw();
+  clearInterval(F.iv);
+  F.iv=setInterval(ftick,100);
+}
+function fdraw(){
+  $('#f-souls').textContent=Math.floor(F.souls);
+  $('#f-time').textContent=Math.max(0,Math.ceil(F.t));
+  $('#f-dmg').textContent=F.dmg;
+}
+function spawnTrouble(){
+  const free=FCELLS.map(function(c,i){return i;}).filter(function(i){return !F.act[i];});
+  if(!free.length) return;
+  const ci=pick(free);
+  const cand=TROUBLE.filter(function(t){return t.c===ci;});
+  const t=pick(cand);
+  const life=clamp(9.5-(72-F.t)*0.055,4.2,9.5)+ (S.st.dur/100)*2.2;
+  F.act[ci]={t:t.t,taps:t.taps,left:t.taps,life:life,max:life};
+  SE.spark();
+  renderCell(ci);
+}
+function renderCell(i){
+  const el=$('#fgrid').querySelector('.cellf[data-i="'+i+'"]'); if(!el) return;
+  const a=F.act[i];
+  if(!a){
+    el.className='cellf';
+    el.innerHTML=icon(FCELLS[i].ic)+'<div class="cn">'+FCELLS[i].n+'</div>';
+    return;
+  }
+  el.className='cellf trouble';
+  el.innerHTML=icon(FCELLS[i].ic)+'<div class="cn">'+FCELLS[i].n+'</div>'+
+    '<div class="tw"><div class="tt">'+a.t+'</div><div class="tp">修理 ×'+a.left+'</div>'+
+    '<div class="tb"><i style="width:'+clamp(a.life/a.max*100,0,100)+'%"></i></div></div>';
+}
+function ftick(){
+  if(F.over) return;
+  F.t-=0.1;
+  const n=Object.keys(F.act).length;
+  F.souls+=Math.max(0.12,(1.15-n*0.24))*0.1;
+  F.spawn-=0.1;
+  if(F.spawn<=0){
+    spawnTrouble();
+    const el=72-F.t;
+    F.spawn=clamp(rnd(2.6,4.2)-el*0.028,0.9,4.2);
+  }
+  Object.keys(F.act).forEach(function(k){
+    const a=F.act[k]; a.life-=0.1;
+    const bar=$('#fgrid').querySelector('.cellf[data-i="'+k+'"] .tb i');
+    if(bar) bar.style.width=clamp(a.life/a.max*100,0,100)+'%';
+    if(a.life<=0){
+      delete F.act[k]; renderCell(+k);
+      F.dmg++; addStat({dur:-7,hell:-2,safety:-3},true);
+      S.missed++; SE.crack(); shake();
+      $('#f-say').innerHTML='<b>'+a.t+'</b> ― 対応が遅れた。';
+      if(F.dmg>=F.max){ endFinal(false); return; }
+    }
+  });
+  fdraw();
+  if(!F.over&&(F.t<=0||F.souls>=F.goal)) endFinal(true);
+}
+$('#fgrid').addEventListener('click',function(e){
+  const el=e.target.closest('.cellf'); if(!el) return;
+  const i=+el.dataset.i, a=F.act[i];
+  if(!a) return;
+  a.left--;
+  if(a.left<=0){
+    delete F.act[i];
+    renderCell(i);
+    const c=$('#fgrid').querySelector('.cellf[data-i="'+i+'"]');
+    if(c){ c.classList.add('fixed'); setTimeout(function(){c.classList.remove('fixed');},600);
+      const p=document.createElement('div'); p.className='fixpop'; p.textContent='修 理 完 了'; c.appendChild(p);
+      setTimeout(function(){p.remove();},700); }
+    S.fixes++; addStat({hell:0.5},true);
+    SE.drill();
+    $('#f-say').innerHTML=pick(BARK);
+  }else{
+    renderCell(i); SE.click();
+  }
+});
+function endFinal(ok){
+  F.over=true; clearInterval(F.iv);
+  if(ok) startAudit(); else gameOver();
+}
+
+/* ============================================================
+   12. 閻魔監査 ＆ エンディング
+   ============================================================ */
+function grade(){
+  let sc=S.st.hell*1.0+(S.st.pain+S.st.fear)*0.22+S.st.dur*0.12+S.fixes*0.5
+        -S.complaints*4-S.missed*4
+        -Math.max(0,S.st.safety-55)*0.6
+        -Math.max(0,25-S.st.safety)*0.4;
+  if(S.reported) sc-=5;
+  let g,c;
+  if(sc>=112){g='S';c='この者、地獄の何たるかを解しておる。';}
+  else if(sc>=90){g='A';c='手作りである。しかし、地獄である。';}
+  else if(sc>=68){g='B';c='ビニールプールの件を除けば、概ね地獄。';}
+  else if(sc>=45){g='C';c='安全である。地獄としては、やや物足りぬ。';}
+  else {g='D';c='安全で、静かで、快適である。再施工を命ずる。';}
+  return {g:g,c:c,sc:Math.round(sc)};
+}
+function startAudit(){
+  BGM.audit(); hudShow(false);
+  playCut([
+   {art:'blank',black:true,hold:800},
+   {black:false,art:'enma',big:'地 獄 監 査',big2:'H E L L   I N S P E C T I O N',sfx:'gong',hold:2600},
+   {big:'',line:'巨大な監査官が、設備を一つずつ見ていく。',hold:2500},
+   {who:'監 査 官',line:'これは何だ',hold:2300},
+   {who:'指 揮 官',line:'血の池です',hold:2100},
+   {who:'監 査 官',line:'ビニールプールに見えるが',hold:2500},
+   {who:'指 揮 官',line:'循環式です',hold:2100},
+   {who:'監 査 官',line:'血は？',hold:2000},
+   {who:'指 揮 官',line:'食品用着色料です',hold:2400},
+   {line:'<span style="opacity:.5">― 沈 黙 ―</span>',who:'',hold:2600},
+   {who:'監 査 官',line:'……針山は',hold:2200},
+   {who:'指 揮 官',line:'園芸用支柱です。20本束で、'+yen(MAT.stake.pr)+'でした',hold:2900},
+   {who:'監 査 官',line:'…………',hold:2200}
+  ],endingCut);
+}
+function endingCut(){
+  playCut([
+   {art:'total',line:'全設備、満身創痍のまま稼働している。',hold:2500},
+   {line:'ベニヤ板。延長コード。結束バンド。ホース。ビニールプール。赤色ＬＥＤ。',hold:3000},
+   {line:'どう見ても、手作りである。',hold:2400},
+   {art:'enma',line:'<span style="opacity:.5">― 長 い 沈 黙 ―</span>',hold:2800},
+   {who:'監 査 官',line:'……思っていたより地獄だな',hold:2900,sfx:'gong'},
+   {who:'指 揮 官',line:'でしょう？',hold:2600},
+   {art:'blank',black:true,hold:900},
+   {black:false,big:'MISSION COMPLETE',big2:'作 戦 完 了',sfx:'dunn',hold:2800},
+   {big:'',black:true,hold:700}
+  ],endScreen);
+}
+function endScreen(){
+  blackout(false); BGM.end(); hudShow(false);
+  const g=grade();
+  const rows=[
+   ['HELL 地獄らしさ',Math.round(S.st.hell)],['PAIN 苦痛',Math.round(S.st.pain)],
+   ['FEAR 恐怖',Math.round(S.st.fear)],['DURABILITY 耐久性',Math.round(S.st.dur)],
+   ['SAFETY 安全性',Math.round(S.st.safety)],['POWER 消費電力',Math.round(S.st.power)+' W'],
+   ['騒音苦情',S.complaints+' 件'],['現場修理回数',S.fixes+' 回'],['対応不能',S.missed+' 件']
+  ];
+  $('#end-inner').innerHTML=
+   '<div class="mc">MISSION COMPLETE</div>'+
+   '<div class="gnote">地 獄 監 査 評 価</div>'+
+   '<div class="grade">'+g.g+'</div>'+
+   '<div class="gnote">監査官：「'+g.c+'」</div>'+
+   '<div class="rows">'+rows.map(function(r){return '<div><span>'+r[0]+'</span><b>'+r[1]+'</b></div>';}).join('')+'</div>'+
+   '<div class="gnote">施 工 費 総 額</div>'+
+   '<div class="cost">'+yen(S.cost)+'</div>'+
+   '<div id="mag"><div class="price">定価 '+yen(880)+'</div>'+
+     '<div class="mtop"><div class="t">DIY HELL MAGAZINE</div><div class="s">月 刊 ・ 地 獄 施 工</div></div>'+
+     '<div class="cov">'+ART.magcover()+'<div class="band">週末で作れる地獄</div></div>'+
+     '<div class="lines">'+
+       '<div>特集：<b>2×4材</b>ではじめる針山地獄</div>'+
+       '<div>実例：<b>ビニールプール</b>で血の池をつくる（循環式）</div>'+
+       '<div>連載：<b>タコ足配線は敗北である</b> 第3回</div>'+
+       '<div>読者投稿：ご近所と上手につきあう叫喚地獄</div>'+
+       '<div>今月の資材：<b>結束バンド200本入</b> '+yen(MAT.band.pr)+'</div>'+
+     '</div></div>'+
+   '<div style="margin-top:1.4em"><button class="btn" id="btn-again">もう一度、地獄を作る</button></div>'+
+   '<div class="tiny" style="margin-top:1em">※ 本作の地獄はすべて市販品で構成されています</div>';
+  show('#sc-end'); const es=$('#sc-end'); es.scrollTop=0;
+  setTimeout(function(){ $('#end-hint').classList.toggle('hide',es.scrollHeight<=es.clientHeight+8); },200);
+  es.onscroll=function(){ if(es.scrollTop>16) $('#end-hint').classList.add('hide'); };
+  $('#btn-again').onclick=function(){ SE.click(); boot(); };
+}
+/* --- 崩壊 --- */
+function gameOver(){
+  BGM.silence(); hudShow(false);
+  playCut([
+   {art:'blank',black:true,sfx:'crack',fx:'shake',hold:1200},
+   {black:false,art:'total',artcls:'',big:'',line:'設備が、次々と沈黙していく。',hold:2400,fx:'red'},
+   {who:'部 下',line:'閣下……地獄は崩壊しました',hold:2800},
+   {who:'指 揮 官',line:'<span style="opacity:.45">― 沈 黙 ―</span>',hold:2600},
+   {who:'指 揮 官',line:'……ホームセンターへ戻るぞ',hold:2900,sfx:'gong'}
+  ],function(){
+    $('#over-q').innerHTML='損壊 '+F.dmg+' 箇所。<i>資材は、まだ売っている。</i>';
+    show('#sc-over');
+  });
+}
+$('#btn-retry').addEventListener('click',function(){
+  SE.click();
+  S.st.dur=clamp(S.st.dur+30,0,100); S.st.safety=clamp(S.st.safety+5,0,100);
+  addStat({cost:12800},true);
+  showBig('RE-SUPPLY','資 材 補 充 完 了',1500,'dunn');
+  setTimeout(runFinal,1700);
+});
+
+/* ============================================================
+   13. BOOT
+   ============================================================ */
+function boot(){
+  clearLater(); stopLoop(); blackout(false); hudShow(false);
+  resetState();
+  show('#sc-title');
+}
+$('#crest').innerHTML=ART.crest();
+$('#btn-start').addEventListener('click',function(){
+  ac(); SE.gong();
+  resetState(); hudShow(false);
+  playCut(OPENING,function(){ blackout(false); startShop(); });
+});
+/* キーボード操作（PC） */
+document.addEventListener('keydown',function(e){
+  if(e.key!==' '&&e.key!=='Enter') return;
+  e.preventDefault();
+  if($('#sc-title').classList.contains('on')){ $('#btn-start').click(); return; }
+  if($('#sc-cut').classList.contains('on')){ if(Date.now()-CUT.at>260) stepCut(); return; }
+  if($('#sc-shop').classList.contains('on')&&!$('#clerk').classList.contains('hide')){ nextClerk(); return; }
+});
+/* 誤操作防止：ドラッグ中の選択とコンテキストメニュー */
+document.addEventListener('dragstart',function(e){e.preventDefault();});
+document.addEventListener('contextmenu',function(e){ if(dg) e.preventDefault(); });
+window.addEventListener('blur',function(){ if(dg){ dg=null; ghostKill(); } });
+resetState();
+})();
+</script>
+</body>
+</html>

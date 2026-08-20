@@ -21,6 +21,29 @@
 | LEVEL 5 | ビル | 屋上 |
 | FINAL LEVEL | 飛行機 | 高度10,000m |
 
+## もうひとつのゲーム：地獄を作るぞ。DIYで。
+
+同じリポジトリに、短編ゲーム **「地獄を作るぞ。DIYで。」（HELL CONSTRUCTION DIY）** を `hell/` に同梱しています。
+
+> 軍服姿の指揮官が部下に宣言する。「さあ諸君。地獄を作るぞ」——次の場面は、朝9時のホームセンター。
+
+ホームセンターの資材（ベニヤ板・園芸用支柱・ビニールプール・赤色LED・結束バンド…）だけで、針山地獄・血の池地獄・灼熱地獄・叫喚地獄をDIY施工する、地獄DIY施工シミュレーションです。1プレイ5〜10分。
+
+- 遊ぶ： `hell/index.html` をブラウザで開く（公開先は `https://katomi95.github.io/ukemi-repo/hell/`）
+- 操作：資材をドラッグ＆ドロップ、またはタップで選択→枠をタップ。カットシーンはクリック／タップ／Space で送り
+- 演出は最後まで重厚・荘厳。やっていることだけがDIY
+- `hell/index.html` 1ファイルで完結（画像・音声・外部ライブラリなし。SVG と Web Audio API で生成）
+
+| | ステージ | 作るもの |
+|---|---|---|
+| STAGE 1 | PROJECT NEEDLE | 針山地獄 |
+| STAGE 2 | OPERATION CRIMSON POND | 血の池地獄 |
+| STAGE 3 | OPERATION INFERNO | 灼熱地獄 |
+| STAGE 4 | ETERNAL SCREAM | 叫喚地獄 |
+| FINAL | TOTAL INFERNO | 全設備を同時稼働 → 閻魔監査 |
+
+地獄らしさ（HELL）を上げるほど危険になり、安全対策を取るほど地獄らしさが下がります。最後に地獄監査が入り、評価が出ます。
+
 ## 技術メモ
 
 - 単一ファイル（`index.html`）で完結。外部アセット・外部ライブラリ・ビルド一切なし
@@ -50,7 +73,8 @@ Actions を使わない場合は、Source を「Deploy from a branch」にして
 
 ```
 .
-├── index.html                   # ゲーム本体（これ1つで動きます）
+├── index.html                   # 「受身」本体（これ1つで動きます）
+├── hell/index.html              # 「地獄を作るぞ。DIYで。」本体（これ1つで動きます）
 ├── README.md
 ├── LICENSE                      # MIT（不要なら削除してください）
 ├── .gitignore
