@@ -98,7 +98,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:var(--pap
 
 /* ---------- HUD ---------- */
 #hud{position:absolute;left:0;right:0;top:0;z-index:50;pointer-events:none;
-  display:flex;gap:.35em;padding:.4em 4.6em .4em .5em;background:linear-gradient(180deg,rgba(0,0,0,.85),transparent);
+  display:flex;gap:.35em;padding:.4em 5.4em .4em .5em;background:linear-gradient(180deg,rgba(0,0,0,.85),transparent);
   flex-wrap:wrap;align-items:center;font-size:.78em;}
 #hud .st{flex:1 1 5.4em;min-width:4.6em;border:1px solid rgba(232,226,212,.16);padding:.16em .35em .28em;background:rgba(0,0,0,.42);}
 #hud .st .k{display:flex;justify-content:space-between;letter-spacing:.08em;font-size:.82em;opacity:.85;}
@@ -132,8 +132,101 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:var(--pap
 .order li.got{opacity:1;color:#8fdc9d;}
 .order li.got .ck{color:#8fdc9d;}
 .order .memo{margin-top:.7em;font-size:.72em;line-height:1.7;opacity:.55;font-family:var(--ser);}
-.shelf{flex:1;display:grid;gap:.45em;overflow:auto;min-height:0;padding-bottom:.3em;
-  grid-template-columns:repeat(auto-fill,minmax(8.6em,1fr));align-content:start;}
+.shelf{flex:1;display:flex;flex-direction:column;gap:.5em;overflow:auto;min-height:0;padding-bottom:.3em;}
+.grp{border:1px solid #c9c9c2;background:#fbfbf8;}
+.grp>h4{display:flex;align-items:center;gap:.5em;background:#123c66;color:#fff;padding:.28em .55em;font-size:.82em;letter-spacing:.1em;}
+.grp>h4 i{font-style:normal;font-size:.86em;opacity:.75;font-weight:400;letter-spacing:0;}
+.grp>h4 b{margin-left:auto;font-size:.78em;background:#ffcc00;color:#123c66;padding:.05em .45em;font-weight:800;}
+.grp>h4 b.ok{background:#2e8b4f;color:#fff;}
+.gopts{display:grid;gap:.4em;padding:.4em;grid-template-columns:repeat(auto-fit,minmax(9.4em,1fr));}
+.o2{background:#fff;border:1px solid #c9c9c2;border-radius:2px;padding:.3em .4em .35em;cursor:pointer;
+  display:flex;flex-direction:column;gap:.18em;position:relative;transition:.12s;box-shadow:0 1px 0 #cfcfc7;}
+.o2:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.18);}
+.o2.on{background:#eef7ee;border-color:#2e8b4f;box-shadow:0 0 0 2px #2e8b4f inset;}
+.o2.no{opacity:.45;}
+.o2 .pic{height:2.4em;display:flex;align-items:center;justify-content:center;background:#f2f2ec;}
+.o2 .pic svg{width:74%;height:100%;}
+.o2 .nm{font-size:.78em;font-weight:700;line-height:1.3;}
+.o2 .sp{font-size:.64em;opacity:.6;line-height:1.25;}
+.o2 .pr{font-weight:800;color:#c0392b;font-size:.9em;font-variant-numeric:tabular-nums;}
+.o2 .chips{display:flex;flex-wrap:wrap;gap:.18em;font-size:.6em;font-variant-numeric:tabular-nums;}
+.o2 .chips span{padding:0 .3em;border:1px solid #bbb;color:#555;}
+.o2 .chips span.p{color:#1b6b3a;border-color:#8fc9a4;}
+.o2 .chips span.m{color:#b3121b;border-color:#e0a0a0;}
+.o2 .rk{font-size:.62em;font-weight:700;margin-top:.05em;}
+.o2 .rk.r0{color:#2e8b4f;} .o2 .rk.r1{color:#c98a00;} .o2 .rk.r2{color:#c0392b;}
+.o2 .tip{font-size:.62em;opacity:.68;line-height:1.35;}
+.o2 .mk{position:absolute;right:.25em;top:.25em;background:#2e8b4f;color:#fff;font-size:.56em;padding:.05em .3em;letter-spacing:.08em;}
+.shop-bot .bud2{font-size:.82em;font-weight:700;font-variant-numeric:tabular-nums;}
+.shop-bot .bud2.over{color:#ffd400;animation:blink .6s steps(2) infinite;}
+
+/* 施工方針 */
+.qbox{position:relative;z-index:2;width:100%;max-width:44em;border:1px solid #7a4a4a;background:rgba(10,5,8,.86);padding:.55em .6em;}
+.qbox h4{font-family:var(--ser);font-size:.82em;letter-spacing:.18em;color:#d7a06a;margin-bottom:.4em;text-align:center;}
+.qopts{display:grid;gap:.4em;grid-template-columns:repeat(auto-fit,minmax(9.4em,1fr));}
+.q1{border:1px solid #55403a;background:#161013;padding:.4em .5em;cursor:pointer;transition:.12s;}
+.q1:hover{border-color:#b3121b;background:#221317;}
+.q1 .n{font-size:.8em;font-weight:700;line-height:1.3;}
+.q1 .p{font-size:.68em;opacity:.65;font-variant-numeric:tabular-nums;}
+.q1 .chips{display:flex;flex-wrap:wrap;gap:.2em;margin-top:.2em;font-size:.62em;}
+.q1 .chips span{padding:0 .3em;border:1px solid #4a3b2c;}
+.q1 .rk{font-size:.64em;margin-top:.15em;}
+.q1.no{opacity:.4;pointer-events:none;}
+
+/* 試運転 */
+#sc-trial{background:radial-gradient(90% 80% at 50% 20%,#171018 0%,#0a0507 70%,#000 100%);
+  align-items:center;justify-content:center;justify-content:safe center;padding:calc(var(--hudh) + .6em) .7em .7em;overflow:auto;}
+#sc-trial h2{font-family:var(--ser);font-size:clamp(1.1rem,4.8vw,2rem);letter-spacing:.2em;color:#fff;text-align:center;}
+#sc-trial .lead{font-size:.82em;opacity:.72;text-align:center;font-family:var(--ser);margin-bottom:.5em;}
+.trows{width:100%;max-width:40em;display:flex;flex-direction:column;gap:.35em;}
+.trow{display:flex;gap:.5em;align-items:center;border:1px solid #40282c;background:rgba(0,0,0,.4);padding:.4em .55em;}
+.trow svg{width:2.2em;height:1.9em;flex:0 0 auto;}
+.trow .tn{font-size:.78em;font-family:var(--ser);letter-spacing:.1em;flex:0 0 6em;color:#d7a06a;}
+.trow .tr{font-size:.78em;flex:1;line-height:1.35;}
+.trow .tg{font-size:.7em;font-weight:700;letter-spacing:.08em;}
+.trow .tg.ok{color:#8fdc9d;} .trow .tg.ng{color:#ff6b6b;} .trow .tg.wn{color:#ffc861;}
+.fixups{width:100%;max-width:40em;display:grid;gap:.4em;grid-template-columns:repeat(auto-fit,minmax(10em,1fr));margin-top:.2em;}
+
+/* FINAL（トラブルシューティング） */
+.fbody{flex:1;display:flex;gap:.5em;min-height:0;}
+.facs{flex:0 0 9.4em;display:flex;flex-direction:column;gap:.3em;overflow:auto;}
+.fac{border:1px solid #40282c;background:rgba(255,255,255,.03);padding:.3em .4em;display:flex;gap:.35em;align-items:center;}
+.fac svg{width:1.8em;height:1.6em;flex:0 0 auto;opacity:.85;}
+.fac .fn{font-size:.68em;font-family:var(--ser);letter-spacing:.06em;flex:1;line-height:1.2;}
+.fac .fs{font-size:.62em;font-weight:700;letter-spacing:.06em;}
+.fac.run .fs{color:#8fdc9d;} .fac.bad{border-color:#c0392b;} .fac.bad .fs{color:#ffc861;}
+.fac.dead{opacity:.42;border-color:#3a3a3a;} .fac.dead .fs{color:#ff6b6b;}
+.incs{flex:1;display:flex;flex-direction:column;gap:.4em;overflow:auto;min-height:0;}
+.inc{border:1px solid #b3121b;background:linear-gradient(180deg,rgba(60,6,10,.7),rgba(20,4,8,.75));padding:.45em .55em;}
+.inc.calm{border-color:#5a3a3a;background:rgba(20,14,16,.7);}
+.inc .ih{display:flex;gap:.4em;align-items:center;cursor:pointer;}
+.inc .ic2{font-family:var(--ser);font-size:.72em;letter-spacing:.16em;color:#ff5a5a;}
+.inc .it{font-size:.82em;font-weight:700;flex:1;line-height:1.3;}
+.inc .ib{height:.26em;background:rgba(255,255,255,.16);margin-top:.3em;}
+.inc .ib i{display:block;height:100%;background:#ff2d2d;transition:width .2s linear;}
+.inc .ibody{margin-top:.4em;display:flex;flex-direction:column;gap:.3em;}
+.inc .sym{font-size:.76em;line-height:1.4;opacity:.92;}
+.inc .cand{font-size:.68em;opacity:.7;line-height:1.4;}
+.inc .lbl{font-size:.66em;letter-spacing:.16em;color:#d7a06a;font-family:var(--ser);margin-top:.15em;}
+.inc .btns{display:flex;flex-wrap:wrap;gap:.3em;}
+.ibtn{border:1px solid #55403a;background:#161013;color:var(--pap);font-family:inherit;cursor:pointer;
+  font-size:.72em;padding:.3em .5em;text-align:left;line-height:1.3;transition:.12s;}
+.ibtn:hover{border-color:#b3121b;background:#241419;}
+.ibtn small{display:block;opacity:.62;font-size:.86em;}
+.ibtn.done{opacity:.42;pointer-events:none;text-decoration:line-through;}
+.ibtn.no{opacity:.4;cursor:not-allowed;}
+.ibtn.cut{border-color:#7a5a20;}
+.ibtn.free{border-color:#2f6b45;}
+.diag{font-size:.72em;border:1px dashed #d7a06a;padding:.25em .4em;color:#ffe1b0;font-variant-numeric:tabular-nums;line-height:1.4;}
+.diag b{color:#fff;}
+.probing{font-size:.72em;color:#ffc861;letter-spacing:.1em;}
+.inc.solved{border-color:#2f6b45;background:rgba(10,30,16,.6);}
+@media (max-aspect-ratio:3/4){
+  .fbody{flex-direction:column;}
+  .facs{flex:0 0 auto;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;}
+  .fac{flex:0 0 7.4em;}
+  .fac svg{display:none;}
+}
 .item{background:#fff;border:1px solid #c9c9c2;border-radius:2px;padding:.45em .5em .5em;cursor:pointer;
   display:flex;flex-direction:column;gap:.25em;position:relative;transition:.12s;box-shadow:0 1px 0 #cfcfc7;}
 .item:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.18);}
@@ -173,6 +266,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:var(--pap
 .planart{position:absolute;left:3%;right:3%;top:3%;bottom:38%;display:flex;align-items:center;justify-content:center;
   opacity:.08;filter:grayscale(1) contrast(.7);transition:opacity .7s,filter .7s;pointer-events:none;}
 .planart svg{width:100%;height:100%;}
+#plan-extra{position:relative;z-index:2;width:100%;display:flex;justify-content:center;}
+.plan.pop .planart{opacity:.05 !important;}
 .plan .pttl{position:absolute;left:.6em;top:.5em;z-index:2;font-family:var(--ser);font-size:.7em;letter-spacing:.24em;color:#a97;opacity:.8;}
 .slots{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:.5em;justify-content:center;align-items:stretch;width:100%;}
 .slot{flex:1 1 7.4em;max-width:11em;min-height:6.4em;border:1px dashed #7a4a4a;background:rgba(255,255,255,.03);
@@ -211,6 +306,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:var(--pap
 .opt{flex:1 1 12em;max-width:15em;border:1px solid #4a3b2c;background:#100b0e;padding:.55em .65em;cursor:pointer;transition:.14s;}
 .opt:hover{border-color:#c9a227;}
 .opt.on{border-color:#8fdc9d;background:#0d1a11;}
+.opt.no{opacity:.4;cursor:not-allowed;}
 .opt .n{font-size:.86em;font-weight:700;}
 .opt .p{font-size:.7em;opacity:.6;font-variant-numeric:tabular-nums;}
 .opt .e{margin-top:.3em;display:flex;flex-wrap:wrap;gap:.3em;font-size:.68em;font-variant-numeric:tabular-nums;}
@@ -220,7 +316,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:var(--pap
 #comply .fin{margin-top:.4em;}
 
 /* ---------- 増設・音量パネル ---------- */
-.panel{width:min(94vw,34em);border:1px solid #4a2b2b;background:rgba(6,3,6,.9);padding:.8em;text-align:center;}
+.panel{position:relative;z-index:2;width:min(94vw,34em);border:1px solid #4a2b2b;background:rgba(6,3,6,.9);padding:.8em;text-align:center;}
 .panel h4{font-family:var(--ser);letter-spacing:.2em;font-size:.86em;color:#d7a06a;margin-bottom:.5em;}
 .panel .big{font-family:var(--ser);font-size:clamp(1.6rem,7vw,2.8rem);color:#fff;font-variant-numeric:tabular-nums;}
 .panel .big small{font-size:.4em;opacity:.6;}
@@ -399,11 +495,26 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;color:var(--pap
       <div class="fstat">
         <span class="cell">亡者 <b class="kv" id="f-souls">0</b> / <span class="kv" id="f-goal">0</span></span>
         <span class="cell">残り <b class="kv" id="f-time">0</b>s</span>
-        <span class="cell dmg">損壊 <b class="kv" id="f-dmg">0</b> / <span id="f-dmgmax">5</span></span>
+        <span class="cell">予備費 <b class="kv" id="f-money">￥0</b></span>
+        <span class="cell dmg">停止 <b class="kv" id="f-dmg">0</b> / 4</span>
       </div>
-      <div class="grid" id="fgrid"></div>
-      <div class="fsay" id="f-say">故障個所をタップして修理せよ。</div>
+      <div class="fbody">
+        <div class="facs" id="facs"></div>
+        <div class="incs" id="incs"></div>
+      </div>
+      <div class="fsay" id="f-say">症状から原因を絞り込め。</div>
     </div>
+  </section>
+
+  <!-- ===== 試運転 ===== -->
+  <section class="scene" id="sc-trial">
+    <h2>試 運 転</h2>
+    <div class="lead" id="trial-lead"></div>
+    <div class="trows" id="trial-rows"></div>
+    <div class="lead" style="margin-top:.8em" id="trial-fixlead"></div>
+    <div class="fixups" id="trial-fixups"></div>
+    <button class="btn" id="btn-trial" style="margin-top:.9em">本 番 へ</button>
+    <div class="tiny" id="trial-note" style="margin-top:.6em"></div>
   </section>
 
   <!-- ===== END ===== -->
@@ -909,142 +1020,223 @@ const FACART={
 };
 
 /* ============================================================
-   3. DATA ― 資材カタログ
+   3. DATA ― 資材カタログ（アイコン用の追加分）
    ============================================================ */
-const MAT={
-  plywood:{n:'ベニヤ板',en:'PLYWOOD BOARD',sp:'910×1820×5.5mm',pr:1280,ic:'plywood'},
-  lumber:{n:'2×4材',en:'2 BY 4 LUMBER',sp:'38×89×1820mm',pr:698,ic:'lumber'},
-  turf:{n:'人工芝',en:'ARTIFICIAL TURF',sp:'1m×2m ロール',pr:2480,ic:'turf'},
-  stake:{n:'園芸用支柱',en:'GARDEN STAKE',sp:'φ11×1500mm 20本束',pr:1980,ic:'stake'},
-  screw:{n:'木ネジ',en:'WOOD SCREW',sp:'3.8×38mm 200本入',pr:880,ic:'screw'},
-  band:{n:'結束バンド',en:'CABLE TIE',sp:'200本入 耐候性',pr:498,ic:'band'},
-  pool:{n:'ビニールプール',en:'VINYL POOL',sp:'2.6m 3気室',pr:3980,ic:'pool'},
-  hose:{n:'散水ホース',en:'GARDEN HOSE',sp:'15m リール付',pr:2680,ic:'hose'},
-  dye:{n:'赤色着色剤',en:'CRIMSON DYE',sp:'食品用 500ml',pr:1180,ic:'dye'},
-  pump:{n:'循環ポンプ',en:'CIRCULATION PUMP',sp:'水中型 12W',pr:4280,ic:'pump',w:12},
-  heater:{n:'セラミックヒーター',en:'CERAMIC HEATER',sp:'1200W 3台セット',pr:8940,ic:'heater',w:1200},
-  fan:{n:'サーキュレーター',en:'AIR CIRCULATOR',sp:'DC静音 30W',pr:3480,ic:'fan',w:30},
-  led:{n:'赤色LEDテープ',en:'RED LED TAPE',sp:'5m 12V 高輝度',pr:1980,ic:'led',w:24},
-  cord:{n:'延長コード',en:'EXTENSION CORD',sp:'3口 5m 1500Wまで',pr:1280,ic:'cord'},
-  speaker:{n:'Bluetoothスピーカー',en:'BLUETOOTH SPEAKER',sp:'防水 20W ×2台',pr:5960,ic:'speaker',w:20},
-  tablet:{n:'中古タブレット',en:'USED TABLET',sp:'8インチ ジャンク品',pr:4980,ic:'tablet',w:10},
-  wav:{n:'悲鳴音源',en:'SCREAM SOURCE',sp:'著作権フリー 12種',pr:550,ic:'wave'},
-  battery:{n:'モバイルバッテリー',en:'POWER BANK',sp:'20000mAh',pr:2980,ic:'battery'},
-  paint:{n:'赤い塗料',en:'BLOOD RED PAINT',sp:'水性つや消し 2L',pr:2680,ic:'paint'},
-  bucket:{n:'バケツ',en:'BUCKET',sp:'12L 目盛付',pr:398,ic:'bucket'},
-  net:{n:'園芸ネット',en:'GARDEN NET',sp:'1.8m×5m',pr:780,ic:'net'},
-  matx:{n:'滑り止めマット',en:'ANTI-SLIP MAT',sp:'60×90cm',pr:1180,ic:'mat'},
-  foam:{n:'防炎シート',en:'FLAME RETARDANT SHEET',sp:'1.8m×3.4m 防炎ラベル付',pr:3480,ic:'foam'},
-  ext:{n:'消火器',en:'FIRE EXTINGUISHER',sp:'ABC粉末 3型',pr:3980,ic:'extinguisher'},
-  light:{n:'避難誘導灯',en:'EXIT LIGHT',sp:'LED 壁掛式',pr:4500,ic:'light'},
-  meter:{n:'騒音計',en:'SOUND LEVEL METER',sp:'30〜130dB',pr:3280,ic:'meter'},
-  breaker:{n:'分電盤',en:'BREAKER PANEL',sp:'増設用 20A',pr:6800,ic:'breakerbox'}
-};
-function matHTML(id,cls){
-  const m=MAT[id];
-  return '<div class="mat '+(cls||'')+'" data-mat="'+id+'">'+icon(m.ic)+
-    '<div class="t">'+m.n+'<small>'+m.sp+'</small></div></div>';
+Object.assign(ICON,{
+  trough:'<g><path d="M5 12h30l-4 14H9z" fill="#3f4b52" stroke="#222b30"/><path d="M5 12c0-2.6 30-2.6 30 0" fill="none" stroke="#222b30"/><path d="M9 20h22" stroke="#5d6c75" stroke-width="1.2"/></g>',
+  frame:'<g><rect x="5" y="10" width="30" height="16" fill="none" stroke="#8a6434" stroke-width="2.4"/><rect x="8" y="13" width="24" height="10" fill="#2f5f8f" opacity=".75"/><path d="M5 10l30 16M35 10L5 26" stroke="#c99a5b" stroke-width="1"/></g>',
+  rebar:'<g><g stroke="#8d8d8d" stroke-width="3">'+[0,1,2].map(function(i){return '<path d="M'+(11+i*9)+' 4v26"/>';}).join('')+'</g>'+
+    '<g stroke="#6a6a6a" stroke-width=".9">'+[0,1,2,3,4,5,6].map(function(i){return '<path d="M8 '+(6+i*3.6)+'h24"/>';}).join('')+'</g></g>',
+  bamboo:'<g><g stroke="#4c6a22" stroke-width="1">'+
+    [0,1,2].map(function(i){return '<rect x="'+(11+i*9)+'" y="4" width="5" height="26" fill="#8fae4e"/>';}).join('')+
+    [0,1,2].map(function(i){return '<path d="M'+(11+i*9)+' 14h5M'+(11+i*9)+' 23h5"/>';}).join('')+'</g></g>',
+  sunoko:'<g><g fill="#d8b072" stroke="#8a6434" stroke-width=".7">'+
+    [0,1,2,3,4,5].map(function(i){return '<rect x="4" y="'+(8+i*3.4)+'" width="32" height="2.2"/>';}).join('')+'</g>'+
+    '<rect x="6" y="8" width="2.6" height="19" fill="#b58c50"/><rect x="31" y="8" width="2.6" height="19" fill="#b58c50"/></g>',
+  nail:'<g><path d="M14 6h12v2.6H14z" fill="#9e9e9e"/><path d="M19 8.6h2v18l-1 4-1-4z" fill="#bdbdbd" stroke="#7c7c7c" stroke-width=".4"/></g>',
+  tape:'<g><circle cx="20" cy="18" r="12" fill="#2b6cb0" stroke="#17406b"/><circle cx="20" cy="18" r="4.4" fill="#0d0f12"/><path d="M32 18c0 6-5 11-12 11" stroke="#5b9bd5" stroke-width="3" fill="none"/></g>',
+  blower:'<g><rect x="6" y="9" width="24" height="20" rx="3" fill="#e0a900" stroke="#8a6a00"/><circle cx="18" cy="19" r="7.4" fill="#37474f"/><circle cx="18" cy="19" r="2" fill="#90a4ae"/><path d="M30 13h6v12h-6z" fill="#b0bec5"/></g>',
+  flood:'<g><rect x="9" y="8" width="22" height="14" rx="2" fill="#37474f" stroke="#1b262b"/><rect x="11.5" y="10" width="17" height="10" fill="#ff1744"/><path d="M20 22v6M13 30h14" stroke="#546e7a" stroke-width="2.4"/></g>',
+  phone:'<g><rect x="13" y="4" width="14" height="26" rx="2.4" fill="#212121" stroke="#000"/><rect x="14.6" y="7" width="10.8" height="18" fill="#3949ab"/><circle cx="20" cy="27.6" r="1" fill="#757575"/></g>',
+  cd:'<g><circle cx="20" cy="18" r="12" fill="#cfd8dc" stroke="#90a4ae"/><circle cx="20" cy="18" r="11" fill="none" stroke="#b39ddb"/><circle cx="20" cy="18" r="3.4" fill="#0d0f12"/></g>',
+  uchiwa:'<g><ellipse cx="20" cy="14" rx="11" ry="10" fill="#f4e7c8" stroke="#c9a227"/><path d="M20 24v8" stroke="#8a6434" stroke-width="2.6"/><path d="M12 14h16" stroke="#d9c79a"/></g>',
+  alarm:'<g><circle cx="20" cy="17" r="11" fill="#eceff1" stroke="#90a4ae"/><circle cx="20" cy="17" r="4" fill="#ff5252"/><g stroke="#b0bec5">'+
+    [0,1,2,3].map(function(i){return '<path d="M20 17l'+(Math.cos(i*1.57)*9).toFixed(1)+' '+(Math.sin(i*1.57)*9).toFixed(1)+'"/>';}).join('')+'</g></g>',
+  soundproof:'<g><rect x="5" y="9" width="30" height="20" fill="#5d4037" stroke="#3e2723"/><g fill="#795548">'+
+    [0,1,2,3,4].map(function(i){return [0,1,2].map(function(k){return '<rect x="'+(6.5+i*6)+'" y="'+(10.5+k*6)+'" width="4.6" height="4.6"/>';}).join('');}).join('')+'</g></g>',
+  sweets:'<g><rect x="7" y="12" width="26" height="14" rx="1.5" fill="#8d6e63" stroke="#4e342e"/><path d="M20 12v14" stroke="#c62828" stroke-width="2.6"/><path d="M7 19h26" stroke="#c62828" stroke-width="2.6"/><path d="M17 10c2-3 4-3 6 0z" fill="#c62828"/></g>',
+  stove:'<g><rect x="9" y="10" width="22" height="18" rx="9" fill="#37474f" stroke="#1b262b"/><g stroke="#ff5722" stroke-width="2">'+
+    [0,1,2].map(function(i){return '<path d="M13 '+(15+i*4.4)+'h14"/>';}).join('')+'</g><rect x="14" y="28" width="12" height="2.4" fill="#90a4ae"/></g>'
+});
+function optHTML(o,cls){
+  return '<div class="mat '+(cls||'')+'" data-mat="'+o.id+'">'+icon(o.ic)+
+    '<div class="t">'+o.n+'<small>'+o.sp+'</small></div></div>';
 }
 
 /* ============================================================
-   4. STAGES
+   4. STAGES ― 系統ごとに複数の工法から選ぶ
+   risk: FINAL で発生するトラブルの重み（これが因果の核）
    ============================================================ */
+const RISKN={collapse:'倒壊',needle:'支柱破損',leak:'水漏れ',pump:'循環停止',foul:'水質悪化',
+  overload:'電力超過',heater:'加熱不良',fire:'発火',bt:'音声切断',batt:'電池切れ',
+  noise:'騒音苦情',staff:'人員消耗',short:'漏電'};
 const STAGES=[
 {
   code:'STAGE 1 ― PROJECT NEEDLE', ttl:'針 山 地 獄', en:'NEEDLE MOUNTAIN SYSTEM',
-  clock:'AM 09:03', kind:'needle',
+  clock:'AM 09:03', kind:'needle', fac:'needle',
   memo:'目標：亡者が裸足で歩けぬ地形を構築せよ。<br>寸法は狂わせるな。',
-  need:['plywood','turf','stake','screw'],
-  extra:['lumber','band','bucket','net'],
-  slots:[
-    {role:'基 礎',hint:'平面をつくる板材',acc:'plywood',say:'<b>ベニヤを出せ。</b>寸法は狂わせるな。'},
-    {role:'表 層',hint:'地面を偽装する',acc:'turf',say:'表面は緑だ。緑の下に絶望を敷く。'},
-    {role:'針',hint:'鋭利な垂直材',acc:'stake',say:'園芸用品売り場は、我々の兵器廠である。'},
-    {role:'接 合',hint:'釘ではない',acc:'screw',say:'<b>釘ではない。ここは木ネジだ。</b>下穴を忘れるな。'}
+  sys:[
+   {id:'base',role:'基 礎',hint:'足場をつくる',opts:[
+     {id:'ply',n:'ベニヤ板',sp:'5.5mm 910×1820',pr:1280,ic:'plywood',st:{hell:1,dur:4},risk:{collapse:2},tip:'安い。踏むとしなる'},
+     {id:'str',n:'構造用合板',sp:'12mm 910×1820',pr:2980,ic:'plywood',st:{hell:3,dur:11},risk:{},tip:'重い。だが、たわまない'},
+     {id:'sunoko',n:'すのこ（流用）',sp:'85×180cm ×2',pr:780,ic:'sunoko',st:{hell:4,fear:1,dur:2},risk:{collapse:3},tip:'隙間が不穏。強度は不明'}
+   ]},
+   {id:'needle',role:'針',hint:'鋭利な垂直材',opts:[
+     {id:'stake',n:'園芸用支柱',sp:'φ11×1500mm 20本束',pr:1980,ic:'stake',st:{hell:5,pain:8,dur:3},risk:{needle:3},tip:'細い。数で押す'},
+     {id:'bamboo',n:'竹製支柱',sp:'φ16×1800mm 30本',pr:3480,ic:'bamboo',st:{hell:8,pain:10,dur:7},risk:{needle:1},tip:'太い。よくしなる'},
+     {id:'rebar',n:'鉄筋',sp:'D10×1500mm 15本',pr:6800,ic:'rebar',st:{hell:10,pain:14,dur:13,safety:-8},risk:{},tip:'完全に凶器。曲がらない'}
+   ]},
+   {id:'surf',role:'表 層',hint:'地面を偽装する',opts:[
+     {id:'turf',n:'人工芝',sp:'1m×2m ロール',pr:2480,ic:'turf',st:{hell:4,fear:3},risk:{},tip:'緑の下に絶望を敷く'},
+     {id:'foam',n:'防炎シート（黒）',sp:'1.8m×3.4m 防炎ラベル付',pr:3480,ic:'foam',st:{hell:5,fear:4,safety:6},risk:{fire:-1},tip:'黒い。しかも燃えない'},
+     {id:'paper',n:'新聞紙＋赤い塗料',sp:'古紙 ／ 水性 2L',pr:980,ic:'paint',st:{hell:8,fear:4,safety:-8},risk:{fire:2},tip:'生々しい。よく燃える'}
+   ]}
   ],
-  gain:{hell:16,pain:22,fear:8,dur:12,safety:-6},
+  plan:{q:'固 定 方 法 を 決 定 せ よ',opts:[
+    {id:'screw',n:'木ネジ＋下穴',pr:880,ic:'screw',st:{dur:8},risk:{needle:-1,collapse:-1},say:'<b>釘ではない。ここは木ネジだ。</b>諸君、下穴を忘れるな。'},
+    {id:'nail',n:'釘',pr:380,ic:'nail',st:{dur:2},risk:{needle:1},say:'……本来は木ネジだ。だが、予算がない。'},
+    {id:'zip',n:'結束バンド',pr:498,ic:'band',st:{hell:3,dur:-3},risk:{needle:2,collapse:1},say:'<b>結束バンドは現場の血液である。</b>'}
+  ]},
   comply:[
-    {n:'支柱の先端キャップ',pr:680,e:{safety:7,pain:-12}},
-    {n:'転落防止ネット',pr:780,e:{safety:6,hell:-8}},
-    {n:'手すり',pr:2800,e:{safety:5,hell:-8}},
-    {n:'床の滑り止めマット',pr:1180,e:{safety:5,pain:-10}}
+    {n:'支柱の先端保護キャップ',pr:680,e:{safety:8,pain:-8},risk:{needle:-1}},
+    {n:'転落防止ネット',pr:1480,e:{safety:8,hell:-3},risk:{collapse:-1}},
+    {n:'立入前の安全講習（部下による）',pr:0,e:{safety:6,hell:-4,fear:-4},risk:{}}
   ]
 },
 {
   code:'STAGE 2 ― OPERATION CRIMSON POND', ttl:'血 の 池 地 獄', en:'CRIMSON POND',
-  clock:'AM 10:41', kind:'pond',
+  clock:'AM 10:41', kind:'pond', fac:'pond',
   memo:'目標：赤い水面を確保せよ。<br>水は循環させろ。淀んだ地獄は不衛生だ。',
-  need:['pool','hose','dye','pump'],
-  extra:['paint','bucket','band','matx'],
-  slots:[
-    {role:'容 器',hint:'水を溜める構造物',acc:'pool',say:'空気を入れろ。三気室だ。<b>一気室ずつ、確実に。</b>'},
-    {role:'注 水',hint:'水源からの経路',acc:'hose',say:'水道は屋外栓から引く。許可は取ってある。'},
-    {role:'呈 色',hint:'血の色をつくる',acc:'dye',say:'<b>食品用だ。</b>万一飲んでも問題はない。'},
-    {role:'循 環',hint:'淀ませない機構',acc:'pump',say:'流れのない血は、ただの水たまりである。'}
+  sys:[
+   {id:'tank',role:'容 器',hint:'水を溜める構造物',opts:[
+     {id:'pool',n:'大型ビニールプール',sp:'2.6m 3気室',pr:3980,ic:'pool',st:{hell:4,dur:2},risk:{leak:3},tip:'安い。薄い。広い'},
+     {id:'trough',n:'トロ舟 80L ×3 連結',sp:'ポリプロピレン製',pr:7600,ic:'trough',st:{hell:5,dur:10},risk:{leak:1},tip:'頑丈。ただし継ぎ目がある'},
+     {id:'frame',n:'木枠＋防水シート',sp:'2×4材 ／ ブルーシート',pr:3180,ic:'frame',st:{hell:9,dur:5},risk:{leak:2,collapse:1},tip:'一番それらしい。一番怖い'}
+   ]},
+   {id:'circ',role:'循 環',hint:'淀ませない機構',opts:[
+     {id:'cheap',n:'水槽用ポンプ',sp:'8W 流量 300L/h',pr:1980,ic:'pump',st:{hell:3,power:8},risk:{pump:3},tip:'安い。流量は、まあ'},
+     {id:'pro',n:'池用循環ポンプ',sp:'45W 流量 3000L/h',pr:6800,ic:'pump',st:{hell:4,power:45},risk:{},tip:'業務用。高い。止まらない'},
+     {id:'stir',n:'撹拌（部下が棒で混ぜる）',sp:'園芸用支柱を流用',pr:0,ic:'stake',st:{hell:3,fear:3},risk:{foul:2,staff:2},tip:'消費電力ゼロ。人力'}
+   ]},
+   {id:'color',role:'呈 色',hint:'血の色をつくる',opts:[
+     {id:'dye',n:'食品用赤色着色料',sp:'500ml ／ 飲用可',pr:1180,ic:'dye',st:{hell:4,safety:4},risk:{},tip:'万一飲んでも問題はない'},
+     {id:'pig',n:'業務用赤色顔料',sp:'2kg 粉末',pr:4200,ic:'dye',st:{hell:9,fear:3,safety:-4},risk:{foul:1},tip:'濃い。そして落ちない'},
+     {id:'paint',n:'赤い塗料を直接投入',sp:'水性つや消し 2L',pr:2680,ic:'paint',st:{hell:8,safety:-10},risk:{foul:3},tip:'水質という概念が消える'}
+   ]}
   ],
-  gain:{hell:18,pain:12,fear:16,dur:10,safety:-8},
+  plan:{q:'防 水 処 理 の 方 針',opts:[
+    {id:'full',n:'全目地を防水テープで処理',pr:2400,ic:'tape',risk:{leak:-2},say:'水は、出る前に止める。'},
+    {id:'part',n:'要所のみ処理',pr:900,ic:'tape',risk:{leak:-1},say:'要所は押さえた。要所は。'},
+    {id:'none',n:'省略する',pr:0,ic:'bucket',st:{hell:1},risk:{leak:1},say:'<b>水は、出てから考える。</b>'}
+  ]},
   comply:[
-    {n:'漏電遮断器',pr:2980,e:{safety:10,hell:-4}},
-    {n:'プールサイド滑り止め',pr:1180,e:{safety:6,pain:-10}},
-    {n:'水質管理（塩素剤）',pr:880,e:{safety:7,hell:-10}},
-    {n:'監視員（部下1名を常駐）',pr:0,e:{safety:6,hell:-6,fear:-6}}
+    {n:'漏電遮断器',pr:2980,e:{safety:10},risk:{short:-2,pump:-1}},
+    {n:'プールサイド滑り止め',pr:1180,e:{safety:6,pain:-7},risk:{}},
+    {n:'監視員（部下1名を常駐）',pr:0,e:{safety:8,hell:-3},risk:{leak:-1}}
   ]
 },
 {
   code:'STAGE 3 ― OPERATION INFERNO', ttl:'灼 熱 地 獄', en:'INFERNO CHAMBER',
-  clock:'PM 01:12', kind:'heat',
+  clock:'PM 01:12', kind:'heat', fac:'heat',
   memo:'目標：室温を上げよ。<br>ただし契約アンペアは有限である。',
-  need:['heater','fan','led','cord'],
-  extra:['foam','ext','paint','band'],
-  slots:[
-    {role:'熱 源',hint:'熱を生む機器',acc:'heater',say:'温風ではない。<b>灼熱だ。</b>'},
-    {role:'送 風',hint:'熱を巡らせる',acc:'fan',say:'熱は動かねば意味がない。対流を設計せよ。'},
-    {role:'照 明',hint:'赤い光',acc:'led',say:'<b>赤色LEDは2700ケルビンではない。もっと赤くだ。</b>'},
-    {role:'電 源',hint:'電力の供給経路',acc:'cord',say:'……この判断が、後に響く。'}
+  sys:[
+   {id:'heat',role:'熱 源',hint:'熱を生む機器',opts:[
+     {id:'used',n:'中古セラミックヒーター ×2',sp:'1200W ／ 保証なし',pr:5400,ic:'heater',st:{hell:9,pain:7,power:2400},risk:{heater:3},tip:'安い。中古。よく止まる'},
+     {id:'pro',n:'業務用温風機',sp:'1500W 単相100V',pr:12800,ic:'blower',st:{hell:12,pain:10,power:1500},risk:{},tip:'高い。強い。壊れない'},
+     {id:'stove',n:'電気ストーブ ×2',sp:'800W 赤熱管',pr:3960,ic:'stove',st:{hell:5,pain:4,power:1600},risk:{heater:2,fire:2},tip:'安い。赤く光る。燃える'}
+   ]},
+   {id:'air',role:'送 風',hint:'熱を巡らせる',opts:[
+     {id:'circ',n:'サーキュレーター',sp:'DC静音 30W',pr:3480,ic:'fan',st:{hell:3,power:30},risk:{},tip:'静か。無難'},
+     {id:'blower',n:'業務用送風機',sp:'200W 三段切替',pr:7800,ic:'blower',st:{hell:6,pain:4,power:200},risk:{},tip:'熱風になる。轟音つき'},
+     {id:'uchiwa',n:'うちわ（部下が扇ぐ）',sp:'紙製 ／ 交代制',pr:0,ic:'uchiwa',st:{hell:4,fear:3},risk:{staff:3},tip:'消費電力ゼロ。消耗するのは人'}
+   ]},
+   {id:'lite',role:'照 明',hint:'赤い光',opts:[
+     {id:'led',n:'赤色LEDテープ',sp:'5m 12V 高輝度',pr:1980,ic:'led',st:{hell:4,power:24},risk:{},tip:'2700ケルビンではない。もっと赤い'},
+     {id:'flood',n:'赤色投光器',sp:'100W 防雨型',pr:5600,ic:'flood',st:{hell:8,fear:4,power:100},risk:{},tip:'影が伸びる'},
+     {id:'cello',n:'赤いセロファン＋作業灯',sp:'60W 白熱',pr:880,ic:'light',st:{hell:5,power:60},risk:{fire:2},tip:'安い。そして熱を持つ'}
+   ]}
   ],
-  gain:{hell:15,pain:16,fear:12,dur:8,safety:-14},
+  plan:{q:'電 源 系 統 の 設 計',opts:[
+    {id:'panel',n:'分電盤を増設し2回路に分ける',pr:6800,ic:'breakerbox',limit:3000,risk:{overload:-2},say:'回路は分ける。<b>タコ足配線は敗北である。</b>'},
+    {id:'two',n:'電源タップを2本に分散',pr:1560,ic:'cord',limit:2000,risk:{},say:'二系統。悪くはない。'},
+    {id:'one',n:'1本のタップに集約する',pr:780,ic:'cord',limit:1500,st:{hell:1},risk:{overload:3},say:'一本で足りる。……足りるはずだ。'}
+  ]},
   comply:[
-    {n:'消火器',pr:3980,e:{safety:10,hell:-5}},
-    {n:'火災報知器',pr:2480,e:{safety:8,hell:-6}},
-    {n:'防炎シート',pr:3480,e:{safety:9,hell:-4}},
-    {n:'避難誘導灯',pr:4500,e:{safety:8,hell:-10}}
+    {n:'消火器',pr:3980,e:{safety:10,hell:-3},risk:{fire:-2}},
+    {n:'火災報知器',pr:2480,e:{safety:8,hell:-3},risk:{}},
+    {n:'耐熱・防炎シートの内張り',pr:3480,e:{safety:8,hell:-2},risk:{fire:-1,heater:-1}}
   ]
 },
 {
   code:'STAGE 4 ― ETERNAL SCREAM', ttl:'叫 喚 地 獄', en:'ETERNAL SCREAM SYSTEM',
-  clock:'PM 03:38', kind:'scream',
+  clock:'PM 03:38', kind:'scream', fac:'scream',
   memo:'目標：絶叫を常時再生せよ。<br>近隣への配慮は各自の判断に委ねる。',
-  need:['speaker','tablet','wav','battery'],
-  extra:['band','meter','foam','cord'],
-  slots:[
-    {role:'放 音',hint:'音を出す機器',acc:'speaker',say:'防水を選べ。ここは血の池の隣だ。'},
-    {role:'再 生',hint:'音源を鳴らす端末',acc:'tablet',say:'中古で構わん。<b>地獄に新品は要らん。</b>'},
-    {role:'音 源',hint:'叫喚そのもの',acc:'wav',say:'<b>著作権は侵さん。</b>我々は法を守る組織である。'},
-    {role:'給 電',hint:'コンセントのない場所へ',acc:'battery',say:'電源のない場所にも、絶望は届く。'}
+  sys:[
+   {id:'snd',role:'放 音',hint:'音を出す機器',opts:[
+     {id:'bt',n:'中古Bluetoothスピーカー ×2',sp:'防水 20W ／ 中古',pr:3600,ic:'speaker',st:{hell:5,power:20},risk:{bt:3},tip:'安い。よく切れる'},
+     {id:'pa',n:'有線PAスピーカー',sp:'60W ケーブル10m付',pr:9800,ic:'speaker',st:{hell:9,fear:4,power:60},risk:{},tip:'有線。切れない。重い'},
+     {id:'cup',n:'スマートフォン＋紙コップ',sp:'私物 ／ 紙コップ2個',pr:300,ic:'phone',st:{hell:3,fear:1},risk:{bt:1,batt:2},tip:'音量は、気持ちで補う'}
+   ]},
+   {id:'src',role:'音 源',hint:'叫喚そのもの',opts:[
+     {id:'free',n:'著作権フリー悲鳴音源',sp:'12種 ／ ループ可',pr:550,ic:'wave',st:{hell:5,fear:6},risk:{},tip:'我々は法を守る組織である'},
+     {id:'live',n:'部下による生の絶叫',sp:'交代要員 なし',pr:0,ic:'ghosticon',st:{hell:9,fear:7},risk:{staff:3},tip:'最も真に迫る'},
+     {id:'cd',n:'効果音CD（ホラー編）',sp:'全60トラック',pr:2980,ic:'cd',st:{hell:4,fear:4},risk:{},tip:'安定。やや牧歌的'}
+   ]},
+   {id:'pw',role:'給 電',hint:'電源をどう取るか',opts:[
+     {id:'batt',n:'モバイルバッテリー',sp:'20000mAh ×2',pr:2980,ic:'battery',st:{},risk:{batt:2},tip:'配線が要らない'},
+     {id:'ext',n:'延長コードで常時給電',sp:'3口 5m',pr:1280,ic:'cord',st:{power:20},risk:{overload:2},tip:'確実。ただし回路を食う'},
+     {id:'dry',n:'乾電池運用',sp:'単三 40本',pr:680,ic:'battery',st:{},risk:{batt:3},tip:'切れたら替える。誰が？'}
+   ]}
   ],
-  gain:{hell:16,pain:6,fear:24,dur:8,safety:-6},
+  plan:{q:'ス ピ ー カ ー の 設 置 場 所',opts:[
+    {id:'pond',n:'血の池の縁に設置する',pr:0,ic:'speaker',st:{hell:5,fear:3},risk:{short:3},say:'音が水面に反響する。<b>実に良い。</b>'},
+    {id:'needle',n:'針山の上に吊る',pr:900,ic:'speaker',st:{hell:4},risk:{needle:1,batt:1},say:'上から降ってくる悲鳴だ。'},
+    {id:'wall',n:'通路側の壁面に固定する',pr:600,ic:'speaker',st:{hell:1},risk:{noise:1},say:'無難だ。<b>無難であることは、罪ではない。</b>'}
+  ]},
   comply:[
-    {n:'防音材の内張り',pr:3480,e:{safety:5,hell:-12}},
-    {n:'騒音計による常時監視',pr:3280,e:{safety:7,hell:-6}},
-    {n:'再生時間帯の制限（22時まで）',pr:0,e:{safety:8,hell:-14}},
-    {n:'近隣への事前挨拶（菓子折）',pr:1580,e:{safety:9,hell:-8,fear:-4}}
+    {n:'防音材の内張り',pr:3480,e:{safety:5,hell:-6},risk:{noise:-2}},
+    {n:'再生時間帯の制限（22時まで）',pr:0,e:{safety:8,hell:-7},risk:{noise:-2}},
+    {n:'近隣への事前挨拶（菓子折）',pr:1580,e:{safety:6,hell:-2},risk:{noise:-1}}
   ]
 }
 ];
+const FACDEF={
+  needle:{n:'針 山 地 獄',ic:'stake'}, pond:{n:'血 の 池',ic:'pool'},
+  heat:{n:'灼 熱 地 獄',ic:'heater'}, scream:{n:'叫 喚 地 獄',ic:'speaker'}
+};
 
 /* ============================================================
    5. STATE
    ============================================================ */
 const S={};
+const BUDGET=62000;          /* 総予算。全部を良い品で揃えると 40% ほど足りない */
 function resetState(){
-  S.stage=0; S.money=120000; S.cost=0;
-  S.st={hell:0,pain:0,fear:0,dur:60,safety:20,power:0};
-  S.cart={}; S.owned={}; S.facilities=[]; S.complaints=0;
-  S.fixes=0; S.missed=0; S.breaker=false; S.reported=false;
-  S.heaters=0; S.volume=0; S.log=[];
+  S.stage=0; S.money=BUDGET; S.cost=0;
+  S.st={hell:0,pain:0,fear:0,dur:50,safety:16,power:0};
+  S.limit=1500;              /* 回路容量（STAGE3の電源設計で変わる） */
+  S.risk={};                 /* FINAL のトラブル重み */
+  S.picks={};                /* 'stage.sys' -> option */
+  S.plans={};                /* stage -> plan option */
+  S.facs={};                 /* 設備の状態 */
+  S.complaints=0; S.fixes=0; S.patches=0; S.missed=0; S.dropped=[];
+  S.volume=0; S.reported=false; S.souls=0; S.extra=0;
 }
-const CAP=1500; /* 一回路の上限 W */
-
+function addRisk(r,mul){
+  if(!r) return;
+  for(const k in r) S.risk[k]=Math.max(0,(S.risk[k]||0)+r[k]*(mul||1));
+}
+function riskLv(r){
+  let t=0; for(const k in r) t+=r[k];
+  return t<=0?0:(t<=1.2?1:(t<=2.2?2:3));
+}
+function riskText(r){
+  const ks=Object.keys(r||{}).filter(function(k){return r[k]>0;});
+  if(!ks.length){
+    const neg=Object.keys(r||{}).filter(function(k){return r[k]<0;});
+    return neg.length?'<span class="rk r0">◎ '+RISKN[neg[0]]+'を抑制</span>':'<span class="rk r0">◎ リスクなし</span>';
+  }
+  const lv=riskLv(r);
+  return '<span class="rk r'+(lv>=3?2:1)+'">⚠ '+ks.map(function(k){return RISKN[k];}).join('・')+
+    ' リスク'+(lv>=3?'大':(lv===2?'中':'小'))+'</span>';
+}
+function statChips(st){
+  if(!st) return '';
+  const NM={hell:'HELL',pain:'PAIN',fear:'FEAR',dur:'DUR',safety:'SAFE',power:'W'};
+  return Object.keys(st).map(function(k){
+    const v=st[k]; if(!v) return '';
+    return '<span class="'+(k==='power'?'':(v>0?'p':'m'))+'">'+NM[k]+' '+(v>0?'+':'')+v+'</span>';
+  }).join('');
+}
 /* ============================================================
    6. HUD
    ============================================================ */
@@ -1065,10 +1257,10 @@ function hudDraw(){
     s+='<div class="st '+d[2]+'" data-k="'+d[0]+'"><div class="k"><span>'+d[1]+'</span><b>'+v+'</b></div>'+
        '<div class="bar"><i style="width:'+v+'%"></i></div></div>';
   });
-  const pw=Math.round(S.st.power), po=pw>CAP;
-  s+='<div class="st pow '+(po?'over':'')+'" data-k="power"><div class="k"><span>POWER</span><b>'+pw+'W</b></div>'+
-     '<div class="bar"><i style="width:'+clamp(pw/CAP*100,0,100)+'%"></i></div></div>';
-  s+='<div class="st money" data-k="cost"><div class="k"><span>COST</span><b>&nbsp;'+yen(S.cost)+'</b></div></div>';
+  const pw=Math.round(S.st.power), po=pw>S.limit;
+  s+='<div class="st pow '+(po?'over':'')+'" data-k="power"><div class="k"><span>POWER</span><b>'+pw+'/'+S.limit+'W</b></div>'+
+     '<div class="bar"><i style="width:'+clamp(pw/S.limit*100,0,100)+'%"></i></div></div>';
+  s+='<div class="st money '+(S.money<6000?'over':'')+'" data-k="cost"><div class="k"><span>予 算</span><b>&nbsp;'+yen(S.money)+'</b></div></div>';
   h.innerHTML=s;
   syncHud();
 }
@@ -1208,13 +1400,18 @@ const CLERK=[
    {who:'店 員',t:'でしたら防炎素材がおすすめです'},
    {who:'指 揮 官',t:'……採用する'},
    {big:'FLAME RETARDANT',big2:'防 炎 素 材 を 採 用',sfx:'dunn'},
-   {fn:function(){ if(!S.cart.foam){ S.cart.foam=1; addStat({safety:8}); renderShelf(); } }} ],
+   {fn:function(){ addStat({safety:6,cost:1800},true); addRisk({fire:-1}); renderShelf(); }} ],
  [ {who:'部 下',t:'閣下！ 赤色ＬＥＤ、在庫残り1です！'},
    {who:'指 揮 官',t:'押さえろ'},
    {who:'部 下',t:'はっ！'},
    {big:'LAST ONE',big2:'在 庫 残 り 1',sfx:'dunn'} ]
 ];
-let clerkQ=null,clerkI=0,clerkDone=null;
+function playClerkLine(who,t){ playClerk([{who:who,t:t}]); }
+let clerkQ=null,clerkI=0,clerkDone=null,clerkT=null;
+function closeClerk(){
+  clerkQ=null; clerkDone=null; clearTimeout(clerkT); clerkT=null;
+  $('#clerk').classList.add('hide');
+}
 function playClerk(list,done){
   clerkQ=list; clerkI=-1; clerkDone=done||null;
   $('#clerk').classList.remove('hide'); nextClerk();
@@ -1225,88 +1422,135 @@ function nextClerk(){
   const s=clerkQ[clerkI];
   if(s.fn) s.fn();
   if(s.big){ $('#clerk').classList.add('hide'); showBig(s.big,s.big2,1600,s.sfx||'dunn');
-    setTimeout(function(){ if(clerkQ){ $('#clerk').classList.remove('hide'); nextClerk(); } },1750); return; }
+    clerkT=setTimeout(function(){
+      if(clerkQ&&$('#sc-shop').classList.contains('on')){ $('#clerk').classList.remove('hide'); nextClerk(); }
+      else closeClerk();
+    },1750); return; }
   $('#clerk-who').textContent=s.who||''; $('#clerk-txt').textContent=s.t||'';
   SE.click();
 }
 $('#clerk').addEventListener('click',function(){ if(clerkQ&&!$('#clerk').classList.contains('hide')) nextClerk(); });
 
-let shelfIds=[];
+/* --- 買い物：系統ごとに1つ選ぶ --- */
+function supplement(cb){
+  S.money+=15000; S.extra++;
+  SE.dunn(); flash();
+  showBig('SUPPLEMENTARY BUDGET','補 正 予 算 ￥15,000 承 認',1900,'dunn');
+  hudDraw();
+  setTimeout(function(){ if(cb) cb(); },2000);
+}
+function stageMin(){
+  /* いちばん安い組み合わせでも足りないか（＝どう選んでも詰む状態か） */
+  const st=STAGES[S.stage]; let t=0;
+  st.sys.forEach(function(g){ t+=Math.min.apply(null,g.opts.map(function(x){return x.pr;})); });
+  return t;
+}
+function stageTotal(){
+  const st=STAGES[S.stage]; let t=0;
+  st.sys.forEach(function(g){ const o=S.sel[g.id]; if(o) t+=o.pr; });
+  return t;
+}
 function startShop(){
   const st=STAGES[S.stage];
-  S.cart={}; S.discount=0; S.clerkFired=false; S.paying=false;
+  S.sel={}; S.discount=0; S.clerkFired=false; S.paying=false; closeClerk();
   $('#shop-clock').textContent=st.clock;
-  $('#order-memo').innerHTML=st.memo;
-  shelfIds=st.need.concat(st.extra);
-  /* 見た目のため軽くシャッフル（必要品が並ばないように） */
-  shelfIds=shelfIds.map(function(v,i){return {v:v,k:(i*7+3)%shelfIds.length};}).sort(function(a,b){return a.k-b.k;}).map(function(o){return o.v;});
+  $('#order-memo').innerHTML=st.memo+'<br><br>※ 予算は全工程で共有。<b>残り '+yen(S.money)+'</b>';
   BGM.store(); hudShow(true); show('#sc-shop');
   renderShelf();
 }
 function renderShelf(){
-  const st=STAGES[S.stage];
+  const st=STAGES[S.stage], total=stageTotal(), rest=S.money-total;
   $('#shop-money').textContent=yen(S.money);
-  $('#order-list').innerHTML=st.need.map(function(id){
-    const got=!!S.cart[id];
-    return '<li class="'+(got?'got':'')+'"><span class="ck">'+(got?'✔':'□')+'</span><b>'+MAT[id].n+'</b></li>';
+  $('#order-list').innerHTML=st.sys.map(function(g){
+    const o=S.sel[g.id];
+    return '<li class="'+(o?'got':'')+'"><span class="ck">'+(o?'✔':'□')+'</span><b>'+g.role.replace(/\s/g,'')+
+      '：'+(o?o.n:'<span style="opacity:.6">未 定</span>')+'</b></li>';
   }).join('');
-  $('#shelf').innerHTML=shelfIds.map(function(id){
-    const m=MAT[id], need=st.need.indexOf(id)>=0;
-    return '<div class="item '+(S.cart[id]?'bought':'')+' '+(need?'req':'')+'" data-id="'+id+'">'+
-      (id==='band'?'<div class="pop">お買得</div>':'')+
-      '<div class="pic">'+icon(m.ic)+'</div>'+
-      '<div class="nm">'+m.n+'</div><div class="sp">'+m.sp+'</div>'+
-      '<div class="pr">'+yen(m.pr)+'<small> 税込</small></div></div>';
+  $('#shelf').innerHTML=st.sys.map(function(g){
+    const selected=S.sel[g.id];
+    return '<div class="grp"><h4>'+g.role+' <i>'+g.hint+'</i><b class="'+(selected?'ok':'')+'">'+
+      (selected?'選定済':'未 定')+'</b></h4><div class="gopts">'+
+      g.opts.map(function(o){
+        const cur=selected&&selected.id===o.id;
+        const over=(total-(selected?selected.pr:0)+o.pr)>S.money;
+        return '<div class="o2'+(cur?' on':'')+(over&&!cur?' no':'')+'" data-g="'+g.id+'" data-o="'+o.id+'">'+
+          (cur?'<div class="mk">採 用</div>':'')+
+          '<div class="pic">'+icon(o.ic)+'</div>'+
+          '<div class="nm">'+o.n+'</div><div class="sp">'+o.sp+'</div>'+
+          '<div class="pr">'+(o.pr?yen(o.pr):'￥0')+'</div>'+
+          '<div class="chips">'+statChips(o.st)+'</div>'+
+          riskText(o.risk)+
+          '<div class="tip">'+(o.tip||'')+'</div></div>';
+      }).join('')+'</div></div>';
   }).join('');
-  const ids=Object.keys(S.cart);
-  const total=ids.reduce(function(a,b){return a+MAT[b].pr;},0);
-  $('#cart-txt').textContent=ids.length?('カート：'+ids.length+'点／'+yen(total)):'カート：空';
-  const ok=st.need.every(function(id){return !!S.cart[id];});
-  $('#btn-checkout').disabled=!ok;
-  $('#btn-checkout').textContent=ok?'会計へ ▶':'調達書の資材が不足';
+  const all=st.sys.every(function(g){return !!S.sel[g.id];});
+  const ok=all&&total<=S.money;
+  $('#cart-txt').innerHTML='小計 <b class="kv">'+yen(total)+'</b> ／ <span class="bud2'+(rest<0?' over':'')+'">残り '+yen(rest)+'</span>';
+  const btn=$('#btn-checkout');
+  btn.disabled=!ok;
+  btn.textContent=!all?'系統をすべて決定せよ':(total>S.money?'予 算 超 過':'会計へ ▶');
+  const short=stageMin()>S.money;
+  let sb=$('#btn-supp');
+  if(short&&!sb){
+    sb=document.createElement('button'); sb.id='btn-supp'; sb.className='btn'; sb.textContent='本部に補正予算を申請する';
+    sb.style.cssText='font-family:var(--san);font-size:.82em;letter-spacing:.1em;text-indent:.1em;padding:.5em .9em;background:#8a1216;color:#fff;border-color:#5a0a0d;box-shadow:none;';
+    sb.addEventListener('click',function(){
+      supplement(function(){ renderShelf(); playClerkLine('部 下','閣下。本部より、補正予算が下りました'); });
+    });
+    $('.shop-bot').insertBefore(sb,$('#btn-checkout'));
+  }else if(!short&&sb){ sb.remove(); }
 }
 $('#shelf').addEventListener('click',function(e){
-  const it=e.target.closest('.item'); if(!it) return;
-  const id=it.dataset.id, st=STAGES[S.stage], need=st.need.indexOf(id)>=0;
-  if(S.cart[id]){ delete S.cart[id]; SE.ng(); renderShelf(); return; }
-  S.cart[id]=1; renderShelf();
-  if(need){ showBig(MAT[id].en,MAT[id].sp,1500,'dunn'); }
-  else { SE.pop(); }
-  /* 店員イベント */
-  if(!S.clerkFired&&Object.keys(S.cart).length>=2){
+  const c=e.target.closest('.o2'); if(!c) return;
+  const st=STAGES[S.stage];
+  const g=st.sys.filter(function(x){return x.id===c.dataset.g;})[0];
+  const o=g.opts.filter(function(x){return x.id===c.dataset.o;})[0];
+  const cur=S.sel[g.id];
+  if(cur&&cur.id===o.id){ delete S.sel[g.id]; SE.ng(); renderShelf(); return; }
+  S.sel[g.id]=o;
+  renderShelf();
+  showBig(o.n,o.sp,1300,'dunn');
+  if(!S.clerkFired&&Object.keys(S.sel).length>=2){
     S.clerkFired=true;
-    setTimeout(function(){ playClerk(CLERK[S.stage%CLERK.length]); },need?1600:400);
+    setTimeout(function(){ playClerk(CLERK[S.stage%CLERK.length]); },1450);
   }
 });
 $('#btn-checkout').addEventListener('click',function(){
   if(this.disabled||S.paying) return;
-  S.paying=true; this.disabled=true;
-  const ids=Object.keys(S.cart);
-  let total=ids.reduce(function(a,b){return a+MAT[b].pr;},0);
+  S.paying=true; this.disabled=true; closeClerk();
+  let total=stageTotal();
   if(S.discount) total=Math.round(total*(1-S.discount));
   addStat({cost:total},true);
-  ids.forEach(function(id){ S.owned[id]=1; if(MAT[id].w) addStat({power:MAT[id].w},true); });
   SE.regi();
   showBig('￥'+total.toLocaleString('en-US'),S.discount?'会 員 割 引 適 用 済':'会 計 完 了',1700,'regi');
   setTimeout(startBuild,1900);
 });
 
 /* ============================================================
-   10. BUILD
+   10. BUILD ― 配置 → 施工方針 → 安全対策
    ============================================================ */
 let placed={},selMat=null;
+function curOpts(){
+  const st=STAGES[S.stage];
+  return st.sys.map(function(g){ return S.picks[S.stage+'.'+g.id]; }).filter(Boolean);
+}
+function optById(id){
+  const a=curOpts().filter(function(o){return o.id===id;});
+  return a[0]||null;
+}
 function startBuild(){
   const st=STAGES[S.stage];
   placed={}; selMat=null;
+  st.sys.forEach(function(g){ S.picks[S.stage+'.'+g.id]=S.sel[g.id]; });
   $('#b-code').textContent=st.code;
   $('#b-ttl').textContent=st.ttl;
   $('#plan-extra').innerHTML='';
   $('#comply').classList.add('hide');
   $('#b-say').innerHTML='資材を図面の枠へドラッグせよ。<span class="tiny">（タップで選択→枠をタップでも可）</span>';
-  $('#slots').innerHTML=st.slots.map(function(s,i){
-    return '<div class="slot" data-i="'+i+'"><div class="role">'+s.role+'</div><div class="need">'+s.hint+'</div></div>';
+  $('#slots').innerHTML=st.sys.map(function(g,i){
+    return '<div class="slot" data-i="'+i+'"><div class="role">'+g.role+'</div><div class="need">'+g.hint+'</div></div>';
   }).join('');
-  $('#tray').innerHTML=Object.keys(S.cart).map(function(id){return matHTML(id);}).join('');
+  $('#tray').innerHTML=curOpts().map(function(o){return optHTML(o);}).join('');
   $('#planart').innerHTML=SVG(FACART[st.kind]?FACART[st.kind](1):'','0 0 400 220');
   planArt(0);
   BGM.march(); hudShow(true); show('#sc-build');
@@ -1318,26 +1562,26 @@ function planArt(r){
   a.style.filter=r>=1?'none':'grayscale('+(1-r*0.9).toFixed(2)+') contrast('+(0.7+r*0.3).toFixed(2)+')';
 }
 function tryPlace(id,slotEl){
-  const i=+slotEl.dataset.i, st=STAGES[S.stage], def=st.slots[i];
+  const i=+slotEl.dataset.i, st=STAGES[S.stage], g=st.sys[i];
   if(placed[i]) return;
-  if(def.acc!==id){
+  const o=S.picks[S.stage+'.'+g.id];
+  if(!o||o.id!==id){
     slotEl.classList.remove('bad'); void slotEl.offsetWidth; slotEl.classList.add('bad');
     SE.ng();
     $('#b-say').innerHTML=pick(['<b>規格が違う。</b>','……それは、そこではない。','図面を見ろ。図面を。','寸法は狂わせるな。']);
     return;
   }
   placed[i]=id;
-  const m=MAT[id];
   slotEl.classList.remove('bad','hot');
   slotEl.classList.add('done');
-  slotEl.innerHTML='<div class="role">'+def.role+'</div><div class="fit">'+icon(m.ic)+m.n+'</div>';
+  slotEl.innerHTML='<div class="role">'+g.role+'</div><div class="fit">'+icon(o.ic)+o.n+'</div>';
   const mat=$('#tray').querySelector('.mat[data-mat="'+id+'"]');
   if(mat){ mat.classList.add('used'); }
   selMat=null;
   SE.drill(); flash();
-  planArt(Object.keys(placed).length/st.slots.length);
-  $('#b-say').innerHTML=def.say;
-  if(Object.keys(placed).length===st.slots.length) setTimeout(completeBuild,900);
+  planArt(Object.keys(placed).length/st.sys.length);
+  $('#b-say').innerHTML='<b>'+g.role.replace(/\s/g,'')+'</b>：'+o.n+'　'+(o.tip||'');
+  if(Object.keys(placed).length===st.sys.length) setTimeout(afterPlace,800);
 }
 /* --- ドラッグ＆ドロップ／タップ配置 --- */
 let dg=null;
@@ -1352,9 +1596,9 @@ document.addEventListener('pointermove',function(e){
   if(!dg.moved&&dx*dx+dy*dy<64) return;
   if(!dg.moved){
     dg.moved=true;
-    const m=MAT[dg.id];
+    const o=optById(dg.id); if(!o){ dg=null; return; }
     const g=document.createElement('div'); g.id='drag';
-    g.innerHTML=icon(m.ic)+'<div class="t">'+m.n+'</div>';
+    g.innerHTML=icon(o.ic)+'<div class="t">'+o.n+'</div>';
     document.body.appendChild(g);
   }
   const g=$('#drag'); if(g){ g.style.left=e.clientX+'px'; g.style.top=e.clientY+'px'; }
@@ -1375,8 +1619,9 @@ document.addEventListener('pointerup',function(e){
   }else{
     $$('.mat').forEach(function(m){m.classList.remove('sel');});
     if(selMat===d.id){ selMat=null; }
-    else { selMat=d.id; d.el.classList.add('sel'); SE.click();
-      $('#b-say').innerHTML='<b>'+MAT[d.id].n+'</b> を選択。配置先の枠をタップせよ。'; }
+    else { const o=optById(d.id); if(!o) return;
+      selMat=d.id; d.el.classList.add('sel'); SE.click();
+      $('#b-say').innerHTML='<b>'+o.n+'</b> を選択。配置先の枠をタップせよ。'; }
   }
 });
 $('#slots').addEventListener('click',function(e){
@@ -1386,70 +1631,51 @@ $('#slots').addEventListener('click',function(e){
   tryPlace(id,sl);
 });
 
-/* --- 完成 --- */
-function completeBuild(){
+/* --- 配置完了 → 施工方針 --- */
+function afterPlace(){
   const st=STAGES[S.stage];
-  addStat(st.gain,true);
-  S.facilities.push({kind:st.kind,en:st.en,ttl:st.ttl});
-  BGM.hell();
-  showBig(st.en,'完 成',2500,'dunn'); flash(true);
-  $('#b-say').innerHTML='<b>'+st.en+'</b> 稼働開始。';
-  setTimeout(function(){
-    if(S.stage===2) extraHeat();
-    else if(S.stage===3) extraVolume();
-    else showComply();
-  },2700);
+  if(st.plan) showPlan();
+  else if(S.stage===3) extraVolume();
+  else showComply();
 }
-/* --- STAGE3：ヒーター増設 --- */
-function extraHeat(){
-  S.heaters=0;
-  const draw=function(){
-    const p=S.st.power;
-    $('#plan-extra').innerHTML=
-      '<div class="panel"><h4>熱 源 増 設 判 断</h4>'+
-      '<div class="big">'+Math.round(p)+'<small>W</small></div>'+
-      '<div class="meter"><i style="width:'+clamp(p/2600*100,0,100)+'%"></i><u style="left:'+(1500/2600*100)+'%"></u></div>'+
-      '<div class="note-s">この回路の定格は <b>1500W</b>。<br>白線を越えた先のことは、誰も知らない。</div>'+
-      '<div class="row"><button class="btn plain" id="hx-add">ヒーターを増設する（＋900W ／ '+yen(2980)+'）</button>'+
-      '<button class="btn plain" id="hx-end">増設を終える</button></div>'+
-      '<div class="note-s" id="hx-say">'+(S.heaters===0?'部下：「閣下。まだ、生ぬるいかと」':'増設 '+S.heaters+' 基。HELL +'+(S.heaters*6))+'</div></div>';
-    $('#hx-add').onclick=function(){
-      S.heaters++;
-      addStat({power:900,hell:6,pain:4,cost:2980,safety:-4});
-      SE.spark(); flash(true);
-      if(S.st.power>2400){ setTimeout(breakerDown,600); return; }
-      draw();
-    };
-    $('#hx-end').onclick=function(){
-      if(S.heaters===0){ addStat({hell:-4}); $('#b-say').innerHTML='部下：「……閣下。地獄が、常温です」'; }
-      $('#plan-extra').innerHTML=''; showComply();
-    };
-  };
-  $('#b-say').innerHTML='<b>灼熱には電力が要る。</b>諸君、判断せよ。';
-  draw();
-}
-function breakerDown(){
-  BGM.silence();
-  playCut([
-   {art:'blank',black:true,sfx:'breaker',fx:'shake',hold:1400},
-   {black:false,art:'blank',big:'BREAKER DOWN',big2:'第 一 回 路 遮 断',sfx:'gong',hold:2100},
-   {big:'',art:'heat',line:'数秒後、非常灯だけが点灯した。',hold:2300},
-   {who:'部 下',line:'閣下！ 第一回路、落ちました！',shout:true,hold:2200},
-   {who:'指 揮 官',line:'',hold:1400},
-   {who:'指 揮 官',line:'……タコ足配線は敗北である',hold:2800},
-   {who:'指 揮 官',line:'回路を分けろ。分電盤を増設する。',hold:2400},
-   {who:'部 下',line:'はっ！',hold:1500,sfx:'drum'}
-  ],function(){
-    S.st.power=Math.min(S.st.power,1400+S.heaters*120);
-    addStat({hell:-6,safety:8,dur:-4,cost:MAT.breaker.pr},true);
-    BGM.march(); show('#sc-build');
-    $('#plan-extra').innerHTML=''; $('#b-say').innerHTML='分電盤を増設。<b>回路は分けた。</b>';
-    setTimeout(showComply,700);
+function showPlan(){
+  const st=STAGES[S.stage], q=st.plan;
+  $('#plan').classList.add('pop');
+  $('#b-say').innerHTML='<b>ここが分かれ道である。</b>諸君、判断せよ。';
+  if(q.opts.every(function(o){return o.pr>S.money;})){
+    $('#plan-extra').innerHTML='<div class="qbox"><h4>'+q.q+'</h4><div class="qopts">'+
+      '<div class="q1" id="q-supp"><div class="n">本部に補正予算を申請する</div>'+
+      '<div class="p">＋￥15,000 ／ 監査評価に響く</div>'+
+      '<div class="rk r1">⚠ 施工費の超過は、記録に残る</div></div></div></div>';
+    $('#q-supp').addEventListener('click',function(){ supplement(function(){ showPlan(); }); });
+    return;
+  }
+  $('#plan-extra').innerHTML='<div class="qbox"><h4>'+q.q+'</h4><div class="qopts">'+
+    q.opts.map(function(o,i){
+      const no=o.pr>S.money;
+      return '<div class="q1'+(no?' no':'')+'" data-i="'+i+'">'+
+        '<div class="n">'+o.n+'</div><div class="p">'+(o.pr?yen(o.pr):'費用なし')+(no?'　<b style="color:#ff6b6b">予算不足</b>':'')+'</div>'+
+        (o.limit?'<div class="p">回路容量 '+o.limit+'W</div>':'')+
+        '<div class="chips">'+statChips(o.st)+'</div>'+riskText(o.risk)+'</div>';
+    }).join('')+'</div></div>';
+  $('#plan-extra').querySelectorAll('.q1').forEach(function(el){
+    el.addEventListener('click',function(){
+      const o=q.opts[+el.dataset.i];
+      S.plans[S.stage]=o;
+      if(o.pr) addStat({cost:o.pr},true);
+      if(o.st) addStat(o.st,true);
+      addRisk(o.risk);
+      if(o.limit) S.limit=o.limit;
+      hudDraw(); SE.drill();
+      $('#plan-extra').innerHTML=''; $('#plan').classList.remove('pop');
+      $('#b-say').innerHTML=o.say||('<b>'+o.n+'</b>を採用。');
+      setTimeout(function(){ if(S.stage===3) extraVolume(); else showComply(); },1200);
+    });
   });
 }
-/* --- STAGE4：音量調整 --- */
+/* --- STAGE4：音量 --- */
 function extraVolume(){
-  S.volume=30;
+  S.volume=30; $('#plan').classList.add('pop');
   $('#b-say').innerHTML='<b>音量を決定せよ。</b>これは音響戦である。';
   $('#plan-extra').innerHTML=
     '<div class="panel"><h4>叫 喚 出 力 設 定</h4>'+
@@ -1465,62 +1691,60 @@ function extraVolume(){
   $('#vx-t').onclick=function(){ SE.scream(clamp(S.volume/100*.42,.02,.42),1.4); };
   $('#vx-ok').onclick=function(){
     const v=S.volume;
-    addStat({hell:Math.round(v*0.22),fear:Math.round(v*0.12)},true);
+    addStat({hell:Math.round(v*0.16),fear:Math.round(v*0.10)},true);
+    addRisk({noise:v>85?3:(v>60?2:(v>35?1:0))});
     SE.scream(clamp(v/100*.42,.02,.42),1.6);
-    $('#plan-extra').innerHTML='';
-    if(v>85){
-      S.reported=true; S.complaints+=2;
-      setTimeout(function(){ playCut([
-        {art:'scream',line:'再生開始から、四分。',hold:2000},
-        {who:'部 下',line:'閣下。隣接エリアから苦情が入りました',hold:2300},
-        {who:'指 揮 官',line:'続けろ',hold:1800},
-        {art:'blank',big:'騒音苦情 ＋2',big2:'N O I S E   C O M P L A I N T',sfx:'ng',hold:1800},
-        {art:'scream',big:'',fx:'red',line:'……三分後。',hold:1900},
-        {who:'部 下',line:'近隣住民から通報されました！',shout:true,sfx:'crack',hold:2400},
-        {who:'指 揮 官',line:'',hold:1300},
-        {who:'指 揮 官',line:'音響戦は終わりだ',hold:2700},
-        {who:'指 揮 官',line:'……音量を、下げろ',hold:2400}
-      ],function(){ addStat({hell:-10,safety:10},true); BGM.march(); show('#sc-build'); setTimeout(showComply,500); }); },900);
-    } else if(v>60){
-      S.complaints+=1;
+    $('#plan-extra').innerHTML=''; $('#plan').classList.remove('pop');
+    if(v>85){ S.reported=true; S.complaints+=1;
       showBig('騒音苦情 ＋1','N O I S E   C O M P L A I N T',1700,'ng');
-      $('#b-say').innerHTML='部下：「閣下。隣のエリアから、苦情が」／指揮官：「<b>記録しておけ</b>」';
+      $('#b-say').innerHTML='部下：「閣下。既に一件、苦情が」／指揮官：「<b>記録しておけ</b>」';
       setTimeout(showComply,1900);
-    } else {
+    } else if(v<=25){
       $('#b-say').innerHTML='部下：「閣下。……ＢＧＭのようです」';
-      addStat({hell:-4},true);
-      setTimeout(showComply,1500);
-    }
+      addStat({hell:-4},true); setTimeout(showComply,1500);
+    } else { $('#b-say').innerHTML='<b>よろしい。</b>これが叫喚である。'; setTimeout(showComply,1300); }
   };
 }
-/* --- コンプライアンス審議 --- */
+/* --- 安全対策 --- */
 let complySel={};
 function showComply(){
   const st=STAGES[S.stage];
   complySel={};
-  $('#comply-lead').innerHTML='本施設は、地獄である前に施設である。<br>採用する対策を選べ。';
+  $('#comply-lead').innerHTML='本施設は、地獄である前に施設である。<br>採用する対策を選べ。<b>予算残 '+yen(S.money)+'</b>';
+  drawComply();
+  $('#comply').classList.remove('hide');
+}
+function complyCost(){
+  const st=STAGES[S.stage]; let t=0;
+  Object.keys(complySel).forEach(function(i){ t+=st.comply[i].pr; });
+  return t;
+}
+function drawComply(){
+  const st=STAGES[S.stage], spent=complyCost();
   $('#comply-opts').innerHTML=st.comply.map(function(o,i){
+    const on=!!complySel[i], no=!on&&(spent+o.pr>S.money);
     const eff=Object.keys(o.e).map(function(k){
       const v=o.e[k], nm={hell:'HELL',pain:'PAIN',fear:'FEAR',safety:'SAFETY',dur:'DUR'}[k];
       return '<span class="'+(v>0?'up':'dn')+'">'+nm+' '+(v>0?'+':'')+v+'</span>';
     }).join('');
-    return '<div class="opt" data-i="'+i+'"><div class="n">'+o.n+'</div>'+
-      '<div class="p">'+(o.pr?yen(o.pr):'費用なし')+'</div><div class="e">'+eff+'</div></div>';
+    return '<div class="opt'+(on?' on':'')+(no?' no':'')+'" data-i="'+i+'"><div class="n">'+o.n+'</div>'+
+      '<div class="p">'+(o.pr?yen(o.pr):'費用なし')+(no?'　予算不足':'')+'</div><div class="e">'+eff+'</div>'+
+      (Object.keys(o.risk||{}).length?riskText(o.risk):'')+'</div>';
   }).join('');
-  $('#comply').classList.remove('hide');
+  $('#btn-comply').textContent='この内容で施工を完了する（'+yen(spent)+'）';
 }
 $('#comply-opts').addEventListener('click',function(e){
-  const o=e.target.closest('.opt'); if(!o) return;
+  const o=e.target.closest('.opt'); if(!o||o.classList.contains('no')) return;
   const i=o.dataset.i;
-  if(complySel[i]){ delete complySel[i]; o.classList.remove('on'); SE.ng(); }
-  else { complySel[i]=1; o.classList.add('on'); SE.ok(); }
+  if(complySel[i]){ delete complySel[i]; SE.ng(); } else { complySel[i]=1; SE.ok(); }
+  drawComply();
 });
 $('#btn-comply').addEventListener('click',function(){
   const st=STAGES[S.stage];
   let n=0;
   Object.keys(complySel).forEach(function(i){
     const o=st.comply[i]; n++;
-    addStat(o.e,true); if(o.pr) addStat({cost:o.pr},true);
+    addStat(o.e,true); if(o.pr) addStat({cost:o.pr},true); addRisk(o.risk);
   });
   $('#comply').classList.add('hide');
   SE.drill();
@@ -1528,32 +1752,77 @@ $('#btn-comply').addEventListener('click',function(){
              n>=3?'指揮官：「……<b>安全な地獄</b>が、完成しつつある」':
                   '指揮官：「よろしい。<b>安全は演出の一部である</b>」';
   $('#b-say').innerHTML=line;
-  setTimeout(afterStage,1600);
+  setTimeout(completeBuild,1400);
 });
-/* --- 各ステージ後のカット --- */
-const AFTER=[
- [ {art:'needleGhost',line:'完成した針山を、亡者が一人、歩いていく。',hold:2600},
-   {art:'needleBroken',sfx:'crack',fx:'shake',line:'支柱が一本、折れた。',hold:2200},
-   {who:'指 揮 官',line:'',hold:1300},
-   {who:'指 揮 官',line:'……強度不足だ',hold:2500},
-   {who:'部 下',line:'はっ！ 直ちに補強します！',shout:true,hold:2000,sfx:'drum'} ],
- [ {art:'pond',line:'注水完了。循環、開始。',sfx:'water',hold:2400},
-   {line:'……水位が、わずかに下がっている。',hold:2200},
-   {art:'pondLeak',who:'部 下',line:'閣下！ 床が赤く染まっています！',shout:true,sfx:'crack',hold:2400},
-   {who:'指 揮 官',line:'',hold:1200},
-   {who:'指 揮 官',line:'よろしい。演出として利用する',hold:2800} ],
- [ {art:'heat',line:'室温、上昇。赤色光、安定。',hold:2300},
-   {who:'部 下',line:'閣下。室温、38度を超えました',hold:2200},
-   {who:'指 揮 官',line:'諸君。ここはもう、屋内ではない',hold:2700} ],
- [ {art:'scream',line:'叫喚、再生開始。ループ、無限。',hold:2400},
-   {who:'指 揮 官',line:'これでいい。地獄に静寂は要らん',hold:2600} ]
-];
-const AFTERFX=[{dur:-10},{hell:6,safety:-8,dur:-6},{fear:6,dur:-4},{fear:4,dur:-4}];
-function afterStage(){
-  const i=S.stage;
-  addStat(AFTERFX[i],true);
+/* --- 完成 --- */
+function completeBuild(){
+  const st=STAGES[S.stage];
+  curOpts().forEach(function(o){ if(o.st) addStat(o.st,true); addRisk(o.risk); });
+  S.facs[st.fac]={st:'run',n:FACDEF[st.fac].n,ic:FACDEF[st.fac].ic};
+  hudDraw();
   BGM.hell();
-  playCut(AFTER[i],function(){
+  showBig(st.en,'完 成',2400,'dunn'); flash(true);
+  $('#b-say').innerHTML='<b>'+st.en+'</b> 稼働開始。';
+  setTimeout(function(){
+    if(S.stage===2&&S.st.power>S.limit){ breakerDown(); return; }
+    afterStage();
+  },2600);
+}
+/* --- ブレーカー遮断（容量超過時のみ） --- */
+function breakerDown(){
+  BGM.silence();
+  addRisk({overload:2});
+  playCut([
+   {art:'blank',black:true,sfx:'breaker',fx:'shake',hold:1400},
+   {black:false,art:'blank',big:'BREAKER DOWN',big2:'第 一 回 路 遮 断',sfx:'gong',hold:2100},
+   {big:'',art:'heat',line:'数秒後、非常灯だけが点灯した。',hold:2200},
+   {who:'部 下',line:'閣下！ 回路が落ちました！ 契約容量を超えています！',shout:true,hold:2400},
+   {who:'指 揮 官',line:'',hold:1300},
+   {who:'指 揮 官',line:'……タコ足配線は敗北である',hold:2700},
+   {who:'部 下',line:'閣下。……本番でも、同じことが起きます',hold:2500},
+   {who:'指 揮 官',line:'承知の上だ',hold:2200,sfx:'drum'}
+  ],function(){ BGM.hell(); afterStage(); });
+}
+/* --- 各ステージ後のカット（選択で分岐） --- */
+function afterSteps(){
+  const r=S.risk;
+  if(S.stage===0){
+    if((r.needle||0)+(r.collapse||0)<=1) return [
+      {art:'needleGhost',line:'完成した針山を、亡者が一人、歩いていく。',hold:2230},
+      {art:'needleGhost',line:'針山は、微動だにしない。',hold:1890},
+      {who:'指 揮 官',line:'……よろしい。これが施工である',hold:2230}];
+    return [
+      {art:'needleGhost',line:'完成した針山を、亡者が一人、歩いていく。',hold:2230},
+      {art:'needleBroken',sfx:'crack',fx:'shake',line:'支柱が一本、折れた。',hold:1890},
+      {who:'指 揮 官',line:'',hold:1030},
+      {who:'指 揮 官',line:'……強度不足だ',hold:2150},
+      {who:'部 下',line:'はっ！ 本番までに補強します！',shout:true,hold:1800,sfx:'drum'}];
+  }
+  if(S.stage===1){
+    if((r.leak||0)<=0) return [
+      {art:'pond',line:'注水完了。循環、開始。',sfx:'water',hold:2060},
+      {who:'部 下',line:'閣下。水位、安定しております',hold:1890},
+      {who:'指 揮 官',line:'よろしい。血は、流れてこそ血だ',hold:2230}];
+    return [
+      {art:'pond',line:'注水完了。循環、開始。',sfx:'water',hold:1970},
+      {line:'……水位が、わずかに下がっている。',hold:1800},
+      {art:'pondLeak',who:'部 下',line:'閣下！ 床が赤く染まっています！',shout:true,sfx:'crack',hold:2060},
+      {who:'指 揮 官',line:'',hold:1030},
+      {who:'指 揮 官',line:'よろしい。演出として利用する',hold:2320}];
+  }
+  if(S.stage===2) return [
+    {art:'heat',line:'室温、上昇。赤色光、安定。',hold:1890},
+    {who:'部 下',line:'閣下。負荷 '+Math.round(S.st.power)+'W。回路容量 '+S.limit+'W です',hold:2150},
+    {who:'指 揮 官',line:'諸君。ここはもう、屋内ではない',hold:2230}];
+  return [
+    {art:'scream',line:'叫喚、再生開始。ループ、無限。',hold:1970},
+    {who:'指 揮 官',line:'これでいい。地獄に静寂は要らん',hold:2150}];
+}
+const AFTERFX=[{dur:-6},{dur:-4},{dur:-4},{dur:-4}];
+function afterStage(){
+  addStat(AFTERFX[S.stage],true);
+  BGM.hell();
+  playCut(afterSteps(),function(){
     S.stage++;
     if(S.stage<STAGES.length){
       playCut([
@@ -1561,191 +1830,589 @@ function afterStage(){
         {black:false,big:'NEXT OPERATION',big2:STAGES[S.stage].code.replace(/^STAGE \d+ ― /,''),sfx:'dunn',hold:2300},
         {big:'',black:true,hold:600}
       ],function(){ blackout(false); startShop(); });
-    } else startFinal();
+    } else startTrial();
   });
 }
 
 /* ============================================================
-   11. FINAL STAGE ― TOTAL INFERNO
+   11. 試運転 ― 自分の設計の弱点が、少しだけ表面化する
    ============================================================ */
-const FCELLS=[
- {n:'針 山 区 画',ic:'stake'},{n:'血 の 池',ic:'pool'},{n:'灼 熱 室',ic:'heater'},{n:'叫 喚 塔',ic:'speaker'},
- {n:'電 源 系',ic:'cord'},{n:'照 明 系',ic:'led'},{n:'配 管 系',ic:'hose'},{n:'接 合 部',ic:'band'},{n:'鬼 役 詰 所',ic:'ghosticon'}
+const FIXUP=[
+ {k:'needle',n:'支柱の増し締め・追加',pr:2400,r:{needle:-2,collapse:-1}},
+ {k:'collapse',n:'基礎の補強（根太を追加）',pr:2800,r:{collapse:-2}},
+ {k:'leak',n:'防水テープの追加施工',pr:1800,r:{leak:-2}},
+ {k:'pump',n:'予備ポンプの確保',pr:3600,r:{pump:-2}},
+ {k:'foul',n:'ろ材と塩素剤',pr:1400,r:{foul:-2}},
+ {k:'overload',n:'分電盤を増設し回路を分ける',pr:6800,r:{overload:-3},limit:3000},
+ {k:'heater',n:'予備ヒーターの手配',pr:4200,r:{heater:-2}},
+ {k:'fire',n:'消火器の追加配備',pr:3980,r:{fire:-2},e:{safety:8,hell:-4}},
+ {k:'bt',n:'有線接続への変更',pr:2800,r:{bt:-3}},
+ {k:'batt',n:'予備電池・予備バッテリー',pr:1200,r:{batt:-2}},
+ {k:'noise',n:'防音カーテンの追加',pr:2600,r:{noise:-2},e:{hell:-5}},
+ {k:'staff',n:'交代要員の確保（部下を増員）',pr:2000,r:{staff:-2}}
 ];
-const TROUBLE=[
- {c:0,t:'針山破損',taps:2},{c:0,t:'支柱が折れた',taps:1},
- {c:1,t:'血の池 水漏れ',taps:2},{c:1,t:'着色剤の色が薄い',taps:1},
- {c:2,t:'ヒーター過熱',taps:2},{c:2,t:'温風が来ない',taps:1},
- {c:3,t:'Bluetooth切断',taps:1},{c:3,t:'音源のループが途切れた',taps:1},
- {c:4,t:'ブレーカー容量不足',taps:3},{c:4,t:'延長コードが熱い',taps:2},
- {c:5,t:'赤色LED点滅',taps:1},{c:5,t:'LEDが白く光っている',taps:2},
- {c:6,t:'循環ポンプ停止',taps:2},{c:6,t:'ホースが外れた',taps:1},
- {c:7,t:'木ネジ脱落',taps:1},{c:7,t:'結束バンド破断',taps:1},
- {c:8,t:'鬼役スタッフ欠勤',taps:2},{c:8,t:'鬼の角が取れた',taps:1}
-];
+function trialRows(){
+  const r=function(k){ return S.risk[k]||0; };
+  const tier=function(v){ return v>=2.5?'ng':(v>=1?'wn':'ok'); };
+  const rows=[];
+  /* 針山 */
+  const nd=r('needle')+r('collapse');
+  rows.push({f:'needle',g:tier(nd),t:nd>=2.5?'支柱が三本、たわんでいる。基礎も沈下ぎみ。':
+    (nd>=1?'亡者が乗ると、わずかに軋む。':'微動だにしない。よろしい。')});
+  /* 血の池 */
+  const lk=r('leak')+r('pump')*0.8+r('foul')*0.6;
+  rows.push({f:'pond',g:tier(lk),t:
+    r('pump')>=2?'循環流量、規定の40%。ポンプが熱を持っている。':
+    r('leak')>=2?'継ぎ目から、毎分わずかに滲んでいる。':
+    r('foul')>=2?'濁りと臭気。水質という概念が失われつつある。':
+    lk>=1?'継ぎ目に、ごく僅かな滲み。許容範囲である。':'水位・流量ともに安定。'});
+  /* 灼熱 */
+  const ld=Math.round(S.st.power), ov=ld>S.limit;
+  const hv=ov?3:(r('heater')+r('fire')+r('overload')*0.8);
+  rows.push({f:'heat',g:tier(hv),t:
+    ov?('LOAD '+ld+'W ／ LIMIT '+S.limit+'W　― 容量超過。'):
+    r('heater')>=2?'試運転中、片方が二度停止した。':
+    r('fire')>=2?'配線周辺が異常に高温。焦げた匂い。':
+    hv>=1?('LOAD '+ld+'W ／ LIMIT '+S.limit+'W　― 正常。ただし余裕は少ない。'):
+          ('LOAD '+ld+'W ／ LIMIT '+S.limit+'W　― 正常。')});
+  /* 叫喚 */
+  const sc=r('bt')+r('batt')*0.8+r('noise')*0.6+r('short')*0.8;
+  rows.push({f:'scream',g:tier(sc),t:
+    r('bt')>=2?'再生中、接続が二度途切れた。':
+    r('batt')>=2?'残量18%。本番は四時間の予定である。':
+    r('short')>=2?'スピーカーの足元が濡れている。':
+    r('noise')>=2?'隣接エリアで68dBを計測。苦情の予感。':
+    sc>=1?'一度だけ、音が飛んだ。':'再生、途切れなし。'});
+  return rows;
+}
+function startTrial(){
+  BGM.march(); hudShow(true);
+  drawTrial();
+  show('#sc-trial');
+  showBig('TRIAL RUN','試 運 転',1600,'gong');
+}
+function drawTrial(){
+  const rows=trialRows();
+  $('#trial-lead').innerHTML='亡者を入れる前に、一度だけ回してみる。<br><span class="tiny">ここで直すか、金を残して本番で対処するか。</span>';
+  $('#trial-rows').innerHTML=rows.map(function(x){
+    const f=FACDEF[x.f];
+    return '<div class="trow">'+icon(f.ic)+'<div class="tn">'+f.n+'</div><div class="tr">'+x.t+'</div>'+
+      '<div class="tg '+x.g+'">'+(x.g==='ok'?'良 好':(x.g==='wn'?'要 注 意':'不 良'))+'</div></div>';
+  }).join('');
+  const cand=FIXUP.filter(function(f){ return (S.risk[f.k]||0)>=1.5; })
+    .sort(function(a,b){ return (S.risk[b.k]||0)-(S.risk[a.k]||0); }).slice(0,4);
+  $('#trial-fixlead').innerHTML=cand.length?
+    ('本番前の補強（予備費 <b>'+yen(S.money)+'</b>）'):
+    ('補強すべき箇所は見当たらない。予備費 <b>'+yen(S.money)+'</b>');
+  $('#trial-fixups').innerHTML=cand.map(function(f){
+    const no=f.pr>S.money;
+    return '<div class="q1'+(no?' no':'')+'" data-k="'+f.k+'"><div class="n">'+f.n+'</div>'+
+      '<div class="p">'+yen(f.pr)+(no?'　予算不足':'')+'</div>'+
+      '<div class="rk r0">◎ '+RISKN[f.k]+'リスクを大幅に低減</div></div>';
+  }).join('');
+  $('#trial-fixups').querySelectorAll('.q1').forEach(function(el){
+    el.addEventListener('click',function(){
+      const f=FIXUP.filter(function(x){return x.k===el.dataset.k;})[0];
+      if(!f||f.pr>S.money) return;
+      addStat({cost:f.pr},true); addRisk(f.r); if(f.e) addStat(f.e,true);
+      if(f.limit) S.limit=Math.max(S.limit,f.limit);
+      SE.drill(); hudDraw(); drawTrial();
+    });
+  });
+  $('#trial-note').innerHTML='残った予備費は、本番での修理費になる。';
+}
+$('#btn-trial').addEventListener('click',function(){ SE.click(); startFinal(); });
+
+/* ============================================================
+   12. FINAL ― 症状から原因を絞り込み、何を捨てるかを決める
+   ============================================================ */
+const INC={
+ overload:{fac:'power',code:'POWER',t:'施設全体の照明が明滅している',
+  sym:'照明が明滅。ヒーターの出力も安定しない。',
+  ca:['電力容量の超過','延長コードの断線','ヒーター内部の故障'],
+  pb:['分電盤を確認する','延長コードを確認する','ヒーター本体を確認する'],
+  hit:[function(){return 'LOAD <b>'+Math.round(S.st.power)+'W</b> ／ LIMIT <b>'+S.limit+'W</b>　― 容量超過。';},
+       '被覆が溶けている。断線寸前。','内部の温度ヒューズが作動している。'],
+  fx:[{n:'叫喚地獄の電源を落とす',pr:0,c:0,shut:'scream',note:'確実。叫喚は沈黙する',free:1},
+      {n:'分電盤を増設し回路を分ける',pr:6800,c:0,limit:3000,note:'恒久対処。容量が増える'},
+      {n:'ヒーターを一台停止する',pr:0,c:0,st:{hell:-2,power:-1000},note:'負荷を下げる。灼熱は弱まる',free:1},
+      {n:'延長コードを交換する',pr:1400,c:1,note:'原因が合っていれば'},
+      {n:'ヒーターを予備品と交換',pr:4200,c:2,note:'原因が合っていれば'}]},
+ heater:{fac:'heat',code:'HEAT',t:'灼熱地獄の温度が低下している',
+  sym:'室温が下がっている。赤い光だけが残っている。',
+  ca:['ヒーターの故障','電力容量の超過','送風機の停止'],
+  pb:['ヒーターを確認する','分電盤を確認する','送風機を確認する'],
+  hit:['一台が完全に沈黙している。中古である。',
+       function(){return 'LOAD <b>'+Math.round(S.st.power)+'W</b> ／ LIMIT <b>'+S.limit+'W</b>';},
+       '羽根が止まっている。過負荷停止。'],
+  fx:[{n:'予備ヒーターと交換する',pr:4200,c:0,note:'確実だが高い'},
+      {n:'一台を諦め、残りを最大出力',pr:0,c:0,st:{hell:-2},note:'HELL低下。無料',free:1},
+      {n:'他系統の電源を落として容量を空ける',pr:0,c:1,shut:'scream',note:'叫喚を停止する',free:1},
+      {n:'送風機を再起動する',pr:0,c:2,note:'原因が合っていれば無料',free:1}]},
+ fire:{fac:'heat',code:'FIRE',t:'焦げた匂いがする',
+  sym:'どこかが焦げている。煙は、まだ見えない。',
+  ca:['照明器具の過熱','可燃物（表層材）への引火','配線の過負荷'],
+  pb:['照明器具に触れる','表層材を確認する','配線を確認する'],
+  hit:['素手では触れない温度。','端が黒く変色している。','被覆が溶けかけている。'],
+  fx:[{n:'消火器で予防散布し、器具を停止',pr:3980,c:0,note:'安全確保。HELL低下',st:{hell:-2,safety:8}},
+      {n:'可燃物を撤去する',pr:0,c:1,st:{hell:-2},note:'無料。地獄らしさは削れる',free:1},
+      {n:'回路を落として冷ます',pr:0,c:2,shut:'heat',note:'灼熱地獄を停止する',free:1},
+      {n:'防炎シートを買い足して覆う',pr:3480,c:1,note:'HELLを保てる'}]},
+ leak:{fac:'pond',code:'LEAK',t:'血の池の水位が下がっている',
+  sym:'床が赤く濡れている。水位、毎分わずかに低下。',
+  ca:['容器の継ぎ目からの漏水','ポンプ配管の外れ','給水ホースの接続部'],
+  pb:['容器の継ぎ目を確認する','ポンプ配管を確認する','給水ホースを辿る'],
+  hit:['継ぎ目から、確かに滲んでいる。','配管が外れかけている。','接続部が緩んでいる。'],
+  fx:[{n:'防水テープで応急処置',pr:1200,c:0,note:'速い。再発しやすい',re:.55,patch:1},
+      {n:'水量を半分に減らす',pr:0,c:0,st:{hell:-2},note:'確実。血の池が浅くなる',free:1},
+      {n:'配管を締め直す',pr:0,c:1,note:'原因が合っていれば無料',free:1},
+      {n:'ホースを締め直す',pr:0,c:2,note:'原因が合っていれば無料',free:1},
+      {n:'容器ごと交換する',pr:5200,c:0,note:'恒久対処。高い'}]},
+ pump:{fac:'pond',code:'PUMP',t:'血の池の循環が停止している',
+  sym:'水面が動いていない。ポンプの音がしない。',
+  ca:['ポンプの焼き付き','異物の吸い込み','電源の遮断'],
+  pb:['ポンプ本体に触れる','吸込口を確認する','コンセントを確認する'],
+  hit:['異常に熱い。焼き付いている。','人工芝の切れ端が詰まっている。','抜けかけている。'],
+  fx:[{n:'予備ポンプと交換する',pr:3600,c:0,note:'確実。予備費を使う'},
+      {n:'部下に棒でかき混ぜさせる',pr:0,c:0,st:{hell:-2,fear:2},note:'人力。無料',free:1,staff:1},
+      {n:'吸込口を清掃する',pr:0,c:1,note:'原因が合っていれば無料',free:1},
+      {n:'挿し直す',pr:0,c:2,note:'原因が合っていれば無料',free:1}]},
+ foul:{fac:'pond',code:'FOUL',t:'血の池から異臭がしている',
+  sym:'水が濁り、臭う。亡者が池を避けはじめた。',
+  ca:['水質の悪化','塗料の分離','循環不足'],
+  pb:['水を汲んで見る','水面の膜を確認する','流量を測る'],
+  hit:['完全に濁っている。','油膜が浮いている。塗料である。','ほとんど流れていない。'],
+  fx:[{n:'ろ材と塩素剤を投入',pr:1400,c:0,note:'衛生的な地獄になる',st:{hell:-2,safety:6}},
+      {n:'水を半分入れ替える',pr:0,c:0,st:{hell:-2},note:'無料。薄まる',free:1},
+      {n:'膜をすくい取る',pr:0,c:1,note:'原因が合っていれば無料',free:1},
+      {n:'ポンプ出力を上げる',pr:0,c:2,st:{power:20},note:'電力を食う',free:1}]},
+ needle:{fac:'needle',code:'NEEDLE',t:'針山の支柱が折れている',
+  sym:'支柱が数本、根元から折れた。亡者が普通に歩いている。',
+  ca:['支柱そのものの強度不足','固定部の脱落','基礎のたわみ'],
+  pb:['折れた支柱を確認する','固定部を確認する','基礎を踏んでみる'],
+  hit:['根元から裂けている。細すぎたのだ。','木ネジが抜けている。','明らかにたわむ。'],
+  fx:[{n:'支柱を追加して補強する',pr:2400,c:0,note:'確実。予備費を使う'},
+      {n:'折れた区画を閉鎖する',pr:0,c:0,st:{hell:-2},note:'無料。針山が縮む',free:1},
+      {n:'増し締めする',pr:0,c:1,note:'原因が合っていれば無料',free:1},
+      {n:'根太を追加する',pr:2800,c:2,note:'基礎の補強'}]},
+ collapse:{fac:'needle',code:'BASE',t:'針山の基礎が沈下している',
+  sym:'足場が傾いている。亡者の列が止まっている。',
+  ca:['基礎材の強度不足','固定の緩み','荷重超過（亡者の入れすぎ）'],
+  pb:['基礎材を確認する','固定部を確認する','入場者数を確認する'],
+  hit:['たわんでいる。薄すぎたのだ。','結束バンドが伸びている。','明らかに詰め込みすぎである。'],
+  fx:[{n:'根太を追加して補強する',pr:2800,c:0,note:'確実'},
+      {n:'区画の半分を閉鎖する',pr:0,c:0,st:{hell:-2},note:'無料。処理数も落ちる',free:1},
+      {n:'固定を打ち直す',pr:1200,c:1,note:'原因が合っていれば'},
+      {n:'入場を制限する',pr:0,c:2,st:{hell:-2},note:'亡者の流入を絞る',free:1,slow:1}]},
+ bt:{fac:'scream',code:'AUDIO',t:'叫喚地獄が沈黙している',
+  sym:'悲鳴が止まった。静かである。',
+  ca:['Bluetoothの切断','再生端末の停止','スピーカーの電源喪失'],
+  pb:['接続状態を確認する','端末を確認する','スピーカーを確認する'],
+  hit:['ペアリングが切れている。','アプリが落ちている。','電源が入っていない。'],
+  fx:[{n:'有線接続に切り替える',pr:2800,c:0,note:'恒久対処。以後切れない'},
+      {n:'再ペアリングする',pr:0,c:0,note:'速い。また切れる',re:.6,free:1,patch:1},
+      {n:'端末を再起動する',pr:0,c:1,note:'原因が合っていれば無料',free:1},
+      {n:'部下に生で叫ばせる',pr:0,c:2,st:{hell:4,fear:2},note:'人力。人員を消耗する',free:1,staff:1}]},
+ batt:{fac:'scream',code:'POWER',t:'叫喚地獄の電源が落ちかけている',
+  sym:'音量が下がっている。残量表示が赤い。',
+  ca:['バッテリー残量の枯渇','ケーブルの接触不良','消費電力の見積り誤り'],
+  pb:['残量を確認する','ケーブルを確認する','消費電力を計算する'],
+  hit:['残量4%。','端子が緩んでいる。','そもそも足りていない。'],
+  fx:[{n:'予備電池を投入する',pr:1200,c:0,note:'確実。予備費を使う'},
+      {n:'音量を半分に落とす',pr:0,c:0,st:{hell:-2},note:'無料。持続はする',free:1},
+      {n:'端子を挿し直す',pr:0,c:1,note:'原因が合っていれば無料',free:1},
+      {n:'延長コードから給電する',pr:1280,c:2,st:{power:20},note:'回路を食う'}]},
+ noise:{fac:'scream',code:'NOISE',t:'近隣から苦情が入っている',
+  sym:'苦情。二件目。管理会社が向かっているらしい。',
+  ca:['音量の過大','再生時間帯','低音の伝播'],
+  pb:['音量を測る','時刻を確認する','壁に触れてみる'],
+  hit:['82dB。工事現場である。','午後八時二分。','壁が震えている。'],
+  fx:[{n:'音量を下げる',pr:0,c:0,st:{hell:-2},note:'無料。叫喚が弱まる',free:1},
+      {n:'防音カーテンを追加する',pr:2600,c:0,note:'HELLを保てる',st:{hell:-2}},
+      {n:'再生を一時停止する',pr:0,c:1,shut:'scream',note:'叫喚地獄を停止する',free:1},
+      {n:'菓子折を持って挨拶に行く',pr:1580,c:2,st:{safety:6},note:'部下が一名、離脱する',staff:1}]},
+ short:{fac:'scream',code:'SHORT',t:'漏電の疑いがある',
+  sym:'ブレーカーが一度落ちかけた。足元が濡れている。',
+  ca:['水濡れによる漏電','コネクタの結露','単なる過負荷'],
+  pb:['足元の配線を辿る','コネクタを開ける','負荷を計算する'],
+  hit:['延長コードが、血の池に浸かっている。','内部が結露している。',
+       function(){return 'LOAD <b>'+Math.round(S.st.power)+'W</b> ／ LIMIT <b>'+S.limit+'W</b>';}],
+  fx:[{n:'配線を高所に上げて絶縁する',pr:1600,c:0,note:'恒久対処'},
+      {n:'該当機器の電源を落とす',pr:0,c:0,shut:'scream',note:'叫喚地獄を停止する',free:1},
+      {n:'コネクタを乾かし防水キャップを付ける',pr:900,c:1,note:'原因が合っていれば'},
+      {n:'負荷を減らす',pr:0,c:2,st:{hell:-2,power:-400},note:'無料。地獄が弱まる',free:1}]},
+ staff:{fac:'any',code:'STAFF',t:'鬼役スタッフが倒れた',
+  sym:'鬼役が一名、動かなくなった。角だけが落ちている。',
+  ca:['熱中症','疲労の蓄積','単なる欠勤'],
+  pb:['体温を測る','勤務記録を確認する','点呼を取る'],
+  hit:['38.9℃。灼熱地獄の隣である。','十四時間連続勤務。','無断である。'],
+  fx:[{n:'交代要員を手配する',pr:2000,c:0,note:'確実。予備費を使う'},
+      {n:'当該区画を無人で運用する',pr:0,c:0,st:{hell:-2},note:'無料。演出が落ちる',free:1},
+      {n:'休憩を入れる',pr:0,c:1,st:{hell:-2},note:'原因が合っていれば無料',free:1},
+      {n:'指揮官自ら鬼役に立つ',pr:0,c:2,st:{hell:6,fear:4},note:'士気が上がる',free:1}]}
+};
 const BARK=['よし。次だ。','<b>インパクトドライバーを！</b>','下穴を忘れるな。','<b>結束バンドを持て。</b>',
- '寸法は狂わせるな。','釘ではない。木ネジだ。','慌てるな。手順通りにやれ。','<b>ベニヤを出せ。</b>',
- '養生を怠るな。','ここは、現場である。'];
+ '寸法は狂わせるな。','慌てるな。手順通りにやれ。','現場は、常に想定外である。','記録しておけ。'];
 const F={};
 function startFinal(){
   BGM.hell();
   playCut([
    {art:'blank',black:true,hold:700},
-   {black:false,art:'total',big:'FINAL STAGE',big2:'TOTAL INFERNO',sfx:'dunn',hold:2500},
-   {big:'',line:'これまでに製作した全設備を、一箇所に集結させる。',hold:2600},
-   {who:'部 下',line:'閣下。亡者、入場を開始します',hold:2300},
-   {who:'指 揮 官',line:'',hold:1200},
-   {who:'指 揮 官',line:'開門せよ',hold:2200,sfx:'gong'},
-   {art:'blank',big:'OPEN THE GATE',big2:'開 門',sfx:'dunn',fx:'red',hold:1800}
+   {black:false,art:'total',big:'FINAL STAGE',big2:'TOTAL INFERNO',sfx:'dunn',hold:2400},
+   {big:'',line:'これまでに製作した全設備を、一箇所に集結させる。',hold:2500},
+   {who:'部 下',line:'閣下。予備費、残り '+yen(S.money)+' であります',hold:2400},
+   {who:'指 揮 官',line:'',hold:1100},
+   {who:'指 揮 官',line:'開門せよ',hold:2100,sfx:'gong'},
+   {art:'blank',big:'OPEN THE GATE',big2:'開 門',sfx:'dunn',fx:'red',hold:1700}
   ],runFinal);
 }
+function facAlive(){
+  let n=0; for(const k in S.facs){ const st=S.facs[k].st; n+= st==='run'?1:(st==='weak'?0.5:0); }
+  return n;
+}
 function runFinal(){
-  F.t=72; F.souls=0; F.goal=60; F.dmg=0; F.max=5; F.act={}; F.spawn=1.4; F.over=false;
-  $('#f-goal').textContent=F.goal; $('#f-dmgmax').textContent=F.max;
-  $('#fgrid').innerHTML=FCELLS.map(function(c,i){
-    return '<div class="cellf" data-i="'+i+'">'+icon(c.ic)+'<div class="cn">'+c.n+'</div></div>';
-  }).join('');
-  $('#f-say').innerHTML='<b>故障個所を叩け。</b>直せば直るのが、DIYである。';
+  F.t=90; F.souls=0; F.goal=140; F.list=[]; F.spawn=3.5; F.over=false; F.open=null; F.pending=[]; F.n=0;
+  $('#f-goal').textContent=F.goal;
   BGM.fever(); hudShow(true); show('#sc-final');
-  fdraw();
+  fsay('<b>症状から原因を絞り込め。</b>調査には時間がかかる。');
+  drawFacs(); drawIncs(); fdraw();
   clearInterval(F.iv);
   F.iv=setInterval(ftick,100);
 }
+function fsay(h){ $('#f-say').innerHTML=h; }
 function fdraw(){
   $('#f-souls').textContent=Math.floor(F.souls);
   $('#f-time').textContent=Math.max(0,Math.ceil(F.t));
-  $('#f-dmg').textContent=F.dmg;
+  $('#f-money').textContent=yen(S.money);
+  let dead=0; for(const k in S.facs) if(S.facs[k].st==='dead') dead++;
+  $('#f-dmg').textContent=dead;
 }
-function spawnTrouble(){
-  const free=FCELLS.map(function(c,i){return i;}).filter(function(i){return !F.act[i];});
-  if(!free.length) return;
-  const ci=pick(free);
-  const cand=TROUBLE.filter(function(t){return t.c===ci;});
-  const t=pick(cand);
-  const life=clamp(9.5-(72-F.t)*0.055,4.2,9.5)+ (S.st.dur/100)*2.2;
-  F.act[ci]={t:t.t,taps:t.taps,left:t.taps,life:life,max:life};
+function drawFacs(){
+  $('#facs').innerHTML=Object.keys(S.facs).map(function(k){
+    const f=S.facs[k], nm={run:'稼 働',weak:'不 調',dead:'停 止'}[f.st];
+    return '<div class="fac '+f.st+'" data-f="'+k+'">'+icon(f.ic)+'<div class="fn">'+f.n+'</div><div class="fs">'+nm+'</div></div>';
+  }).join('');
+}
+function pickIncident(){
+  const w=[];
+  const add=function(k,v){ if(v>0&&INC[k]) w.push([k,v]); };
+  for(const k in S.risk) add(k,S.risk[k]);
+  if(S.st.power>S.limit) add('overload',4);
+  add('staff',0.5); add('needle',0.35); add('bt',0.35); add('leak',0.3);
+  /* 稼働中の設備に関するものだけ */
+  const av=w.filter(function(x){
+    const f=INC[x[0]].fac;
+    if(f==='any'||f==='power') return true;
+    return S.facs[f]&&S.facs[f].st!=='dead';
+  }).filter(function(x){
+    return !F.list.some(function(i){return i.key===x[0];});
+  });
+  if(!av.length) return null;
+  let t=0; av.forEach(function(x){t+=x[1];});
+  let r=Math.random()*t;
+  for(let i=0;i<av.length;i++){ r-=av[i][1]; if(r<=0) return av[i][0]; }
+  return av[0][0];
+}
+function spawnIncident(key,hard){
+  const tpl=INC[key]; if(!tpl) return;
+  const life=(hard?14:20)+clamp(S.st.dur*0.06,0,6);
+  const truth=(function(){ const r=Math.random(); return r<0.55?0:(r<0.8?1:2); })();
+  F.list.push({key:key,tpl:tpl,truth:truth,life:life,max:life,probe:[],diag:'',found:false,
+    busy:0,busyN:-1,failed:{},solved:false,id:(F.n++)});
   SE.spark();
-  renderCell(ci);
+  if(F.list.length===1||!F.open) F.open=F.list[F.list.length-1].id;
+  drawIncs();
+  fsay('<b>'+tpl.t+'</b>');
 }
-function renderCell(i){
-  const el=$('#fgrid').querySelector('.cellf[data-i="'+i+'"]'); if(!el) return;
-  const a=F.act[i];
-  if(!a){
-    el.className='cellf';
-    el.innerHTML=icon(FCELLS[i].ic)+'<div class="cn">'+FCELLS[i].n+'</div>';
-    return;
+function drawIncs(){
+  $('#incs').innerHTML=F.list.map(function(i){
+    const tpl=i.tpl, op=(F.open===i.id);
+    let h='<div class="inc'+(i.solved?' solved':'')+(op?'':' calm')+'" data-id="'+i.id+'">'+
+      '<div class="ih"><span class="ic2">'+tpl.code+'</span><span class="it">'+tpl.t+'</span>'+
+      '<span class="ic2">'+Math.max(0,Math.ceil(i.life))+'s</span></div>'+
+      '<div class="ib"><i style="width:'+clamp(i.life/i.max*100,0,100)+'%"></i></div>'+
+      ((op||i.solved)?'':'<div class="cand" style="margin-top:.25em">タップして対応する</div>');
+    if(op&&!i.solved){
+      h+='<div class="ibody"><div class="sym">'+tpl.sym+'</div>'+
+        '<div class="cand">原因候補：'+tpl.ca.map(function(c,ci){
+          return (i.found&&ci===i.truth)?('<b style="color:#ffb3b3">'+c+'</b>'):c;}).join('　／　')+'</div>';
+      if(i.busy>0){ h+='<div class="probing">調 査 中 … '+i.busy.toFixed(1)+'s</div>'; }
+      else{
+        h+='<div class="lbl">調 査</div><div class="btns">'+
+          tpl.pb.map(function(n,pi){
+            return '<button class="ibtn'+(i.probe.indexOf(pi)>=0?' done':'')+'" data-a="p" data-i="'+pi+'">'+n+'</button>';
+          }).join('')+'</div>';
+      }
+      if(i.diag) h+='<div class="diag">'+i.diag+'</div>';
+      h+='<div class="lbl">対 処</div><div class="btns">'+
+        tpl.fx.map(function(f,fi){
+          const no=f.pr>S.money;
+          return '<button class="ibtn'+(f.free?' free':'')+(f.shut?' cut':'')+(i.failed[fi]?' done':'')+(no?' no':'')+
+            '" data-a="f" data-i="'+fi+'">'+f.n+
+            '<small>'+(f.pr?yen(f.pr):'費用なし')+(f.note?' ／ '+f.note:'')+(no?' ／ 予算不足':'')+'</small></button>';
+        }).join('')+
+        '<button class="ibtn cut" data-a="c">この設備を切り離す<small>放棄。以後この設備は停止する</small></button>'+
+        '<button class="ibtn" data-a="i">放置する<small>今は何も起きない</small></button>'+
+        '</div></div>';
+    }
+    return h+'</div>';
+  }).join('');
+}
+$('#incs').addEventListener('click',function(e){
+  const card=e.target.closest('.inc'); if(!card) return;
+  const inc=F.list.filter(function(x){return x.id===+card.dataset.id;})[0];
+  if(!inc||inc.solved) return;
+  const btn=e.target.closest('.ibtn');
+  if(!btn){ F.open=inc.id; SE.click(); drawIncs(); return; }
+  if(btn.classList.contains('done')||btn.classList.contains('no')) return;
+  const a=btn.dataset.a, i=+btn.dataset.i;
+  if(a==='p'){
+    if(inc.busy>0) return;
+    inc.busy=1.4+Math.random()*0.8; inc.busyN=i; inc.probe.push(i);
+    SE.click(); drawIncs(); return;
   }
-  el.className='cellf trouble';
-  el.innerHTML=icon(FCELLS[i].ic)+'<div class="cn">'+FCELLS[i].n+'</div>'+
-    '<div class="tw"><div class="tt">'+a.t+'</div><div class="tp">修理 ×'+a.left+'</div>'+
-    '<div class="tb"><i style="width:'+clamp(a.life/a.max*100,0,100)+'%"></i></div></div>';
+  if(a==='i'){ ignoreInc(inc); return; }
+  if(a==='c'){ cutInc(inc); return; }
+  applyFix(inc,i);
+});
+function probeDone(inc){
+  const tpl=inc.tpl, i=inc.busyN;
+  inc.busy=0; inc.busyN=-1;
+  if(i===inc.truth){
+    let h=tpl.hit[i]; if(typeof h==='function') h=h();
+    inc.diag='診断：'+h;
+    inc.found=true; SE.ok();
+    fsay('<b>原因、判明。</b>'+tpl.ca[inc.truth]);
+  }else{
+    inc.diag='点検結果：異常なし。';
+    SE.pop();
+  }
+  drawIncs();
+}
+function facDamage(k,hard){
+  const f=S.facs[k]; if(!f) return;
+  if(f.st==='run') f.st=hard?'dead':'weak';
+  else if(f.st==='weak') f.st='dead';
+  drawFacs();
+}
+function closeInc(inc,msg){
+  inc.solved=true;
+  drawIncs();
+  setTimeout(function(){
+    F.list=F.list.filter(function(x){return x!==inc;});
+    if(F.open===inc.id) F.open=F.list.length?F.list[0].id:null;
+    drawIncs();
+  },900);
+  if(msg) fsay(msg);
+}
+function applyFix(inc,fi){
+  const f=inc.tpl.fx[fi];
+  if(f.pr>S.money){ SE.ng(); return; }
+  if(f.pr) addStat({cost:f.pr},true);
+  if(f.c!==inc.truth&&!f.shut){
+    inc.failed[fi]=1; inc.life=Math.max(2,inc.life-2.5);
+    SE.ng(); fsay('<b>症状は変わらない。</b>原因が違う。');
+    drawIncs(); fdraw(); return;
+  }
+  if(f.st) addStat(f.st,true);
+  if(f.limit) S.limit=Math.max(S.limit,f.limit);
+  if(f.staff) addRisk({staff:1});
+  if(f.patch) S.patches++;
+  if(f.shut){ S.facs[f.shut].st='dead'; if(S.dropped.indexOf(f.shut)<0) S.dropped.push(f.shut);
+    addStat({hell:-5,power:(f.shut==='heat'?-1200:-120)},true); drawFacs(); }
+  S.fixes++;
+  SE.drill(); hudDraw(); fdraw();
+  if(f.re&&Math.random()<f.re) F.pending.push({key:inc.key,at:F.t-(12+Math.random()*8)});
+  closeInc(inc,f.shut?('部下：「閣下！ '+S.facs[f.shut].n+'が沈黙しました！」／指揮官：「<b>捨て置け</b>」'):pick(BARK));
+}
+function cutInc(inc){
+  const k=inc.tpl.fac;
+  let target=k;
+  if(k==='power'||k==='any'){
+    const pref=['scream','heat','pond','needle'].filter(function(x){return S.facs[x]&&S.facs[x].st!=='dead';});
+    target=pref[0];
+  }
+  if(target&&S.facs[target]){
+    S.facs[target].st='dead';
+    if(S.dropped.indexOf(target)<0) S.dropped.push(target);
+    addStat({hell:-6},true); drawFacs(); hudDraw();
+    closeInc(inc,'部下：「閣下！ '+S.facs[target].n+'、切り離しました！」／指揮官：「<b>やむを得ん</b>」');
+  }else closeInc(inc,'指揮官：「切り離せ」');
+  SE.breaker();
+}
+function ignoreInc(inc){
+  const k=inc.tpl.fac;
+  if(k!=='power'&&k!=='any'&&S.facs[k]) facDamage(k,false);
+  S.missed++;
+  if(Math.random()<0.55) F.pending.push({key:inc.key,at:F.t-(10+Math.random()*8),hard:true});
+  SE.ng();
+  closeInc(inc,'指揮官：「<b>後回しだ。</b>今は他を守る」');
 }
 function ftick(){
   if(F.over) return;
   F.t-=0.1;
-  const n=Object.keys(F.act).length;
-  F.souls+=Math.max(0.12,(1.15-n*0.24))*0.1;
-  F.spawn-=0.1;
-  if(F.spawn<=0){
-    spawnTrouble();
-    const el=72-F.t;
-    F.spawn=clamp(rnd(2.6,4.2)-el*0.028,0.9,4.2);
-  }
-  Object.keys(F.act).forEach(function(k){
-    const a=F.act[k]; a.life-=0.1;
-    const bar=$('#fgrid').querySelector('.cellf[data-i="'+k+'"] .tb i');
-    if(bar) bar.style.width=clamp(a.life/a.max*100,0,100)+'%';
-    if(a.life<=0){
-      delete F.act[k]; renderCell(+k);
-      F.dmg++; addStat({dur:-7,hell:-2,safety:-3},true);
+  F.souls+=facAlive()*0.05;
+  /* 調査の進行 */
+  F.list.forEach(function(i){
+    if(i.busy>0){ i.busy-=0.1; if(i.busy<=0) probeDone(i); }
+  });
+  /* インシデントの時間切れ */
+  for(let n=F.list.length-1;n>=0;n--){
+    const i=F.list[n];
+    if(i.solved) continue;
+    i.life-=0.1;
+    if(i.life<=0){
+      const k=i.tpl.fac;
+      if(k==='power'){ facDamage('heat',false); facDamage('scream',false); }
+      else if(k==='any'){ const al=Object.keys(S.facs).filter(function(x){return S.facs[x].st!=='dead';}); if(al.length) facDamage(pick(al),false); }
+      else facDamage(k,false);
       S.missed++; SE.crack(); shake();
-      $('#f-say').innerHTML='<b>'+a.t+'</b> ― 対応が遅れた。';
-      if(F.dmg>=F.max){ endFinal(false); return; }
+      fsay('<b>'+i.tpl.t+'</b> ― 対応が間に合わなかった。');
+      F.list.splice(n,1);
+      if(F.open===i.id) F.open=F.list.length?F.list[0].id:null;
+      drawIncs();
     }
+  }
+  /* 発生 */
+  F.spawn-=0.1;
+  const cap=(F.t<45?4:3);
+  if(F.pending.length&&F.pending[0].at>=F.t){
+    const pd=F.pending.shift();
+    if(F.list.length<cap) spawnIncident(pd.key,pd.hard);
+  }
+  if(F.spawn<=0){
+    if(F.list.length<cap){
+      const k=pickIncident();
+      if(k) spawnIncident(k);
+    }
+    F.spawn=clamp(10.5-(90-F.t)*0.07,3.5,10.5)+Math.random()*2.5;
+  }
+  /* 進行バーの更新 */
+  F.list.forEach(function(i){
+    const el=$('#incs').querySelector('.inc[data-id="'+i.id+'"]');
+    if(!el) return;
+    const bar=el.querySelector('.ib i'); if(bar) bar.style.width=clamp(i.life/i.max*100,0,100)+'%';
+    const tm=el.querySelectorAll('.ic2')[1]; if(tm) tm.textContent=Math.max(0,Math.ceil(i.life))+'s';
+    const pb=el.querySelector('.probing'); if(pb&&i.busy>0) pb.textContent='調 査 中 … '+i.busy.toFixed(1)+'s';
   });
   fdraw();
-  if(!F.over&&(F.t<=0||F.souls>=F.goal)) endFinal(true);
+  let dead=0; for(const k in S.facs) if(S.facs[k].st==='dead') dead++;
+  if(dead>=4){ endFinal(false); return; }
+  if(F.t<=0) endFinal(true);
 }
-$('#fgrid').addEventListener('click',function(e){
-  const el=e.target.closest('.cellf'); if(!el) return;
-  const i=+el.dataset.i, a=F.act[i];
-  if(!a) return;
-  a.left--;
-  if(a.left<=0){
-    delete F.act[i];
-    renderCell(i);
-    const c=$('#fgrid').querySelector('.cellf[data-i="'+i+'"]');
-    if(c){ c.classList.add('fixed'); setTimeout(function(){c.classList.remove('fixed');},600);
-      const p=document.createElement('div'); p.className='fixpop'; p.textContent='修 理 完 了'; c.appendChild(p);
-      setTimeout(function(){p.remove();},700); }
-    S.fixes++; addStat({hell:0.5},true);
-    SE.drill();
-    $('#f-say').innerHTML=pick(BARK);
-  }else{
-    renderCell(i); SE.click();
-  }
-});
 function endFinal(ok){
   F.over=true; clearInterval(F.iv);
+  S.souls=Math.floor(F.souls);
+  if(ok) addStat({hell:Math.round(facAlive()*2)},true);
   if(ok) startAudit(); else gameOver();
 }
 
 /* ============================================================
-   12. 閻魔監査 ＆ エンディング
+   13. 閻魔監査 ＆ エンディング（プレイ内容を反映）
    ============================================================ */
+function pk(stage,sys){ return S.picks[stage+'.'+sys]||null; }
 function grade(){
-  let sc=S.st.hell*1.0+(S.st.pain+S.st.fear)*0.22+S.st.dur*0.12+S.fixes*0.5
-        -S.complaints*4-S.missed*4
+  const alive=facAlive(), ratio=clamp(S.souls/(F.goal||150),0,1.2);
+  let sc=S.st.hell*1.0+(S.st.pain+S.st.fear)*0.2+S.st.dur*0.1
+        +ratio*26+alive*4+S.fixes*1.2
+        -S.missed*4-S.dropped.length*6-S.patches*1.5-S.complaints*3
         -Math.max(0,S.st.safety-55)*0.6
-        -Math.max(0,25-S.st.safety)*0.4;
-  if(S.reported) sc-=5;
+        -Math.max(0,25-S.st.safety)*0.3
+        +clamp(S.money/5000,0,6);
+  if(S.reported) sc-=4;
+  sc-=S.extra*10;
   let g,c;
-  if(sc>=112){g='S';c='この者、地獄の何たるかを解しておる。';}
-  else if(sc>=90){g='A';c='手作りである。しかし、地獄である。';}
-  else if(sc>=68){g='B';c='ビニールプールの件を除けば、概ね地獄。';}
-  else if(sc>=45){g='C';c='安全である。地獄としては、やや物足りぬ。';}
+  if(sc>=118){g='S';c='この者、地獄の何たるかを解しておる。';}
+  else if(sc>=96){g='A';c='手作りである。しかし、地獄である。';}
+  else if(sc>=72){g='B';c='ビニールプールの件を除けば、概ね地獄。';}
+  else if(sc>=48){g='C';c='安全である。地獄としては、やや物足りぬ。';}
   else {g='D';c='安全で、静かで、快適である。再施工を命ずる。';}
   return {g:g,c:c,sc:Math.round(sc)};
+}
+function auditExtra(){
+  const out=[], tank=pk(1,'tank'), col=pk(1,'color'), nee=pk(0,'needle'), fx=S.plans[0];
+  /* 定番のやりとり（選んだ工法に合わせて変化する） */
+  const tankLine={pool:['ビニールプールに見えるが','ビニールプールです。<b>循環式です</b>'],
+    trough:['……舟に見えるが','トロ舟です。80リットル、三連結であります'],
+    frame:['木枠に、シートを張っただけに見えるが','防水処理は施しております']}[tank?tank.id:'pool'];
+  const colLine={dye:'食品用着色料です',pig:'業務用の赤色顔料です',paint:'塗料です'}[col?col.id:'dye'];
+  out.push({who:'監 査 官',line:'これは何だ',hold:2200});
+  out.push({who:'指 揮 官',line:'血の池です',hold:2000});
+  out.push({who:'監 査 官',line:tankLine[0],hold:2400});
+  out.push({who:'指 揮 官',line:tankLine[1],hold:2200});
+  out.push({who:'監 査 官',line:'血は？',hold:1900});
+  out.push({who:'指 揮 官',line:colLine,hold:2300});
+  out.push({line:'<span style="opacity:.5">― 沈 黙 ―</span>',who:'',hold:2400});
+  /* プレイ内容による追加のやりとり（最大2つ） */
+  const ex=[];
+  if(fx&&fx.id==='zip') ex.push([
+    {who:'監 査 官',line:'……これは、何で固定してある',hold:2400},
+    {who:'指 揮 官',line:'結束バンドです',hold:2200},
+    {line:'<span style="opacity:.5">― 沈 黙 ―</span>',hold:2200}]);
+  if(S.dropped.length) ex.push([
+    {who:'監 査 官',line:'……'+S.facs[S.dropped[0]].n+'が、停止しているが',hold:2600},
+    {who:'指 揮 官',line:'本日は休業です',hold:2400}]);
+  if(S.st.safety>=55) ex.push([
+    {who:'監 査 官',line:'手すりがあるな',hold:2200},
+    {who:'指 揮 官',line:'転落防止です',hold:2100},
+    {who:'監 査 官',line:'……地獄だぞ？',hold:2500}]);
+  if(S.st.hell>=62) ex.push([
+    {who:'監 査 官',line:'危険だな',hold:2100},
+    {who:'指 揮 官',line:'地獄ですので',hold:2300}]);
+  if(nee&&nee.id==='rebar') ex.push([
+    {who:'監 査 官',line:'これは鉄筋か',hold:2100},
+    {who:'指 揮 官',line:'D10です。曲がりません',hold:2400}]);
+  if(S.cost<=34000) ex.push([
+    {who:'監 査 官',line:'……安いな',hold:2100},
+    {who:'指 揮 官',line:'はい',hold:2000}]);
+  if(S.extra) ex.push([
+    {who:'監 査 官',line:'予算を超過しているな',hold:2200},
+    {who:'指 揮 官',line:'補正いたしました',hold:2300}]);
+  if(S.patches>=2) ex.push([
+    {who:'監 査 官',line:'テープの跡が多いが',hold:2300},
+    {who:'指 揮 官',line:'応急処置です。本日中に本設工事を行います',hold:2600}]);
+  ex.slice(0,2).forEach(function(g){ g.forEach(function(x){ out.push(x); }); });
+  return out;
 }
 function startAudit(){
   BGM.audit(); hudShow(false);
   playCut([
    {art:'blank',black:true,hold:800},
-   {black:false,art:'enma',big:'地 獄 監 査',big2:'H E L L   I N S P E C T I O N',sfx:'gong',hold:2600},
-   {big:'',line:'巨大な監査官が、設備を一つずつ見ていく。',hold:2500},
-   {who:'監 査 官',line:'これは何だ',hold:2300},
-   {who:'指 揮 官',line:'血の池です',hold:2100},
-   {who:'監 査 官',line:'ビニールプールに見えるが',hold:2500},
-   {who:'指 揮 官',line:'循環式です',hold:2100},
-   {who:'監 査 官',line:'血は？',hold:2000},
-   {who:'指 揮 官',line:'食品用着色料です',hold:2400},
-   {line:'<span style="opacity:.5">― 沈 黙 ―</span>',who:'',hold:2600},
-   {who:'監 査 官',line:'……針山は',hold:2200},
-   {who:'指 揮 官',line:'園芸用支柱です。20本束で、'+yen(MAT.stake.pr)+'でした',hold:2900},
-   {who:'監 査 官',line:'…………',hold:2200}
-  ],endingCut);
+   {black:false,art:'enma',big:'地 獄 監 査',big2:'H E L L   I N S P E C T I O N',sfx:'gong',hold:2500},
+   {big:'',line:'巨大な監査官が、設備を一つずつ見ていく。',hold:2400}
+  ].concat(auditExtra()),endingCut);
 }
 function endingCut(){
+  const junk=[];
+  [pk(0,'base'),pk(1,'tank'),pk(3,'snd')].forEach(function(o){ if(o) junk.push(o.n); });
+  if(S.plans[0]) junk.push(S.plans[0].n);
+  if(junk.length<3) junk.push('延長コード','結束バンド','ホース');
   playCut([
-   {art:'total',line:'全設備、満身創痍のまま稼働している。',hold:2500},
-   {line:'ベニヤ板。延長コード。結束バンド。ホース。ビニールプール。赤色ＬＥＤ。',hold:3000},
-   {line:'どう見ても、手作りである。',hold:2400},
-   {art:'enma',line:'<span style="opacity:.5">― 長 い 沈 黙 ―</span>',hold:2800},
-   {who:'監 査 官',line:'……思っていたより地獄だな',hold:2900,sfx:'gong'},
-   {who:'指 揮 官',line:'でしょう？',hold:2600},
+   {art:'total',line:(S.dropped.length?'生き残った設備が、満身創痍のまま稼働している。':'全設備、満身創痍のまま稼働している。'),hold:2400},
+   {line:junk.join('。')+'。',hold:2900},
+   {line:'どう見ても、手作りである。',hold:2300},
+   {art:'enma',line:'<span style="opacity:.5">― 長 い 沈 黙 ―</span>',hold:2700},
+   {who:'監 査 官',line:'……思っていたより地獄だな',hold:2800,sfx:'gong'},
+   {who:'指 揮 官',line:'でしょう？',hold:2500},
    {art:'blank',black:true,hold:900},
-   {black:false,big:'MISSION COMPLETE',big2:'作 戦 完 了',sfx:'dunn',hold:2800},
+   {black:false,big:'MISSION COMPLETE',big2:'作 戦 完 了',sfx:'dunn',hold:2700},
    {big:'',black:true,hold:700}
   ],endScreen);
 }
 function endScreen(){
   blackout(false); BGM.end(); hudShow(false);
   const g=grade();
+  const dead=Object.keys(S.facs).filter(function(k){return S.facs[k].st==='dead';});
   const rows=[
    ['HELL 地獄らしさ',Math.round(S.st.hell)],['PAIN 苦痛',Math.round(S.st.pain)],
    ['FEAR 恐怖',Math.round(S.st.fear)],['DURABILITY 耐久性',Math.round(S.st.dur)],
-   ['SAFETY 安全性',Math.round(S.st.safety)],['POWER 消費電力',Math.round(S.st.power)+' W'],
-   ['騒音苦情',S.complaints+' 件'],['現場修理回数',S.fixes+' 回'],['対応不能',S.missed+' 件']
+   ['SAFETY 安全性',Math.round(S.st.safety)],
+   ['POWER 消費電力',Math.round(S.st.power)+' / '+S.limit+' W'],
+   ['処理した亡者',S.souls+' 体'],
+   ['現場対応',S.fixes+' 件（うち応急処置 '+S.patches+'）'],
+   ['対応できず',S.missed+' 件'],
+   ['放棄・停止した設備',dead.length?dead.map(function(k){return S.facs[k].n.replace(/\s/g,'');}).join('／'):'なし'],
+   ['残った予備費',yen(S.money)]
   ];
   $('#end-inner').innerHTML=
    '<div class="mc">MISSION COMPLETE</div>'+
@@ -1759,11 +2426,11 @@ function endScreen(){
      '<div class="mtop"><div class="t">DIY HELL MAGAZINE</div><div class="s">月 刊 ・ 地 獄 施 工</div></div>'+
      '<div class="cov">'+ART.magcover()+'<div class="band">週末で作れる地獄</div></div>'+
      '<div class="lines">'+
-       '<div>特集：<b>2×4材</b>ではじめる針山地獄</div>'+
-       '<div>実例：<b>ビニールプール</b>で血の池をつくる（循環式）</div>'+
+       '<div>特集：<b>'+(pk(0,'needle')?pk(0,'needle').n:'園芸用支柱')+'</b>ではじめる針山地獄</div>'+
+       '<div>実例：<b>'+(pk(1,'tank')?pk(1,'tank').n:'ビニールプール')+'</b>で血の池をつくる</div>'+
        '<div>連載：<b>タコ足配線は敗北である</b> 第3回</div>'+
        '<div>読者投稿：ご近所と上手につきあう叫喚地獄</div>'+
-       '<div>今月の資材：<b>結束バンド200本入</b> '+yen(MAT.band.pr)+'</div>'+
+       '<div>今月の総工費：<b>'+yen(S.cost)+'</b>（予算 '+yen(BUDGET)+'）</div>'+
      '</div></div>'+
    '<div style="margin-top:1.4em"><button class="btn" id="btn-again">もう一度、地獄を作る</button></div>'+
    '<div class="tiny" style="margin-top:1em">※ 本作の地獄はすべて市販品で構成されています</div>';
@@ -1777,19 +2444,21 @@ function gameOver(){
   BGM.silence(); hudShow(false);
   playCut([
    {art:'blank',black:true,sfx:'crack',fx:'shake',hold:1200},
-   {black:false,art:'total',artcls:'',big:'',line:'設備が、次々と沈黙していく。',hold:2400,fx:'red'},
-   {who:'部 下',line:'閣下……地獄は崩壊しました',hold:2800},
-   {who:'指 揮 官',line:'<span style="opacity:.45">― 沈 黙 ―</span>',hold:2600},
-   {who:'指 揮 官',line:'……ホームセンターへ戻るぞ',hold:2900,sfx:'gong'}
+   {black:false,art:'total',artcls:'',big:'',line:'設備が、次々と沈黙していく。',hold:2300,fx:'red'},
+   {who:'部 下',line:'閣下……地獄は崩壊しました',hold:2700},
+   {who:'指 揮 官',line:'<span style="opacity:.45">― 沈 黙 ―</span>',hold:2500},
+   {who:'指 揮 官',line:'……ホームセンターへ戻るぞ',hold:2800,sfx:'gong'}
   ],function(){
-    $('#over-q').innerHTML='損壊 '+F.dmg+' 箇所。<i>資材は、まだ売っている。</i>';
+    $('#over-q').innerHTML='全設備停止。<i>資材は、まだ売っている。</i>';
     show('#sc-over');
   });
 }
 $('#btn-retry').addEventListener('click',function(){
   SE.click();
-  S.st.dur=clamp(S.st.dur+30,0,100); S.st.safety=clamp(S.st.safety+5,0,100);
-  addStat({cost:12800},true);
+  for(const k in S.facs) S.facs[k].st='run';
+  S.dropped=[];
+  for(const k in S.risk) S.risk[k]=S.risk[k]*0.6;
+  addStat({cost:Math.min(S.money,9800),dur:12},true);
   showBig('RE-SUPPLY','資 材 補 充 完 了',1500,'dunn');
   setTimeout(runFinal,1700);
 });
