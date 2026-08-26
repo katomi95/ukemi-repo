@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f16">
+<meta name="description" content="知らない番号からかかってきた、妙に古臭い同窓会の勧誘電話。質問するほど相手の設定が崩れていく短編会話ゲーム。">
+<title>同窓会のお知らせ</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  background:#04060a;color:#e9edf4;overflow:hidden;
+  font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic","YuGothic",Meiryo,system-ui,sans-serif;
+  font-size:16px;line-height:1.7;
+  display:flex;align-items:center;justify-content:center;
+  -webkit-user-select:none;user-select:none;
+  -webkit-text-size-adjust:100%;
+}
+
+/* ---- 端末フレーム ---- */
+#phone{
+  position:relative;display:flex;flex-direction:column;
+  width:100%;max-width:430px;height:100vh;height:100dvh;
+  background:linear-gradient(178deg,#18202c 0%,#10151e 42%,#0a0d13 100%);
+  overflow:hidden;
+}
+@media (min-width:520px) and (min-height:660px){
+  #phone{
+    height:min(calc(100dvh - 36px),880px);
+    border-radius:40px;border:9px solid #191d25;
+    box-shadow:0 26px 70px rgba(0,0,0,.75), 0 0 0 1px #2a3038;
+  }
+}
+
+/* ---- ステータスバー ---- */
+#statusbar{
+  flex:none;display:flex;align-items:center;justify-content:space-between;
+  padding:calc(8px + env(safe-area-inset-top)) 18px 6px;
+  font-size:12px;letter-spacing:.06em;color:#9fb0c6;
+}
+#statusbar .sig{display:flex;align-items:center;gap:7px;}
+#mute{
+  pointer-events:auto;cursor:pointer;font:inherit;font-size:12px;color:#9fb0c6;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+  border-radius:999px;padding:4px 11px;min-height:28px;letter-spacing:.04em;
+}
+#mute:active{background:rgba(255,255,255,.16);}
+
+/* ---- 通話ヘッダ ---- */
+#callhead{
+  flex:none;text-align:center;padding:6px 16px 12px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+#timer{font-size:12px;letter-spacing:.16em;color:#6fd39a;min-height:18px;}
+#timer.warn{color:#e2b85f;}
+#avatar{
+  width:62px;height:62px;margin:8px auto 7px;border-radius:50%;
+  background:radial-gradient(circle at 50% 34%,#455060 0%,#333c49 45%,#212832 100%);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);
+  position:relative;overflow:hidden;
+}
+#avatar::before{content:"";position:absolute;top:14px;width:18px;height:18px;border-radius:50%;background:#101620;opacity:.75;}
+#avatar::after{content:"";position:absolute;top:37px;width:38px;height:30px;border-radius:20px 20px 0 0;background:#101620;opacity:.75;}
+#cname{font-size:20px;font-weight:700;letter-spacing:.04em;}
+#csub{font-size:12.5px;color:#8b9bb1;margin-top:3px;min-height:19px;transition:color .3s;}
+#csub.shift{color:#d99a9a;}
+
+/* ---- メーター ---- */
+#meters{flex:none;display:flex;gap:9px;padding:9px 16px 10px;}
+.meter{flex:1;}
+.meter .lb{font-size:10.5px;color:#8b9bb1;letter-spacing:.05em;display:flex;justify-content:space-between;}
+.meter .bar{height:5px;margin-top:3px;border-radius:3px;background:rgba(255,255,255,.09);overflow:hidden;}
+.meter .fill{height:100%;width:0;border-radius:3px;transition:width .45s ease;}
+#m1 .fill{background:linear-gradient(90deg,#c2703f,#e2564f);}
+#m2 .fill{background:linear-gradient(90deg,#3f7fc2,#57b6e2);}
+#m3 .fill{background:linear-gradient(90deg,#6a9f4a,#b6d24f);}
+
+/* ---- 会話ログ ---- */
+#logwrap{position:relative;flex:1 1 auto;min-height:0;}
+#log{
+  height:100%;overflow-y:auto;cursor:pointer;-webkit-overflow-scrolling:touch;
+  padding:14px 16px 26px;display:flex;flex-direction:column;gap:11px;
+}
+.row{display:flex;animation:pop .26s ease-out;}
+@keyframes pop{from{opacity:0;transform:translateY(9px);}to{opacity:1;transform:none;}}
+.row.t{justify-content:flex-start;}
+.row.m{justify-content:flex-end;}
+.bub{
+  max-width:84%;padding:10px 14px;border-radius:17px;font-size:16px;line-height:1.65;
+  word-break:break-word;
+}
+.row.t .bub{background:#262f3c;border-bottom-left-radius:5px;box-shadow:0 1px 0 rgba(255,255,255,.05) inset;}
+.row.m .bub{background:#2c4a6b;border-bottom-right-radius:5px;color:#eaf2fb;}
+.row.n{justify-content:center;}
+.row.n .bub{background:none;color:#93a3b8;font-size:14.5px;text-align:center;max-width:100%;padding:2px 4px;line-height:1.75;}
+.row.p{justify-content:center;}
+.row.p .bub{background:none;color:#6e7d92;letter-spacing:.5em;font-size:15px;padding:2px;}
+.row.sfx{justify-content:center;}
+.row.sfx .bub{
+  background:none;color:#c8b58a;font-size:15px;letter-spacing:.28em;
+  font-family:"Courier New",monospace;padding:2px;
+}
+.row.bg{justify-content:flex-start;}
+.row.bg .bub{
+  background:rgba(255,255,255,.045);border:1px dashed rgba(255,255,255,.16);
+  color:#8fa0b6;font-size:14.5px;border-radius:12px;max-width:88%;
+}
+.row.sys{justify-content:center;}
+.row.sys .bub{
+  background:rgba(226,86,79,.10);border:1px solid rgba(226,86,79,.42);
+  color:#f0a8a0;font-size:13.5px;letter-spacing:.09em;border-radius:7px;
+  text-align:center;padding:7px 13px;
+}
+.row.big{justify-content:center;}
+.row.big .bub{
+  background:none;color:#fff;font-size:22px;font-weight:700;letter-spacing:.1em;
+  text-align:center;line-height:1.55;padding:14px 4px;
+}
+.spk{font-size:11px;color:#8b9bb1;margin:0 4px 3px;letter-spacing:.04em;}
+.wrapper{display:flex;flex-direction:column;max-width:86%;}
+.wrapper .bub{max-width:100%;}
+.divider{height:1px;background:rgba(255,255,255,.07);margin:4px 0;flex:none;}
+
+/* ---- タップで進む ---- */
+#tapzone{position:absolute;inset:0;display:none;pointer-events:none;}
+#tapzone.on{display:block;}
+#tapcue{
+  position:absolute;right:14px;bottom:8px;font-size:11.5px;color:#7f90a6;
+  letter-spacing:.1em;background:rgba(10,14,20,.82);padding:4px 10px;border-radius:999px;
+  animation:blink 1.35s infinite;pointer-events:none;
+}
+@keyframes blink{0%,100%{opacity:.35;}50%{opacity:1;}}
+
+/* ---- 選択肢 ---- */
+#choices{
+  flex:none;max-height:50%;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:11px 14px calc(14px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));
+  border-top:1px solid rgba(255,255,255,.09);
+  display:flex;flex-direction:column;gap:10px;
+}
+#choices:empty{display:none;}
+.ch{
+  display:block;flex:0 0 auto;width:100%;min-height:54px;padding:13px 16px;
+  font:inherit;font-size:16px;line-height:1.5;text-align:left;color:#eaf0f8;
+  background:#232c39;border:1px solid rgba(255,255,255,.12);border-radius:13px;
+  cursor:pointer;transition:transform .07s,background .12s;
+}
+.ch:active{transform:scale(.985);background:#2e3a4a;}
+.ch .tagline{display:block;font-size:11.5px;color:#8fa0b6;margin-top:3px;letter-spacing:.03em;}
+.ch.act{background:#2b3d52;border-color:rgba(120,180,240,.32);}
+.ch.dan{background:#3a2a2c;border-color:rgba(226,120,110,.34);}
+.ch.new::after{content:"NEW";float:right;font-size:10px;letter-spacing:.12em;color:#e2b85f;
+  border:1px solid rgba(226,184,95,.5);border-radius:4px;padding:1px 5px;margin-left:8px;}
+.chnote{flex:0 0 auto;font-size:11.5px;color:#7f90a6;letter-spacing:.05em;padding:2px 2px 0;}
+
+/* ---- オーバーレイ画面 ---- */
+.screen{
+  position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;text-align:center;
+  padding:calc(30px + env(safe-area-inset-top)) 24px calc(30px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,#131a25,#080b11);
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+.screen > *:first-child{margin-top:auto;}
+.screen > *:last-child{margin-bottom:auto;}
+.screen.hide{display:none;}
+.screen h1{font-size:31px;font-weight:800;letter-spacing:.14em;text-indent:.14em;line-height:1.5;}
+.screen h2{font-size:20px;font-weight:700;letter-spacing:.1em;margin-bottom:6px;}
+.screen .lead{font-size:14px;color:#93a3b8;letter-spacing:.06em;margin-top:12px;line-height:1.9;}
+.screen .fine{font-size:12px;color:#71819a;margin-top:20px;line-height:1.9;letter-spacing:.03em;}
+.bigbtn{
+  margin-top:26px;min-height:56px;padding:15px 34px;font:inherit;font-size:17px;font-weight:700;
+  letter-spacing:.14em;text-indent:.14em;color:#0d1620;background:#e8eef6;border:none;border-radius:14px;
+  cursor:pointer;box-shadow:0 4px 0 #9aa6b5;
+}
+.bigbtn:active{transform:translateY(2px);box-shadow:0 2px 0 #9aa6b5;}
+.subbtn{
+  margin-top:13px;min-height:50px;padding:13px 24px;font:inherit;font-size:15px;
+  color:#cfd9e6;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);
+  border-radius:13px;cursor:pointer;letter-spacing:.08em;
+}
+.subbtn:active{background:rgba(255,255,255,.15);}
+
+/* 着信画面 */
+#s-ring .num{font-size:27px;font-weight:700;letter-spacing:.05em;}
+#s-ring .unk{font-size:13.5px;color:#93a3b8;margin-top:7px;letter-spacing:.1em;}
+#s-ring .ringing{font-size:13px;color:#6fd39a;letter-spacing:.24em;margin-top:26px;animation:blink 1.1s infinite;}
+#ringav{
+  width:96px;height:96px;border-radius:50%;margin:0 auto 22px;position:relative;
+  background:radial-gradient(circle at 50% 34%,#455060 0%,#333c49 45%,#212832 100%);
+  box-shadow:0 0 0 0 rgba(111,211,154,.35);animation:pulse 1.6s infinite;
+}
+#ringav::before{content:"";position:absolute;left:50%;top:22px;transform:translateX(-50%);width:26px;height:26px;border-radius:50%;background:#141a24;}
+#ringav::after{content:"";position:absolute;left:50%;top:56px;transform:translateX(-50%);width:56px;height:44px;border-radius:28px 28px 0 0;background:#141a24;}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(111,211,154,.3);}70%{box-shadow:0 0 0 26px rgba(111,211,154,0);}100%{box-shadow:0 0 0 0 rgba(111,211,154,0);}}
+.ringrow{display:flex;gap:22px;margin-top:34px;}
+.rbtn{
+  width:76px;height:76px;border-radius:50%;border:none;cursor:pointer;
+  font:inherit;font-size:13px;font-weight:700;color:#fff;letter-spacing:.06em;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+}
+.rbtn .ic{font-size:24px;line-height:1;}
+.rbtn.ok{background:#2f9e5e;box-shadow:0 4px 0 #1d6b3f;}
+.rbtn.ng{background:#c2453f;box-shadow:0 4px 0 #8a2b27;}
+.rbtn:active{transform:translateY(2px);}
+
+/* エンディング画面 */
+#s-end .etag{font-size:12px;letter-spacing:.3em;color:#8b9bb1;}
+#s-end .ename{font-size:29px;font-weight:800;letter-spacing:.1em;margin-top:6px;}
+#s-end .emsg{font-size:15px;color:#c3cedd;margin-top:16px;line-height:1.95;}
+.stats{
+  margin-top:22px;width:100%;max-width:330px;font-size:13.5px;color:#a9b7c8;
+  border:1px solid rgba(255,255,255,.13);border-radius:13px;padding:13px 15px;text-align:left;
+}
+.stats div{display:flex;justify-content:space-between;padding:3px 0;}
+.stats .hd{display:block;color:#8b9bb1;font-size:11.5px;letter-spacing:.12em;margin:10px 0 5px;padding:0;}
+.stats ul{list-style:none;font-size:13px;color:#cbd6e4;}
+.stats li{padding:2px 0 2px 15px;position:relative;line-height:1.65;}
+.stats li::before{content:"·";position:absolute;left:3px;color:#e2b85f;}
+#endlist{width:100%;max-width:340px;margin-top:10px;text-align:left;}
+#endlist .e{
+  border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:11px 14px;margin-bottom:9px;
+  font-size:14.5px;
+}
+#endlist .e.got{border-color:rgba(226,184,95,.4);background:rgba(226,184,95,.07);}
+#endlist .e small{display:block;font-size:12px;color:#8b9bb1;margin-top:3px;line-height:1.6;}
+#endlist .e.lock{color:#6e7d92;}
+
+@media (max-height:760px){
+  #avatar{width:44px;height:44px;margin:5px auto 4px;}
+  #avatar::before{top:9px;width:13px;height:13px;}
+  #avatar::after{top:26px;width:27px;height:21px;}
+  #cname{font-size:18px;}
+  #callhead{padding:4px 14px 8px;}
+  #meters{padding:6px 14px 7px;}
+  #log{padding:11px 14px 20px;}
+}
+@media (max-height:620px){
+  #avatar{display:none;}
+  .bub{font-size:15.5px;}
+}
+#flash{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:30;transition:opacity .7s;}
+#flash.on{opacity:1;}
+</style>
+</head>
+<body>
+<div id="phone">
+  <div id="statusbar">
+    <div class="sig">＊＊＊ 4G</div>
+    <div id="clock">12:41</div>
+    <button id="mute" type="button">♪ 音 ON</button>
+  </div>
+
+  <div id="callhead">
+    <div id="timer">通話中 00:00</div>
+    <div id="avatar"></div>
+    <div id="cname">田村</div>
+    <div id="csub">（中学の同級生？）</div>
+  </div>
+
+  <div id="meters">
+    <div class="meter" id="m1"><div class="lb"><span>疑惑</span><span class="v">0</span></div><div class="bar"><div class="fill"></div></div></div>
+    <div class="meter" id="m2"><div class="lb"><span>相手の余裕</span><span class="v">100</span></div><div class="bar"><div class="fill"></div></div></div>
+    <div class="meter" id="m3"><div class="lb"><span>好奇心</span><span class="v">0</span></div><div class="bar"><div class="fill"></div></div></div>
+  </div>
+
+  <div id="logwrap">
+    <div id="log"></div>
+    <div id="tapzone"><div id="tapcue">タップで進む ▼</div></div>
+  </div>
+
+  <div id="choices"></div>
+
+  <!-- タイトル -->
+  <div class="screen" id="s-title">
+    <div style="font-size:12px;letter-spacing:.34em;color:#8b9bb1;">A PHONE CALL GAME</div>
+    <h1>同窓会の<br>お知らせ</h1>
+    <div class="lead">知らない番号から、電話がかかってきた。<br>出ると、中学の同級生だと名乗った。</div>
+    <button class="bigbtn" id="btn-start" type="button">電話を確認する</button>
+    <div class="fine">
+      プレイ時間 15〜30分／エンディング 6種<br>
+      画面をタップして進みます。音が出ます（右上でON/OFF）<br>
+      セーブはありません。リロードで最初から遊べます。
+    </div>
+  </div>
+
+  <!-- 着信 -->
+  <div class="screen hide" id="s-ring">
+    <div id="ringav"></div>
+    <div class="num">090-4412-0088</div>
+    <div class="unk">登録なし</div>
+    <div class="ringing">着信中</div>
+    <div class="ringrow">
+      <button class="rbtn ng" id="btn-deny" type="button"><span class="ic">✕</span>出ない</button>
+      <button class="rbtn ok" id="btn-ans" type="button"><span class="ic">✆</span>出る</button>
+    </div>
+  </div>
+
+  <!-- エンディング -->
+  <div class="screen hide" id="s-end">
+    <div class="etag">ENDING</div>
+    <div class="ename" id="e-name">―</div>
+    <div class="emsg" id="e-msg"></div>
+    <div class="stats" id="e-stats"></div>
+    <button class="bigbtn" id="btn-again" type="button">もう一度かかってくる</button>
+    <button class="subbtn" id="btn-gallery" type="button">エンディング一覧</button>
+  </div>
+
+  <!-- 一覧 -->
+  <div class="screen hide" id="s-gal">
+    <h2>エンディング一覧</h2>
+    <div class="lead" id="gal-count" style="margin-top:2px;"></div>
+    <div id="endlist"></div>
+    <button class="subbtn" id="btn-back" type="button">もどる</button>
+  </div>
+
+  <div id="flash"></div>
+</div>
+
+<script>
+"use strict";
+/* =========================================================
+   同窓会のお知らせ  ―  単一ファイル会話ゲーム
+   ========================================================= */
+
+/* ---------- 効果音（Web Audio・素材なし） ---------- */
+var Snd = (function(){
+  var ctx=null, master=null, on=true, ringTimer=null, holdTimer=null;
+  function init(){
+    if(ctx) return true;
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return false;
+    try{
+      ctx = new AC();
+      master = ctx.createGain();
+      master.gain.value = 0.16;          /* 初回から大音量にしない */
+      master.connect(ctx.destination);
+    }catch(e){ ctx=null; return false; }
+    return true;
+  }
+  function resume(){ if(ctx && ctx.state==="suspended") ctx.resume(); }
+  function tone(freq, dur, type, vol, delay){
+    if(!on || !init()) return;
+    resume();
+    var t0 = ctx.currentTime + (delay||0);
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type || "sine"; o.frequency.value = freq;
+    g.gain.setValueAtTime(0, t0);
+    g.gain.linearRampToValueAtTime(vol==null?0.5:vol, t0+0.012);
+    g.gain.exponentialRampToValueAtTime(0.0008, t0+dur);
+    o.connect(g); g.connect(master);
+    o.start(t0); o.stop(t0+dur+0.03);
+  }
+  function noise(dur, freq, vol, delay){
+    if(!on || !init()) return;
+    resume();
+    var t0 = ctx.currentTime + (delay||0);
+    var len = Math.max(1, Math.floor(ctx.sampleRate*dur));
+    var buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    var d = buf.getChannelData(0);
+    for(var i=0;i<len;i++){ d[i] = (Math.random()*2-1) * (1 - i/len); }
+    var src = ctx.createBufferSource(); src.buffer = buf;
+    var bp = ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=freq||2600; bp.Q.value=0.8;
+    var g = ctx.createGain(); g.gain.value = vol==null?0.5:vol;
+    src.connect(bp); bp.connect(g); g.connect(master);
+    src.start(t0);
+  }
+  return {
+    setOn:function(v){ on=v; if(!v){ stopRing(); stopHold(); } },
+    isOn:function(){ return on; },
+    unlock:function(){ init(); resume(); },
+    tap:function(){ tone(880,0.035,"square",0.09); },
+    ring:function(){
+      stopRing();
+      if(!on) return;
+      var play=function(){
+        tone(784,0.30,"sine",0.5); tone(988,0.30,"sine",0.4,0.02);
+        tone(784,0.30,"sine",0.5,0.42); tone(988,0.30,"sine",0.4,0.44);
+      };
+      play(); ringTimer = setInterval(play, 2400);
+    },
+    paper:function(){
+      noise(0.16, 3400, 0.5); noise(0.13, 2400, 0.42, 0.19); noise(0.10, 3000, 0.30, 0.36);
+    },
+    write:function(){ noise(0.05,1800,0.3); noise(0.05,1500,0.25,0.09); noise(0.05,2000,0.25,0.17); },
+    hold:function(){
+      stopHold(); if(!on) return;
+      var n=[523,587,659,587,523,440,523,0], i=0;
+      var step=function(){ var f=n[i%n.length]; i++; if(f) tone(f,0.28,"triangle",0.24); };
+      step(); holdTimer = setInterval(step, 330);
+    },
+    stopHold:stopHold, stopRing:stopRing,
+    connect:function(){ tone(660,0.09,"sine",0.35); tone(880,0.11,"sine",0.35,0.11); },
+    hangup:function(){
+      stopRing(); stopHold();
+      tone(420,0.22,"sine",0.4); tone(420,0.22,"sine",0.4,0.36); tone(330,0.4,"sine",0.3,0.72);
+    },
+    ping:function(){ tone(1320,0.08,"square",0.16); tone(1760,0.10,"square",0.13,0.07); },
+    thud:function(){ tone(140,0.5,"sine",0.4); }
+  };
+  function stopRing(){ if(ringTimer){ clearInterval(ringTimer); ringTimer=null; } }
+  function stopHold(){ if(holdTimer){ clearInterval(holdTimer); holdTimer=null; } }
+})();
+
+/* ---------- 行データのヘルパ ---------- */
+function T(t){ return {s:"t", t:t}; }                 /* 相手 */
+function M(t){ return {s:"m", t:t}; }                 /* 主人公 */
+function N(t){ return {s:"n", t:t}; }                 /* ト書き */
+function BG(t){ return {s:"bg", t:t}; }               /* 後ろの声 */
+function SYS(t){ return {s:"sys", t:t}; }             /* 画面表示 */
+function SFX(t){ return {s:"sfx", t:t}; }             /* 紙の音など */
+function P(ms,t){ return {s:"p", t:t||"…………", ms:ms||1300}; } /* 沈黙 */
+function BIG(t){ return {s:"big", t:t}; }
+function FX(fn){ return {s:"fx", fn:fn}; }
+
+/* =========================================================
+   本編テキスト
+   ========================================================= */
+
+/* ---- 導入 ---- */
+var PROLOGUE = [
+  N("昼休み。コンビニのイートインで、半分になったパンを持ったまま、スマートフォンが震えた。"),
+  N("知らない番号だった。"),
+  FX(function(){ Snd.connect(); }),
+  M("「……もしもし？」"),
+  T("「あ、もしもし！ もしもし、聞こえてる？」"),
+  T("「久しぶり！ 中学の同級生の、田村だけど。覚えてる？」"),
+  M("（田村……田村……）"),
+  N("いた気がする。たしかに、そういう名字のやつがいた気がする。"),
+  N("何十年も会っていない。顔は、まったく出てこない。")
+];
+
+var OPENING_CHOICES = [
+  { label:"「ああ、田村……なんとなく覚えてるかも」", sub:"話を合わせる",
+    lines:[
+      T("「そうそう！ 田村だよ田村。いや〜、よかった〜」"),
+      T("「声、変わってないな！」"),
+      M("（電話越しの声を、二十年ぶりに聞き分けられる人間がいるのか）")
+    ], comp:6, cur:6 },
+  { label:"「ごめん、ちょっと思い出せない」", sub:"正直に言う",
+    lines:[
+      T("「またまた〜。同じクラスだったじゃん」"),
+      M("「同じクラス？」"),
+      T("「……まあ、そんな感じ」"),
+      M("（そんな感じ）")
+    ], sus:6, comp:-4, cur:5, note:"「同じクラスだった」の根拠が薄い" },
+  { label:"「どちら様ですか」", sub:"警戒する",
+    lines:[
+      T("「いやいや、田村だってば。中学の」"),
+      T("「ほら、あの、三年の時さ」"),
+      M("「三年の時、なに」"),
+      T("「……いろいろあったじゃん」"),
+      M("（いろいろ）")
+    ], sus:8, comp:-8, cur:4, note:"中学時代の具体的な話が出てこない" }
+];
+
+var PROLOGUE2 = [
+  T("「いや〜、何年ぶりだろうね。もう二十年以上じゃない？」"),
+  M("「……たぶん、そのくらい」"),
+  T("「でさ、今度、学年全体で同窓会やることになってさ」"),
+  N("学年全体。"),
+  T("「懐かしい仲間で集まろうと思って、それで連絡してるんだ」"),
+  M("（懐かしい仲間）")
+];
+
+/* ---- 質問・行動 ---- */
+var TOPICS = [
+/* --- 基本の質問（平成の勧誘マニュアル） --- */
+{ id:"who", label:"「誰が来るの？」", sus:4, comp:-4, cur:6, note:"参加者の名前が出てこない",
+  lines:[
+    T("「けっこう来るよ、みんな」"),
+    M("「みんなって、たとえば？」"),
+    T("「……山本とか」"),
+    M("「山本」"),
+    T("「いたでしょ、山本。いたって」"),
+    M("（山本はいた。山本はどこの学年にもいる）")
+  ]},
+
+{ id:"when", label:"「日時はいつ？」", sus:4, comp:-4, cur:6, note:"日時が決まっていない",
+  lines:[
+    T("「日時はね、これから決めるんだ」"),
+    M("「決まってないの？」"),
+    T("「まず人数をね、把握しようと思って」"),
+    M("「日程を決める前に人集めるの、順番おかしくない？」"),
+    T("「いや〜、そこはほら、幹事の方針で」")
+  ]},
+
+{ id:"where", label:"「会場はどこ？」", sus:4, comp:-4, cur:6, note:"会場が決まっていない",
+  lines:[
+    T("「駅の近くの、いい感じのとこ押さえようと思ってて」"),
+    M("「何駅？」"),
+    T("「……ほら、みんなが集まりやすいとこ」"),
+    M("「何駅？」"),
+    T("「そこも含めて、これから！」"),
+    M("（これからばっかりだな）")
+  ]},
+
+{ id:"kanji", label:"「幹事って誰がやってるの？」", sus:4, comp:-4, cur:5, note:"幹事が「複数体制」",
+  lines:[
+    T("「俺と、あと何人かで」"),
+    M("「何人か」"),
+    T("「幹事は複数体制でやってるから」"),
+    M("（複数体制）"),
+    M("「その何人かの名前は？」"),
+    T("「まあ、当日わかるよ」")
+  ]},
+
+{ id:"nostalgic", label:"「まあ、懐かしいな」", sub:"話を合わせる", cls:"act",
+  sus:2, comp:6, cur:8, repeat:true, maxRepeat:3,
+  lines:function(s){
+    var v=[
+      [ T("「な！ せっかくだから一度顔合わせようよ」"),
+        T("「みんな会いたがってるよ」"),
+        M("「みんな」"),
+        T("「みんな」"),
+        N("この人はさっきから、みんなという単語しか使っていない。") ],
+      [ T("「昔の仲間っていいもんだよな」"),
+        M("「うん」"),
+        T("「な！」"),
+        P(1600),
+        N("会話が完全に止まった。"),
+        T("「……で、同窓会なんだけど」") ],
+      [ T("「やっぱりさ、こういうのは顔見て話すのが一番だよ」"),
+        M("「まだ何も決まってないけどな」"),
+        T("「決まってなくても気持ちは決まってるだろ？」"),
+        M("「気持ち」"),
+        T("「気持ち」"),
+        N("気持ちの話にされている。") ]
+    ];
+    var i=Math.min((s.uses.nostalgic||1)-1, v.length-1);
+    return v[i];
+  }},
+
+{ id:"detail", label:"「詳しい話を聞きたいんだけど」", sus:4, comp:-3, cur:6, note:"詳しい話は「会った時に」",
+  lines:[
+    T("「詳しい話は、会った時にしよう」"),
+    M("「今、電話してるけど」"),
+    T("「電話だと長くなっちゃうからさ」"),
+    M("「もう十分長いよ」"),
+    T("「はは。まあまあ」")
+  ]},
+
+/* --- 現代的な質問（紙をめくる音） --- */
+{ id:"line", label:"「LINEグループとかあるの？」", sus:5, comp:-5, cur:7, note:"LINEグループが存在しない",
+  lines:[
+    FX(function(){ Snd.paper(); }),
+    SFX("ペラ……"),
+    T("「……えーっと、LINEはね、これから作るところ」"),
+    M("「作ってから誘った方がよくない？」"),
+    T("「まず声かけからと思って！」"),
+    M("（順番が全部逆だ）")
+  ]},
+
+{ id:"form", label:"「出欠ってGoogleフォームで取るの？」", sus:7, comp:-8, cur:9, note:"マニュアルらしき紙をめくった",
+  flag:"manual",
+  lines:[
+    FX(function(){ Snd.paper(); }),
+    SFX("ペラ……"),
+    SFX("ペラペラ……"),
+    T("「えーっと……SNSについて聞かれた場合……」"),
+    M("「そこまでマニュアルに書いてあるのかよ」"),
+    T("「え？ なにが？」"),
+    M("「今、紙めくったよね」"),
+    T("「めくってない」"),
+    M("「めくってたって」"),
+    T("「めくってない」")
+  ]},
+
+{ id:"zoom", label:"「オンラインでやらないの？」", req:function(s){return s.flags.manual;}, sus:5, comp:-6, cur:7, note:"オンライン対応の項目まで読み上げた",
+  lines:[
+    FX(function(){ Snd.paper(); }),
+    SFX("ペラペラ……"),
+    T("「オンライン……えー、オンラインでのご案内をご希望の場合は……」"),
+    M("「読んでるだろ」"),
+    T("「読んでない」"),
+    M("「ご案内って言ったぞ今」"),
+    T("「言ってない」")
+  ]},
+
+{ id:"pay", label:"「会費、電子決済使える？」", sus:4, comp:-4, cur:6, note:"支払いは現金の手渡しのみ",
+  lines:[
+    T("「ペイ……ペイペイ？」"),
+    M("「まあ、その手のやつ」"),
+    T("「現金でいいよ、現金で。当日、手渡しで」"),
+    M("（手渡し）"),
+    T("「その方が確実だろ？」"),
+    M("「誰にとって？」")
+  ]},
+
+{ id:"fee", label:"「会費っていくら？」", sus:4, comp:-3, cur:5, note:"会費の金額が未定",
+  lines:[
+    T("「会費は、まあ、良心的な感じで」"),
+    M("「金額は？」"),
+    T("「そこも含めて、これから」"),
+    M("「良心的っていくら」"),
+    T("「良心的は良心的だよ」")
+  ]},
+
+/* --- 設定崩壊 --- */
+{ id:"remember", label:"「本当に俺のこと覚えてる？」", sus:5, comp:-7, cur:8, note:"部活を間違えた",
+  lines:[
+    T("「覚えてるよ！ お前、野球部だったろ」"),
+    M("「帰宅部」"),
+    P(1500),
+    T("「……いや、だから、野球部の連中とよくつるんでたじゃん」"),
+    SYS("《設定が修正されました》"),
+    M("「今なんか直したろ」"),
+    T("「直してない」")
+  ]},
+
+{ id:"class", label:"「同じクラスだったっけ？」", sus:5, comp:-7, cur:8, note:"クラスを間違えた",
+  lines:[
+    T("「三年の時、二組だったよな」"),
+    M("「一組だけど」"),
+    P(1800),
+    T("「……まあ、学年は一緒だったし！」"),
+    SYS("《設定が修正されました》"),
+    M("（学年まで下がった）")
+  ]},
+
+{ id:"friend", label:"「昔、誰と仲良かったっけ？」", sus:5, comp:-5, cur:7, note:"仲が良かった人物を間違えた",
+  lines:[
+    T("「お前といえば、あれだろ。……マツモト」"),
+    M("「マツモトって誰」"),
+    T("「いたじゃん、マツモト」"),
+    M("「学年に松本、いた？」"),
+    P(1400),
+    T("「……いたよ。たぶん」"),
+    M("「たぶん」"),
+    T("「いた」")
+  ]},
+
+{ id:"album", label:"「卒業アルバム見ながらかけてるの？」", sus:6, comp:-7, cur:8, note:"卒アルを見ていないのに見たと言った",
+  lines:[
+    T("「そうそう、卒アル見ながら……いや、思い出しながらやってる」"),
+    M("「俺、卒アルの個人写真、写ってないんだけど」"),
+    M("「撮影の日、休んでたから」"),
+    P(1900),
+    T("「……写ってたよ。ちゃんと」"),
+    M("「写ってないって」"),
+    T("「……集合写真の方に」"),
+    M("「その日、学校に行ってないんだよ」")
+  ]},
+
+{ id:"sensei", label:"「先生も来るの？」", sus:5, comp:-5, cur:7, note:"担任の名前を間違えた",
+  lines:[
+    T("「先生も呼ぼうって話してる。担任の、佐藤先生とか」"),
+    M("「うちの担任、女の先生だったけど」"),
+    P(1300),
+    T("「……佐藤先生、女性だろ？」"),
+    M("「そうだけど、名前が違う」"),
+    T("「ああ、じゃあ俺の記憶違いか。よくあるよな、そういうの」"),
+    SYS("《設定が修正されました》")
+  ]},
+
+{ id:"myname", label:"「俺の名前、フルネームで言える？」", req:function(s){return s.sus>=30;},
+  sus:6, comp:-8, cur:9, note:"名字の読み方を間違えた",
+  lines:[
+    FX(function(){ Snd.paper(); }),
+    SFX("ペラ……"),
+    T("「新谷……あらや、さん」"),
+    M("「しんたに」"),
+    T("「しんたにさんね！ いや〜、変換ミスだわ」"),
+    M("「口頭に変換ミスってあるのか？」"),
+    T("「あるある」"),
+    M("「ないよ」")
+  ]},
+
+{ id:"you_job", label:"「俺が今なにしてるか知ってる？」", sus:4, comp:-5, cur:7, note:"卒業後の進路を適当に合わせられた",
+  lines:[
+    T("「お前、たしか……そっち系だろ？」"),
+    M("「そっち系って」"),
+    T("「ほら、パソコン使う」"),
+    M("「今どき全員パソコン使うが」"),
+    T("「な！ 時代だよな」"),
+    M("（乗り切られた）")
+  ]},
+
+{ id:"number", label:"「俺の番号、どこで知ったの？」", sus:6, comp:-7, cur:8, note:"番号の入手経路が説明できない",
+  lines:[
+    T("「名簿だよ。卒業名簿」"),
+    M("「二十年前の名簿に、今の携帯番号が載ってるの？」"),
+    P(1700),
+    T("「……更新してるんだよ、こっちで」"),
+    M("「こっちでって、誰が」"),
+    T("「幹事が」"),
+    M("「複数体制の？」"),
+    T("「そう」")
+  ]},
+
+/* --- 後ろの声・イベント派生 --- */
+{ id:"voice", label:"「今、誰かいた？」", req:function(s){return s.flags.heardVoice;}, sus:5, comp:-7, cur:8, note:"後ろに誰かいるのに否定した",
+  lines:[
+    T("「……テレビ」"),
+    M("「テレビ？」"),
+    T("「テレビ。つけっぱなしでさ」"),
+    N("テレビは「あと何件？」とは言わない。"),
+    M("「なんの番組？」"),
+    T("「……ニュース」")
+  ]},
+
+{ id:"howmany", label:"「今日、何件かけてるの？」", req:function(s){return s.flags.heardVoice && s.sus>=45;},
+  sus:6, comp:-10, cur:9, note:"「何件」という言葉に反応した",
+  lines:[
+    P(2000),
+    T("「……なんの話？」"),
+    M("「さっき後ろで言ってたじゃん。あと何件って」"),
+    T("「テレビ」"),
+    M("「テレビ」"),
+    T("「テレビ」"),
+    N("三回言われると、逆に本当かもしれないと思えてくる。思えてこない。")
+  ]},
+
+{ id:"honto", label:"「これ、同窓会じゃないよね？」", req:function(s){return s.sus>=62;}, cls:"dan",
+  sus:7, comp:-12, cur:10, note:"「同窓会も、やる」と言った",
+  lines:[
+    P(2200),
+    T("「……同窓会だよ」"),
+    T("「同窓会も、やる」"),
+    M("「も？」"),
+    P(1500),
+    T("「……いや、同窓会」"),
+    M("「今、も、って言ったよね」"),
+    T("「言ってない」"),
+    N("この人は、都合の悪いことは全部言ってないことになる。")
+  ]},
+
+{ id:"nanika", label:"「同窓会のあとに、なんかあるの？」", req:function(s){return s.sus>=70;}, cls:"dan",
+  sus:5, comp:-10, cur:9, note:"「二次会みたいなもの」の説明が曖昧",
+  lines:[
+    T("「あと？ ああ、二次会みたいなもんは、まあ」"),
+    M("「みたいなもん」"),
+    T("「そう。せっかく集まるんだし、いろいろ話も聞けるし」"),
+    M("「いろいろ話」"),
+    T("「そんな重い話じゃないよ。ほんとに」"),
+    M("「重い話って言葉、こっちは一度も使ってないけど」"),
+    P(1600),
+    T("「……だよな」")
+  ]},
+
+/* --- 寂しい一瞬 --- */
+{ id:"whatnow", label:"「田村は今なにしてるの？」", sus:3, comp:-4, cur:9, flag:"jobHint",
+  lines:[
+    T("「俺？ 俺は、まあ、いろいろ」"),
+    T("「人と会う仕事っていうか」"),
+    M("「営業？」"),
+    T("「……近い」"),
+    M("「近い」"),
+    T("「まあ、そんなとこ」")
+  ]},
+
+{ id:"sabishii", label:"「お前さ。何やってんの？」", cls:"dan",
+  req:function(s){ return s.flags.jobHint && s.sus>=48; },
+  sus:2, comp:-6, cur:12, flag:"sabishii", note:"「仕事だよ」と言った",
+  lines:[
+    N("聞くつもりはなかった。ただ、口から出た。"),
+    M("「お前さ」"),
+    M("「何やってんの？」"),
+    P(2600),
+    N("受話器の向こうで、音が消えた。"),
+    P(2200,"…………………"),
+    T("「……仕事だよ」"),
+    M("「これが？」"),
+    P(1800),
+    T("「……まあな」"),
+    P(2400),
+    N("昼の音がした。どこかで換気扇が回っている。"),
+    N("たぶん、そんなに広くない部屋だ。"),
+    P(1600),
+    T("「それで同窓会なんだけど！」"),
+    M("（戻った）"),
+    N("マニュアルに戻る速度だけは、やたら速い。")
+  ]},
+
+/* --- 逆勧誘ルート --- */
+{ id:"gyaku", label:"「こっちからも聞いていい？」", cls:"act", sus:2, comp:-5, cur:8, flag:"gyaku",
+  lines:[
+    M("「ところでさ、こっちからも聞いていい？」"),
+    T("「お、おう」"),
+    M("「田村って今、どこ住んでるの？」"),
+    T("「……こっちの方」"),
+    M("「こっち」"),
+    T("「そう、こっち」"),
+    M("（電話でこっちと言われても何もわからない）"),
+    N("――なんだか、こっちが主導権を握れる気がしてきた。")
+  ]},
+
+{ id:"g_hobby", label:"「最近ハマってる話をする」", sub:"逆勧誘", cls:"act",
+  req:function(s){return s.flags.gyaku;}, sus:2, comp:-8, cur:6, gyaku:true,
+  lines:[
+    M("「俺さ、最近メダカ飼っててさ」"),
+    T("「へ、へえ」"),
+    M("「メダカって、水温が命なのよ。二十五度前後がベスト」"),
+    M("「あと餌のやりすぎがいちばん良くない。水が濁る」"),
+    T("「そ、そうなんだ」"),
+    M("「濁るとどうなると思う？」"),
+    P(1500),
+    T("「……どうなるの」"),
+    M("「聞きたい？」"),
+    T("「……」")
+  ]},
+
+{ id:"g_work", label:"「仕事の愚痴を延々と話す」", sub:"逆勧誘", cls:"act",
+  req:function(s){return s.flags.gyaku;}, sus:2, comp:-8, cur:6, gyaku:true,
+  lines:[
+    M("「うちの会社さ、去年からシステム変わってさ」"),
+    M("「経費精算の承認フローが四段階あるのよ」"),
+    T("「四段階……」"),
+    M("「しかも部長が承認しないと次に進まない。で、その部長が出張ばっかり」"),
+    T("「あ、あの、同窓会の話なんだけど」"),
+    M("「まだ終わってない」"),
+    T("「……はい」")
+  ]},
+
+{ id:"g_health", label:"「健康の話をする」", sub:"逆勧誘", cls:"act",
+  req:function(s){return s.flags.gyaku;}, sus:2, comp:-8, cur:6, gyaku:true,
+  lines:[
+    M("「田村さ、健康診断ちゃんと行ってる？」"),
+    T("「え」"),
+    M("「俺、去年ガンマGTPで引っかかってさ」"),
+    M("「ガンマ・ジー・ティー・ピー。知ってる？」"),
+    T("「……知らない」"),
+    M("「肝臓」"),
+    T("「肝臓」"),
+    M("「そう、肝臓。四十過ぎたら数値見た方がいいよ」"),
+    P(1400),
+    T("「……あのさ」")
+  ]},
+
+/* --- 個人情報 --- */
+{ id:"i_tel", label:"「この番号でいいよ」", sub:"連絡先を教える", cls:"dan", info:true, sus:2, comp:14, cur:3,
+  lines:[
+    M("「番号は、まあ、今かけてきてるこれでいいよ」"),
+    T("「お、ありがとう！ じゃあこの番号でいいんだね？」"),
+    FX(function(){ Snd.write(); }),
+    N("なにかを書き留める音がした。"),
+    T("「よし、と」"),
+    M("（今、書いたな）")
+  ]},
+
+{ id:"i_mail", label:"「メールアドレスも教える」", cls:"dan", info:true, sus:2, comp:14, cur:3,
+  lines:[
+    T("「あ、じゃあ念のためメールも聞いていい？ 案内送るからさ」"),
+    M("「案内、まだ何も決まってないんじゃなかった？」"),
+    T("「決まったら送るんだよ！」"),
+    N("気づけば、アルファベットを一文字ずつ読み上げていた。"),
+    FX(function(){ Snd.write(); }),
+    T("「アットマークのあと、もう一回いい？」")
+  ]},
+
+{ id:"i_work", label:"「勤務先を答える」", cls:"dan", info:true, sus:2, comp:14, cur:3,
+  lines:[
+    T("「ちなみに今、お勤めはどちら？ 平日夜の会場決めるのに、場所知りたくてさ」"),
+    M("「ああ、それなら――」"),
+    N("会社名を言ってしまってから、なぜ言ったんだろうと思った。"),
+    FX(function(){ Snd.write(); }),
+    T("「へえ！ いいとこ勤めてんじゃん」"),
+    M("「そう？」"),
+    T("「そうだよ！」")
+  ]},
+
+{ id:"i_addr", label:"「住んでる場所を答える」", cls:"dan", info:true, sus:2, comp:14, cur:3,
+  lines:[
+    T("「あと、今どのへん住んでる？ 帰りやすい場所にしたいからさ」"),
+    M("「◯◯の方だけど」"),
+    T("「◯◯！ いいとこじゃん」"),
+    M("「知ってるの？」"),
+    T("「知ってる知ってる」"),
+    FX(function(){ Snd.write(); }),
+    M("（さっきから、書く音がする）")
+  ]},
+
+{ id:"refuse", label:"「連絡先は教えられない」", cls:"act", sus:2, comp:-7, cur:4, flag:"refused",
+  lines:[
+    M("「悪いけど、連絡先は教えられない」"),
+    T("「いや、番号はもう知ってるんだけど」"),
+    M("「……そうだった」"),
+    T("「はは。じゃあメールだけでも」"),
+    M("「教えない」"),
+    P(1200),
+    T("「……固いなあ」")
+  ]}
+];
+
+/* ---- 割り込みイベント（会話の合間） ---- */
+var EVENTS = [
+ { id:"e1", at:3, sus:3, comp:-2, lines:[
+    BG("「――あと何件？」"),
+    P(1200),
+    T("「……ごめん、なんでもない」"),
+    M("「今、誰かの声しなかった？」"),
+    T("「気のせいだって」")
+  ]},
+ { id:"e2", at:6, sus:5, comp:-5, flag:"heardVoice", note:"後ろから知らない人の声がした", lines:[
+    BG("「そこ、押し弱いよ！」"),
+    T("「うるさい！」"),
+    P(1400),
+    T("「……あ、ごめん、こっちの話」"),
+    M("「今、絶対誰かいたよね」"),
+    T("「……テレビ」"),
+    N("明らかにテレビではない。")
+  ]},
+ { id:"e3", at:9, sus:4, comp:-4, lines:[
+    FX(function(){ Snd.paper(); }),
+    SFX("ペラ……"),
+    SFX("ペラペラ……"),
+    T("「あ、いや、雑誌。雑誌読んでた」"),
+    M("「電話しながら？」"),
+    T("「器用なんだよ、俺」")
+  ]},
+ { id:"e4", at:12, sus:5, comp:-5, lines:[
+    BG("「名前、ちゃんと確認した？」"),
+    T("「……確認した！」"),
+    M("「何を？」"),
+    P(1200),
+    T("「テレビ」"),
+    M("「テレビに確認したの？」"),
+    T("「そう」")
+  ]},
+ { id:"e5", at:15, sus:4, comp:-5, lines:[
+    T("「ちょっとごめん、そのまま待ってて」"),
+    FX(function(){ Snd.hold(); }),
+    N("急に、音楽が流れた。"),
+    N("保留音だった。個人の携帯電話から保留音が流れている。"),
+    P(2600,"♪ ♪ ♪"),
+    FX(function(){ Snd.stopHold(); }),
+    T("「ごめんごめん、ちょっと確認しててさ」"),
+    M("「何を」"),
+    T("「……段取り」")
+  ]},
+ { id:"e6", at:18, sus:4, comp:-4, lines:[
+    BG("「そろそろクロージング入って」"),
+    M("「クロージングって言った？」"),
+    T("「言ってない」"),
+    M("「言ってたよ、後ろの人が」"),
+    T("「テレビ」")
+  ]},
+ /* 余裕が減ったとき用 */
+ { id:"p1", cond:function(s){return s.comp<=45;}, sus:3, comp:-2, lines:[
+    T("「……とりあえずさ、来れる？ 来れるよね？」"),
+    M("「急に強引だな」"),
+    T("「強引じゃないよ。誘ってるだけ」"),
+    M("「日時も場所も決まってないのに？」"),
+    T("「気持ちの話！」")
+  ]},
+ { id:"p4", cond:function(s){return s.comp<=35;}, sus:6, comp:-3, note:"後ろの誰かに相談していた", lines:[
+    T("「……ちょっと待って」"),
+    N("送話口を手で押さえたらしい。音がこもった。"),
+    BG("（……ねえ、これ聞かれたら何て言うんだっけ）"),
+    BG("（そこは飛ばしていいって）"),
+    P(1600),
+    T("「お待たせ！ ごめんごめん」"),
+    M("「今の、全部聞こえてたけど」"),
+    T("「聞こえてない」")
+  ]},
+ { id:"p2", cond:function(s){return s.comp<=28;}, sus:4, comp:-2, lines:[
+    T("「あのさ、正直に言うとさ」"),
+    P(1600),
+    T("「……いや、なんでもない」"),
+    M("「なに」"),
+    T("「なんでもない」"),
+    P(1200),
+    T("「それで同窓会なんだけど」")
+  ]},
+ { id:"p5", cond:function(s){return s.comp<=22;}, sus:5, comp:-3, note:"「集まり」と言い間違えた", lines:[
+    T("「それでね、今回の同窓会……いや、集まりの件なんだけど」"),
+    M("「今、集まりって言った？」"),
+    T("「同窓会」"),
+    M("「言い直したろ」"),
+    T("「同窓会って言った」"),
+    SYS("《設定が修正されました》")
+  ]},
+ { id:"p3", cond:function(s){return s.comp<=16;}, sus:3, comp:-2, lines:[
+    T("「新谷さんさ、」"),
+    M("「今、さん付けになったな」"),
+    T("「……なってない」"),
+    N("なっていた。")
+  ]}
+];
+
+/* ---- エンディング ---- */
+var ENDINGS = {
+  futsu:{
+    name:"END：不通", cap:"知らない番号に出なかった。",
+    msg:"何も起こらなかった。<br>それが、いちばん正しい。",
+    lines:[
+      N("画面を伏せて、パンの残りを食べた。"),
+      N("呼び出し音はしばらく鳴って、止まった。"),
+      P(1800),
+      N("着信履歴に、知らない番号がひとつ残った。"),
+      N("それだけだった。")
+    ]},
+  teppeki:{
+    name:"END：鉄壁", cap:"何も渡さずに電話を切った。",
+    msg:"今日も個人情報は守られた。",
+    lines:function(s){
+      var L=[
+        M("「悪いけど、そろそろ切るわ」"),
+        T("「え、ちょっと、待って待って」"),
+        T("「日時決まったら、また連絡するから！」"),
+        M("「連絡先、知らないでしょ」"),
+        T("「知ってる」"),
+        P(1400),
+        M("「……知ってるのか」"),
+        FX(function(){ Snd.hangup(); }),
+        N("通話終了。")
+      ];
+      if(s.infoCount>0) L.push(N("渡してしまったものが、少しだけある。"), N("まあ、少しだけだ。"));
+      L.push(BIG("今日も個人情報は守られた。"));
+      return L;
+    }},
+  sanka:{
+    name:"END：参加", cap:"面白半分で参加を了承した。",
+    msg:"数日後、知らない番号から再び着信。",
+    lines:[
+      M("「わかった、行くよ」"),
+      T("「ほんと！？ よかった〜！」"),
+      T("「じゃあ詳しい場所はまた連絡するから！」"),
+      M("「日時は？」"),
+      T("「それも連絡する！」"),
+      M("「何も決まってないままだけど」"),
+      T("「決まるって！」"),
+      FX(function(){ Snd.hangup(); }),
+      N("通話終了。"),
+      P(2200),
+      N("数日後。"),
+      P(1800),
+      FX(function(){ Snd.ring(); }),
+      N("知らない番号から、再び着信。"),
+      P(2400,"＊ ＊ ＊"),
+      FX(function(){ Snd.stopRing(); Snd.thud(); })
+    ]},
+  gyaku:{
+    name:"END：逆勧誘", cap:"相手が先に耐えられなくなった。",
+    msg:"勝った。",
+    lines:[
+      M("「あとさ、さっきのメダカの話なんだけど」"),
+      T("「あ、ごめん！ ちょっと今、立て込んでて」"),
+      M("「まだ途中なんだけど」"),
+      T("「ごめん、また今度！」"),
+      FX(function(){ Snd.hangup(); }),
+      N("通話終了。"),
+      P(1500),
+      M("「勝った。」"),
+      N("何に勝ったのかは、自分でもよくわからない。")
+    ]},
+  kyuyu:{
+    name:"END：旧友", cap:"最後に、ひとことだけ言った。",
+    msg:"昔ちょっとだけ顔を知っていた人間が、<br>今日も電話をかけている。",
+    lines:[
+      M("「まあ、何やってるか知らんけど」"),
+      M("「身体だけは壊すなよ」"),
+      P(2600),
+      T("「…………おう」"),
+      P(2000),
+      T("「それで同窓会なんだけど」"),
+      M("「まだ続けるのかよ」"),
+      P(1400),
+      T("「仕事だから」"),
+      M("「そうか」"),
+      FX(function(){ Snd.hangup(); }),
+      N("通話終了。")
+    ]},
+  data:{
+    name:"END：情報提供者", cap:"全部答えてしまった。",
+    msg:"PERSONAL DATA COMPLETE",
+    lines:[
+      N("気づいたときには、全部答えていた。"),
+      T("「ありがとう！ 助かるよ、ほんと」"),
+      T("「じゃあ、また改めて連絡するから！」"),
+      M("「うん」"),
+      FX(function(){ Snd.hangup(); }),
+      N("通話終了。"),
+      P(2000),
+      BIG("PERSONAL DATA COMPLETE"),
+      P(1800),
+      M("「……あれ？」")
+    ]}
+};
+var ENDORDER = ["teppeki","sanka","gyaku","kyuyu","data","futsu"];
+
+/* =========================================================
+   エンジン
+   ========================================================= */
+function $(id){ return document.getElementById(id); }
+var elLog=$("log"), elCh=$("choices"), elTap=$("tapzone");
+
+var st, queue=[], onQueueEnd=null, tOut=null, timerId=null, seen=loadSeen();
+
+function loadSeen(){
+  try{ var v=localStorage.getItem("dousoukai_end"); return v? JSON.parse(v):{}; }catch(e){ return {}; }
+}
+function saveSeen(){
+  try{ localStorage.setItem("dousoukai_end", JSON.stringify(seen)); }catch(e){}
+}
+
+function newState(){
+  return { sus:0, comp:100, cur:0, flags:{}, done:{}, shown:{}, uses:{},
+           turn:0, secs:0, notes:[], fixes:0, infoCount:0, gyakuCount:0,
+           evDone:{}, over:false };
+}
+
+/* ---- 表示 ---- */
+function addRow(kind, text){
+  var row=document.createElement("div"); row.className="row "+kind;
+  var b=document.createElement("div"); b.className="bub"; b.innerHTML=text;
+  if(kind==="t"||kind==="m"||kind==="bg"){
+    var w=document.createElement("div"); w.className="wrapper";
+    var s=document.createElement("div"); s.className="spk";
+    s.textContent = kind==="t" ? nameNow() : (kind==="m" ? "自分" : "後ろの誰か");
+    if(kind==="m") s.style.textAlign="right";
+    w.appendChild(s); w.appendChild(b); row.appendChild(w);
+  }else{
+    row.appendChild(b);
+  }
+  elLog.appendChild(row);
+  while(elLog.children.length>70) elLog.removeChild(elLog.firstChild);
+  elLog.scrollTop = elLog.scrollHeight;
+}
+function nameNow(){ return "田村"; }
+
+function subLabel(){
+  var s=st.sus;
+  if(s<15) return "（中学の同級生？）";
+  if(s<35) return "（たぶん同級生）";
+  if(s<55) return "（本当に同級生？）";
+  if(s<75) return "（誰？）";
+  return "（？？？）";
+}
+function updateHead(){
+  var e=$("csub"), t=subLabel();
+  if(e.textContent!==t){ e.textContent=t; e.classList.add("shift"); setTimeout(function(){e.classList.remove("shift");},900); }
+}
+function setMeter(id, v, max){
+  var m=$(id); v=Math.max(0,Math.min(max||100,Math.round(v)));
+  m.querySelector(".v").textContent=v;
+  m.querySelector(".fill").style.width=(v/(max||100)*100)+"%";
+}
+function updateMeters(){
+  setMeter("m1", st.sus); setMeter("m2", st.comp); setMeter("m3", st.cur);
+  updateHead();
+}
+function fmt(s){ var m=Math.floor(s/60), x=s%60; return (m<10?"0":"")+m+":"+(x<10?"0":"")+x; }
+function startTimer(){
+  stopTimer();
+  timerId=setInterval(function(){
+    st.secs++;
+    var t=$("timer"); t.textContent="通話中 "+fmt(st.secs);
+    if(st.secs>=600) t.classList.add("warn");
+  },1000);
+}
+function stopTimer(){ if(timerId){ clearInterval(timerId); timerId=null; } }
+
+/* ---- 行の再生 ---- */
+function play(lines, after){
+  queue = lines.slice(); onQueueEnd = after || null;
+  next();
+}
+function next(){
+  if(tOut){ clearTimeout(tOut); tOut=null; }
+  if(!queue.length){
+    elTap.classList.remove("on");
+    var f=onQueueEnd; onQueueEnd=null;
+    if(f) f();
+    return;
+  }
+  var ln = queue.shift();
+  if(ln.s==="fx"){ try{ ln.fn(); }catch(e){} return next(); }
+
+  if(ln.s==="sys"){ Snd.ping(); st.fixes++; }
+  if(ln.s==="sfx" && !ln.silent){ /* 音はFXで鳴らす */ }
+
+  addRow(ln.s, ln.t);
+
+  if(ln.s==="p"){
+    elTap.classList.add("on");
+    tOut=setTimeout(function(){ tOut=null; next(); }, ln.ms);
+  }else{
+    elTap.classList.add("on");
+  }
+}
+elLog.addEventListener("click", function(){ if(!queue.length && !onQueueEnd && !tOut) return; Snd.tap(); next(); });
+
+/* ---- 効果の適用 ---- */
+function apply(o){
+  if(!o) return;
+  if(o.sus) st.sus=Math.max(0,Math.min(100, st.sus+o.sus));
+  if(o.comp) st.comp=Math.max(0,Math.min(100, st.comp+o.comp));
+  if(o.cur) st.cur=Math.max(0,Math.min(100, st.cur+o.cur));
+  if(o.flag) st.flags[o.flag]=true;
+  if(o.note && st.notes.indexOf(o.note)<0) st.notes.push(o.note);
+  updateMeters();
+}
+
+/* ---- 選択肢の描画 ---- */
+function clearChoices(){ elCh.innerHTML=""; }
+function scrollLog(){
+  if(scrollLog._t) return;
+  scrollLog._t = setTimeout(function(){ scrollLog._t=null; elLog.scrollTop = elLog.scrollHeight; }, 30);
+}
+function addNote(text){
+  var d=document.createElement("div"); d.className="chnote"; d.textContent=text; elCh.appendChild(d); scrollLog();
+}
+function addChoice(label, sub, cls, isNew, fn){
+  var b=document.createElement("button");
+  b.type="button"; b.className="ch"+(cls?" "+cls:"")+(isNew?" new":"");
+  b.innerHTML = escapeHtml(label) + (sub? '<span class="tagline">'+escapeHtml(sub)+'</span>' : "");
+  b.addEventListener("click", function(){ Snd.tap(); clearChoices(); fn(); });
+  elCh.appendChild(b);
+  scrollLog();
+  return b;
+}
+function escapeHtml(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+/* ---- 会話ハブ ---- */
+function topicAvailable(t){
+  if(st.done[t.id] && !t.repeat) return false;
+  if(t.maxRepeat && (st.uses[t.id]||0)>=t.maxRepeat) return false;
+  if(t.gyaku && st.gyakuCount>=3) return false;
+  if(t.info && st.infoCount>=4) return false;
+  if(t.req && !t.req(st)) return false;
+  return true;
+}
+function hub(){
+  if(st.over) return;
+  clearChoices();
+  var av = TOPICS.filter(topicAvailable);
+  var qs = av.filter(function(t){ return t.grp!=="a" && !t.info && !t.gyaku && t.id!=="gyaku" && t.id!=="refuse"; });
+  var as = av.filter(function(t){ return t.info || t.gyaku || t.id==="gyaku" || t.id==="refuse"; });
+
+  /* 解禁されたばかりの質問を前に出す */
+  qs.sort(function(a,b){
+    var an=(a.req && !st.shown[a.id])?0:1, bn=(b.req && !st.shown[b.id])?0:1;
+    if(an!==bn) return an-bn;
+    var ar=a.req?0:1, br=b.req?0:1;
+    return ar-br;
+  });
+  /* 逆勧誘中は逆勧誘の話題を優先 */
+  as.sort(function(a,b){
+    var ag=a.gyaku?0:1, bg=b.gyaku?0:1;
+    if(ag!==bg) return ag-bg;
+    return 0;
+  });
+
+  var picked = qs.slice(0,4);
+  var picked2 = as.slice(0,2);
+  var freshly = picked.concat(picked2).filter(function(t){ return t.req && !st.shown[t.id]; });
+  if(freshly.length) addNote("― 気になることが増えた ―");
+  else if(!picked.length) addNote("― もう、聞きたいことは聞いた気がする ―");
+
+  picked.concat(picked2).forEach(function(t){
+    var isNew = !!(t.req && !st.shown[t.id]);
+    st.shown[t.id]=true;
+    addChoice(t.label, t.sub, t.cls, isNew, function(){ runTopic(t); });
+  });
+
+  /* 行動 */
+  if(st.flags.sabishii && !st.done.__kyuyu){
+    addChoice("「身体だけは壊すなよ」", "そう言って電話を切る", "act", true, function(){ ending("kyuyu"); });
+  }
+  addChoice("「わかった、行くよ」", "参加すると答える", "act", false, function(){ ending("sanka"); });
+  addChoice("「そろそろ切るわ」", "電話を切る", "dan", false, tryHangup);
+}
+
+function runTopic(t){
+  st.turn++;
+  st.uses[t.id]=(st.uses[t.id]||0)+1;
+  if(!t.repeat) st.done[t.id]=true;
+  if(t.gyaku) st.gyakuCount++;
+  if(t.info) st.infoCount++;
+  var lines = (typeof t.lines==="function") ? t.lines(st) : t.lines;
+  play(lines, function(){
+    apply(t);
+    if(t.info && st.infoCount>=4) return ending("data");
+    if(t.gyaku && st.gyakuCount>=3) return ending("gyaku");
+    afterTurn();
+  });
+}
+
+function afterTurn(){
+  var ev=null;
+  for(var i=0;i<EVENTS.length;i++){
+    var e=EVENTS[i];
+    if(st.evDone[e.id]) continue;
+    if(e.at && st.turn>=e.at){ ev=e; break; }
+    if(e.cond && e.cond(st)){ ev=e; break; }
+  }
+  if(ev){
+    st.evDone[ev.id]=true;
+    play(ev.lines, function(){ apply(ev); hub(); });
+  }else{
+    hub();
+  }
+}
+
+function tryHangup(){
+  if(st.cur>=45 && !st.flags.askedStop){
+    st.flags.askedStop=true;
+    play([
+      N("切ろうとして、指が止まった。"),
+      M("（……もう少しだけ、聞いてみたい気もする）"),
+      N("怪しいのは、もうわかっている。わかっているのに。")
+    ], function(){
+      clearChoices();
+      addNote("― 好奇心 "+Math.round(st.cur)+" ―");
+      addChoice("「やっぱり切るわ」", "ここで終わる", "dan", false, function(){ ending("teppeki"); });
+      addChoice("「……いや、もうちょっと聞かせて」", "会話を続ける", "act", false, function(){
+        play([ T("「お、そうこなくちゃ」"), M("（乗せられている自覚はある）") ], hub);
+      });
+    });
+  }else{
+    ending("teppeki");
+  }
+}
+
+/* ---- エンディング ---- */
+function ending(id){
+  st.over=true;
+  stopTimer();
+  clearChoices();
+  var e=ENDINGS[id];
+  var lines = (typeof e.lines==="function") ? e.lines(st) : e.lines;
+  play(lines, function(){
+    Snd.stopRing(); Snd.stopHold();
+    seen[id]=true; saveSeen();
+    showEnd(id);
+  });
+}
+
+function showEnd(id){
+  var e=ENDINGS[id];
+  $("e-name").textContent=e.name;
+  $("e-msg").innerHTML=e.msg;
+  var h='<div><span>通話時間</span><span>'+fmt(st.secs)+'</span></div>'
+       +'<div><span>疑惑</span><span>'+Math.round(st.sus)+' / 100</span></div>'
+       +'<div><span>相手の余裕</span><span>'+Math.round(st.comp)+' / 100</span></div>'
+       +'<div><span>設定の修正</span><span>'+st.fixes+' 回</span></div>'
+       +'<div><span>渡した個人情報</span><span>'+st.infoCount+' 件</span></div>';
+  if(st.notes.length){
+    h+='<span class="hd">見つけたほころび '+st.notes.length+'件</span><ul>';
+    st.notes.forEach(function(n){ h+='<li>'+escapeHtml(n)+'</li>'; });
+    h+='</ul>';
+  }
+  var got=0; ENDORDER.forEach(function(k){ if(seen[k]) got++; });
+  h+='<span class="hd">エンディング '+got+' / '+ENDORDER.length+'</span>';
+  $("e-stats").innerHTML=h;
+  flash(true, function(){ show("s-end"); flash(false); });
+}
+
+function flash(on, cb){
+  var f=$("flash");
+  if(on){ f.classList.add("on"); setTimeout(function(){ if(cb) cb(); }, 750); }
+  else { setTimeout(function(){ f.classList.remove("on"); }, 60); }
+}
+
+/* ---- 画面切り替え ---- */
+function show(id){
+  ["s-title","s-ring","s-end","s-gal"].forEach(function(k){ $(k).classList.add("hide"); });
+  if(id) $(id).classList.remove("hide");
+}
+
+/* ---- ギャラリー ---- */
+function renderGallery(){
+  var wrap=$("endlist"); wrap.innerHTML="";
+  var got=0;
+  ENDORDER.forEach(function(k){
+    var e=ENDINGS[k], d=document.createElement("div");
+    var has=!!seen[k]; if(has) got++;
+    d.className="e"+(has?" got":" lock");
+    d.innerHTML = has ? escapeHtml(e.name)+"<small>"+escapeHtml(e.cap)+"</small>"
+                      : "？？？<small>まだ見ていない</small>";
+    wrap.appendChild(d);
+  });
+  $("gal-count").textContent = got+" / "+ENDORDER.length+" 種類";
+}
+
+/* ---- 開始 ---- */
+function startCall(){
+  Snd.stopRing();
+  show(null);
+  elLog.innerHTML="";
+  st=newState();
+  updateMeters();
+  $("timer").textContent="通話中 00:00";
+  $("timer").classList.remove("warn");
+  startTimer();
+  play(PROLOGUE, function(){
+    clearChoices();
+    addNote("― どう答える？ ―");
+    OPENING_CHOICES.forEach(function(c){
+      addChoice(c.label, c.sub, null, false, function(){
+        play(c.lines, function(){
+          apply(c);
+          play(PROLOGUE2, function(){ st.turn++; hub(); });
+        });
+      });
+    });
+  });
+}
+
+function incoming(){
+  elLog.innerHTML="";
+  st=newState();
+  updateMeters();
+  stopTimer();
+  $("timer").textContent="着信";
+  show("s-ring");
+  Snd.unlock();
+  Snd.ring();
+}
+
+/* ---- ボタン ---- */
+$("btn-start").addEventListener("click", function(){ Snd.unlock(); Snd.tap(); incoming(); });
+$("btn-ans").addEventListener("click", function(){ Snd.tap(); startCall(); });
+$("btn-deny").addEventListener("click", function(){
+  Snd.stopRing(); Snd.tap(); show(null);
+  $("timer").textContent="不在着信";
+  st.over=false;
+  play([
+    N("画面を伏せた。"),
+    N("呼び出し音は、しばらく鳴り続けている。"),
+    P(2000),
+    N("切れた。"),
+    P(1600),
+    FX(function(){ Snd.ring(); }),
+    N("……また、同じ番号からかかってきた。"),
+    N("よほど暇なのか、よほど必死なのか。")
+  ], function(){
+    clearChoices();
+    addChoice("「……はい、もしもし」", "やっぱり出る", "act", false, function(){ startCall(); });
+    addChoice("無視する", "パンの続きを食べる", "dan", false, function(){ Snd.stopRing(); ending("futsu"); });
+  });
+});
+$("btn-again").addEventListener("click", function(){ Snd.tap(); incoming(); });
+$("btn-gallery").addEventListener("click", function(){ Snd.tap(); renderGallery(); show("s-gal"); });
+$("btn-back").addEventListener("click", function(){ Snd.tap(); show("s-end"); });
+$("mute").addEventListener("click", function(){
+  var on=!Snd.isOn();
+  Snd.setOn(on);
+  this.textContent = on ? "♪ 音 ON" : "♪ 音 OFF";
+  if(on) Snd.unlock();
+});
+
+/* ---- 時計 ---- */
+(function tick(){
+  var d=new Date();
+  $("clock").textContent=(d.getHours()<10?"0":"")+d.getHours()+":"+(d.getMinutes()<10?"0":"")+d.getMinutes();
+  setTimeout(tick, 20000);
+})();
+
+/* ---- 初期化 ---- */
+st=newState();
+updateMeters();
+show("s-title");
+document.addEventListener("touchmove", function(e){
+  if(!e.target.closest || (!e.target.closest("#log") && !e.target.closest("#choices") && !e.target.closest(".screen"))) e.preventDefault();
+}, {passive:false});
+</script>
+</body>
+</html>
