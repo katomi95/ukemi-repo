@@ -30,6 +30,23 @@
 
 ローカルで遊ぶ場合は `index.html` をブラウザで開くだけです。
 
+## もうひとつのゲーム：青い鳥（物理）
+
+`bluebird/index.html` は、同じリポジトリに同梱した短編ノベルゲームです。
+
+> 幸福の青い鳥を探して世界の果てまで旅をした二人。
+> しかし最後に、青い鳥はずっと“お互いの中”にいたことが分かる。
+> ――ただし比喩ではない。
+
+童話のような絵と音のまま進む、5〜10分の読み物です。旅の回想を6か所ぶん選んで振り返り、
+最後に3つの選択肢からひとつを選ぶと、それぞれ別のエンディングになります。
+
+- 操作：クリック / タップ / Space（胸の音を聞く場面と、調べる場面だけ「長押し」）
+- こちらも単一ファイル（`bluebird/index.html`）で完結。Canvas 2D と Web Audio API のみ
+- 公開先は `https://katomi95.github.io/ukemi-repo/bluebird/`
+
+ローカルで遊ぶ場合は `bluebird/index.html` をブラウザで開くだけです。
+
 ## リポジトリ
 
 https://github.com/katomi95/ukemi-repo
@@ -50,7 +67,9 @@ Actions を使わない場合は、Source を「Deploy from a branch」にして
 
 ```
 .
-├── index.html                   # ゲーム本体（これ1つで動きます）
+├── index.html                   # 受身（これ1つで動きます）
+├── bluebird/
+│   └── index.html               # 青い鳥（物理）（これ1つで動きます）
 ├── README.md
 ├── LICENSE                      # MIT（不要なら削除してください）
 ├── .gitignore
