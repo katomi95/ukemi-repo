@@ -46,18 +46,11 @@ Actions を使わない場合は、Source を「Deploy from a branch」にして
 
 公開先は `https://katomi95.github.io/ukemi-repo/` です（Pages を有効にするには、リポジトリを public にする必要があります）。
 
-## 同梱のもうひとつのゲーム
-
-`kinko2nen/` に短編ゲーム **「金庫二年」** が入っています。
-「禁錮二年」だと思ったら「金庫二年」だった、という一発ネタの不条理コメディで、1プレイ 5〜10 分です。
-公開先は `https://katomi95.github.io/ukemi-repo/kinko2nen/`、詳細は [kinko2nen/README.md](kinko2nen/README.md) を参照してください。
-
 ## ファイル構成
 
 ```
 .
-├── index.html                   # 受身 本体（これ1つで動きます）
-├── kinko2nen/index.html         # 金庫二年 本体（これ1つで動きます）
+├── index.html                   # ゲーム本体（これ1つで動きます）
 ├── README.md
 ├── LICENSE                      # MIT（不要なら削除してください）
 ├── .gitignore
