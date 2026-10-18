@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>またのご利用をお待ちしております</title>
+<meta name="description" content="お帰りのお客様に、決まり文句を言うか、言わないか。業種によっては大事故になる接客判断ゲーム。">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="app">
+  <header id="hud">
+    <div class="biz">
+      <div class="biz-label">本日の勤務先</div>
+      <div class="biz-name" id="bizName">―</div>
+      <div class="shop" id="shopName"></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="lbl">お客様</span><b id="qNo">0</b><span class="of">/<span id="qTotal">20</span></span></div>
+      <div class="stat"><span class="lbl">得点</span><b id="score">0</b></div>
+      <button type="button" class="mute" id="mute" aria-label="効果音の切り替え">♪ ON</button>
+    </div>
+  </header>
+
+  <main id="play">
+    <div id="sceneWrap">
+      <svg id="scene" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <g id="bg"></g>
+        <g id="staff"></g>
+        <g id="cust"></g>
+        <g id="card"></g>
+      </svg>
+      <div class="bubble staff" id="bStaff"></div>
+      <div class="bubble cust" id="bCust"></div>
+      <div id="verdict"></div>
+      <div id="stamp"><span>接客事故！</span><small id="stampNote"></small></div>
+      <div id="skip">タップ / キーでスキップ</div>
+    </div>
+
+    <div id="timer" aria-hidden="true"><div id="timerBar"></div></div>
+
+    <div id="choices">
+      <button type="button" class="choice say" id="btnSay" disabled>
+        <span class="txt">またのご利用を<wbr>お待ちしております</span>
+        <span class="key">← / A</span>
+      </button>
+      <button type="button" class="choice no" id="btnNo" disabled>
+        <span class="txt">言わない</span>
+        <span class="key">→ / D</span>
+      </button>
+    </div>
+  </main>
+</div>
+
+<!-- タイトル -->
+<section class="overlay" id="titleScreen">
+  <div class="panel title-panel">
+    <p class="kicker">新人スタッフ向け 接客判断トレーニング</p>
+    <h1>またのご利用を<br>お待ちしております</h1>
+    <svg id="titleArt" viewBox="0 0 520 250" aria-hidden="true"></svg>
+    <p class="howto">お帰りのお客様に、決まり文句を<br class="sp">言うか、言わないか。<br>業種をよく見て、すばやく判断してください。</p>
+    <button type="button" class="big-btn" id="btnStart">勤務開始</button>
+    <p class="keys-hint">PC：← / A で「またのご利用をお待ちしております」、→ / D で「言わない」</p>
+    <button type="button" class="mute title-mute" id="muteTitle" aria-label="効果音の切り替え">♪ ON</button>
+  </div>
+</section>
+
+<!-- 結果 -->
+<section class="overlay hide" id="resultScreen">
+  <div class="panel result-panel">
+    <p class="kicker">本日の勤務評価</p>
+    <div class="rank-wrap"><div class="rank" id="rRank">研修修了</div></div>
+    <p class="comment" id="rComment"></p>
+    <table class="sheet">
+      <tr><th>正解数</th><td id="rCorrect">0</td></tr>
+      <tr><th>誤答数</th><td id="rWrong">0</td></tr>
+      <tr><th>時間切れ数</th><td id="rTimeout">0</td></tr>
+      <tr class="acc"><th>接客事故件数<small>（誤答のうち）</small></th><td id="rAccident">0</td></tr>
+      <tr class="total"><th>得点</th><td id="rScore">0</td></tr>
+    </table>
+    <div class="log" id="rLogWrap">
+      <p class="log-title">接客事故の記録</p>
+      <ul id="rLog"></ul>
+    </div>
+    <button type="button" class="big-btn" id="btnRetry">もう一度勤務する</button>
+  </div>
+</section>
+
+<script src="js/chars.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/data.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
